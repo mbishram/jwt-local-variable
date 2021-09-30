@@ -1,22 +1,31 @@
 {
-  "name": "jwt-local-variable",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
-  },
-  "dependencies": {
-    "next": "11.1.2",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
-  },
-  "devDependencies": {
-    "@types/react": "17.0.26",
-    "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2",
-    "typescript": "4.4.3"
-  }
+	"name": "jwt-local-variable",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev -p 5000",
+		"build": "next build",
+		"start": "next start -p 5000",
+		"lint": "next lint",
+		"e2e": "concurrently --kill-others \"next dev -p 5000\" \"playwright test\""
+	},
+	"dependencies": {
+		"next": "11.1.2",
+		"react": "17.0.2",
+		"react-dom": "17.0.2"
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.15.0",
+		"@types/react": "17.0.26",
+		"autoprefixer": "^10.3.6",
+		"eslint": "7.32.0",
+		"eslint-config-next": "11.1.2",
+		"postcss": "^8.3.8",
+		"postcss-advanced-variables": "^3.0.1",
+		"postcss-import": "^14.0.2",
+		"postcss-nested": "^5.0.6",
+		"prettier": "^2.4.1",
+		"tailwindcss": "^2.2.16",
+		"typescript": "4.4.3"
+	}
 }
