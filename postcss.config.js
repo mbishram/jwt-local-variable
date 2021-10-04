@@ -2,8 +2,9 @@ module.exports = {
 	plugins: {
 		"postcss-import": {},
 		tailwindcss: {},
+		"postcss-mixins": {},
 		"postcss-nested": {},
-		"postcss-advanced-variables": {},
+		"postcss-simple-vars": {},
 		autoprefixer: {},
 	},
 };
