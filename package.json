@@ -28,7 +28,6 @@
 		"jest": "^27.2.4",
 		"postcss": "^8.3.8",
 		"postcss-import": "^14.0.2",
-		"postcss-mixins": "^8.1.0",
 		"postcss-nested": "^5.0.6",
 		"postcss-simple-vars": "^6.0.3",
 		"prettier": "^2.4.1",
