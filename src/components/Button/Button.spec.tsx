@@ -21,19 +21,19 @@ describe("Button", () => {
 				Test
 			</Button>
 		);
-		const button = expect(screen.getByText("Test"));
-		button.toBeDisabled();
-		button.toHaveAttribute("type", "submit");
-		button.toHaveAttribute("data-test", "data test");
+		const button = screen.getByText("Test");
+		expect(button).toBeDisabled();
+		expect(button).toHaveAttribute("type", "submit");
+		expect(button).toHaveAttribute("data-test", "data test");
 	});
 
 	it("should have default style when color, size, rounded, and fullWidth prop are not specified", () => {
 		render(<Button>Test Default</Button>);
-		const button = expect(screen.getByText("Test Default"));
-		button.toHaveClass("btnTransparent");
-		button.toHaveClass("btnNormal");
-		button.toHaveClass("rounded");
-		button.not.toHaveClass("btnFull");
+		const button = screen.getByText("Test Default");
+		expect(button).toHaveClass("btnTransparent");
+		expect(button).toHaveClass("btnNormal");
+		expect(button).toHaveClass("rounded");
+		expect(button).not.toHaveClass("btnFull");
 	});
 
 	it("should render correctly according to color prop", () => {
