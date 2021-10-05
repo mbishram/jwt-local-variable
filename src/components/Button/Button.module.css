@@ -1,0 +1,33 @@
+.btn {
+	@apply inline-flex items-center cursor-pointer font-medium transition-bg gap-2;
+	width: fit-content;
+
+	&:disabled,
+	&[disabled] {
+		@apply bg-gray-400 bg-gray-300 cursor-default;
+	}
+}
+
+.btnTransparent {
+	@apply hover:bg-black hover:bg-opacity-5;
+}
+
+.btnPrimary {
+	@apply bg-blue-500 text-white hover:bg-blue-400;
+}
+
+.btnSecondary {
+	@apply bg-gray-500 text-white hover:bg-gray-400;
+}
+
+.btnNormal {
+	@apply px-6 py-3;
+}
+
+.btnSmall {
+	@apply px-4 py-2;
+}
+
+.btnFull {
+	@apply sm:w-auto w-full justify-center;
+}

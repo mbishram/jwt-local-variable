@@ -2,10 +2,16 @@ module.exports = {
 	purge: ["./src/**/*.{jsx,tsx}"],
 	darkMode: false,
 	theme: {
-		extend: {},
+		extend: {
+			fontFamily: {
+				sans: ["Roboto", "ui-sans-serif", "system-ui", "-apple-system"],
+			},
+			transitionProperty: {
+				bg: "background-color",
+			},
+			zIndex: {
+				"-10": "-10",
+			},
+		},
 	},
-	variants: {
-		extend: {},
-	},
-	plugins: [],
 };
