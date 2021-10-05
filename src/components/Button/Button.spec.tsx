@@ -17,19 +17,26 @@ describe("Button", () => {
 
 	it("should pass it's props", () => {
 		render(
-			<Button disabled type="submit">
+			<Button disabled type="submit" data-test="data test">
 				Test
 			</Button>
 		);
 		const button = expect(screen.getByText("Test"));
 		button.toBeDisabled();
 		button.toHaveAttribute("type", "submit");
+		button.toHaveAttribute("data-test", "data test");
+	});
+
+	it("should have default style when color, size, rounded, and fullWidth prop are not specified", () => {
+		render(<Button>Test Default</Button>);
+		const button = expect(screen.getByText("Test Default"));
+		button.toHaveClass("btnTransparent");
+		button.toHaveClass("btnNormal");
+		button.toHaveClass("rounded");
+		button.not.toHaveClass("btnFull");
 	});
 
 	it("should render correctly according to color prop", () => {
-		render(<Button>Test Default</Button>);
-		expect(screen.getByText("Test Default")).toHaveClass("btnTransparent");
-
 		render(<Button color="transparent">Test Transparent</Button>);
 		expect(screen.getByText("Test Transparent")).toHaveClass(
 			"btnTransparent"
@@ -43,9 +50,6 @@ describe("Button", () => {
 	});
 
 	it("should render correctly according to size prop", () => {
-		render(<Button>Test Default</Button>);
-		expect(screen.getByText("Test Default")).toHaveClass("btnNormal");
-
 		render(<Button size="normal">Test Normal</Button>);
 		expect(screen.getByText("Test Normal")).toHaveClass("btnNormal");
 
@@ -54,17 +58,11 @@ describe("Button", () => {
 	});
 
 	it("should render rounded edge if it have rounded prop", () => {
-		render(<Button>Test Default</Button>);
-		expect(screen.getByText("Test Default")).toHaveClass("rounded");
-
 		render(<Button rounded>Test Rounded</Button>);
 		expect(screen.getByText("Test Rounded")).toHaveClass("rounded-full");
 	});
 
 	it("should render full width if it have fullWidth prop", () => {
-		render(<Button>Test Default</Button>);
-		expect(screen.getByText("Test Default")).not.toHaveClass("btnFull");
-
 		render(<Button fullWidth>Test Full</Button>);
 		expect(screen.getByText("Test Full")).toHaveClass("btnFull");
 	});
