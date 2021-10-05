@@ -19,6 +19,7 @@ module.exports = {
 
 		// Typescript path aliases
 		"^@/(.*)$": "<rootDir>/src/$1",
+		"^@specs-utils/(.*)$": "<rootDir>/specs/utils/$1",
 	},
 	testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/"],
 	testEnvironment: "jsdom",
