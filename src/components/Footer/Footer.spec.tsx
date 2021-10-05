@@ -7,7 +7,7 @@ describe("Footer", () => {
 		render(<Footer />);
 		const footer = expect(
 			screen.getByText(
-				`&copy; ${new Date().getFullYear()} ${
+				`\u00A9 ${new Date().getFullYear()} ${
 					process.env.NEXT_PUBLIC_APPLICATION_NAME
 				}`
 			)

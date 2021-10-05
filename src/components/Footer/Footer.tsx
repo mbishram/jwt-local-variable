@@ -21,7 +21,7 @@ export function Footer({
 			{...props}
 		>
 			{children ||
-				`&copy; ${new Date().getFullYear()} ${
+				`\u00A9 ${new Date().getFullYear()} ${
 					process.env.NEXT_PUBLIC_APPLICATION_NAME
 				}`}
 		</footer>
