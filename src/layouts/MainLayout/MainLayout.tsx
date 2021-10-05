@@ -1,6 +1,7 @@
 import { HTMLAttributes, ReactNode } from "react";
 import { Button } from "@/components/Button/Button";
 import { Footer } from "@/components/Footer/Footer";
+import { Container } from "@/components/Container/Container";
 
 /**
  * Main Layout.
@@ -13,13 +14,13 @@ export function MainLayout({
 	...props
 }: HTMLAttributes<HTMLDivElement> & Props) {
 	return (
-		<div className="flex flex-col h-screen" {...props}>
+		<Container className="flex flex-col h-screen" {...props}>
 			<nav>
 				<Button color="primary">Tset</Button>
 			</nav>
 			<main className="flex-grow">{children}</main>
 			<Footer />
-		</div>
+		</Container>
 	);
 }
 

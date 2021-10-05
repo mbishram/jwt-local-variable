@@ -18,6 +18,12 @@ describe("Main Layout", () => {
 		);
 	});
 
+	it("should have Container component as it's parent element", () => {
+		expect(screen.getByTestId("main-layout")).toHaveClass(
+			"container mx-auto px-4"
+		);
+	});
+
 	it("should have nav element", () => {
 		expect(screen.getByRole("navigation")).toBeInTheDocument();
 	});
