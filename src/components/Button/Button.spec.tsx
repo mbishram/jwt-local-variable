@@ -57,12 +57,12 @@ describe("Button", () => {
 		expect(screen.getByText("Test Small")).toHaveClass("btnSmall");
 	});
 
-	it("should render rounded edge if it have rounded prop", () => {
+	it("should render rounded edge if rounded prop is set", () => {
 		render(<Button rounded>Test Rounded</Button>);
 		expect(screen.getByText("Test Rounded")).toHaveClass("rounded-full");
 	});
 
-	it("should render full width if it have fullWidth prop", () => {
+	it("should render full width if fullWidth prop is set", () => {
 		render(<Button fullWidth>Test Full</Button>);
 		expect(screen.getByText("Test Full")).toHaveClass("btnFull");
 	});
