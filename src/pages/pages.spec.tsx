@@ -1,9 +1,9 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import Custom404 from "@/pages/404";
+import Custom404 from "@/pages/404.page";
 import Router from "next/router";
 import { mockRouter } from "@specs-utils/mock-router";
-import Login from "@/pages/login";
+import Login from "@/pages/login.page";
 
 describe("Pages", () => {
 	describe("when it's not found", () => {
