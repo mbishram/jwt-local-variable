@@ -8,7 +8,8 @@
 		"start": "next start -p 5000",
 		"lint": "next lint",
 		"e2e": "concurrently --kill-others \"next dev -p 5000\" \"playwright test\"",
-		"test": "jest --watch"
+		"test": "jest",
+		"test:watch": "jest --watch"
 	},
 	"dependencies": {
 		"clsx": "^1.1.1",
