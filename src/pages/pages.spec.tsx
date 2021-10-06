@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/react";
 import Custom404 from "@/pages/404";
 import Router from "next/router";
 import { mockRouter } from "@specs-utils/mock-router";
-import { getPage } from "next-page-tester";
+import Login from "@/pages/login";
 
 describe("Pages", () => {
 	describe("when it's not found", () => {
@@ -14,12 +14,8 @@ describe("Pages", () => {
 	});
 
 	describe("when it's found", () => {
-		it("should render page", async () => {
-			const { render } = await getPage({
-				route: "/login",
-			});
-			render();
-
+		it("should render page", () => {
+			render(<Login />);
 			expect(
 				screen.getByText(
 					`\u00A9 ${new Date().getFullYear()} ${
