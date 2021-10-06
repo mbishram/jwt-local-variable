@@ -8,7 +8,7 @@
 		"start": "next start -p 5000",
 		"lint": "next lint",
 		"e2e": "concurrently --kill-others \"next dev -p 5000\" \"playwright test\"",
-		"test": "jest",
+		"test": "jest --ci",
 		"test:watch": "jest --watch"
 	},
 	"dependencies": {
