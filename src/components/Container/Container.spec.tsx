@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/react";
 import React from "react";
 import { Container } from "@/components/Container/Container";
 import { itPassChildren } from "@specs-utils/it-pass-children";
+import { itPassProps } from "@specs-utils/it-pass-props";
 
 describe("Main Layout", () => {
 	beforeEach(() => {
@@ -16,12 +17,7 @@ describe("Main Layout", () => {
 		);
 	});
 
-	it("should pass it's props", () => {
-		expect(screen.getByTestId("container")).toHaveAttribute(
-			"data-test",
-			"test data"
-		);
-	});
+	itPassProps(Container);
 
 	itPassChildren(Container);
 

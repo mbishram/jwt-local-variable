@@ -5,8 +5,8 @@ import { render, screen } from "@testing-library/react";
  * Generate spec to test if a component passes it's children.
  * @param Component
  */
-export const itPassChildren = (Component: ComponentType) => {
-	return it("should pass it's children", () => {
+export const itPassChildren = (Component: ComponentType<any>) =>
+	it("should pass it's children", () => {
 		render(<Component>Test Children</Component>);
 		expect(screen.getByText("Test Children")).toBeInTheDocument();
 
@@ -17,4 +17,3 @@ export const itPassChildren = (Component: ComponentType) => {
 		);
 		expect(screen.getByTestId("button-child")).toBeInTheDocument();
 	});
-};
