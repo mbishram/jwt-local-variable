@@ -20,9 +20,7 @@ describe("Main Layout", () => {
 		});
 
 		it("should have Container component as it's parent element", () => {
-			expect(screen.getByTestId("main-layout")).toHaveClass(
-				"container mx-auto px-4"
-			);
+			expect(screen.getByTestId("main-layout")).toHaveClass("wrapper");
 		});
 
 		it("should have nav element", () => {

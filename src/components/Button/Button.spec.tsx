@@ -1,19 +1,10 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { Button } from "@/components/Button/Button";
+import { itPassChildren } from "@specs-utils/it-pass-children";
 
 describe("Button", () => {
-	it("should show it's children", () => {
-		render(<Button>Test Children</Button>);
-		expect(screen.getByText("Test Children")).toBeInTheDocument();
-
-		render(
-			<Button>
-				<div data-testid="button-child">Test Children</div>
-			</Button>
-		);
-		expect(screen.getByTestId("button-child")).toBeInTheDocument();
-	});
+	itPassChildren(Button);
 
 	it("should pass it's props", () => {
 		render(

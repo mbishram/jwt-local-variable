@@ -1,12 +1,12 @@
 import Router from "next/router";
 import { RouterContext } from "next/dist/shared/lib/router-context";
-import React, { ReactNode } from "react";
+import React, { ReactElement } from "react";
 
 /**
  * Function to mock next router.
  * @param Page
  */
-export const mockRouter = (Page: ReactNode) => {
+export const mockRouter = (Page: ReactElement) => {
 	/**
 	 * Mocked properties and methods
 	 */

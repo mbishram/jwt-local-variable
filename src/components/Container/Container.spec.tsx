@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import { Container } from "@/components/Container/Container";
+import { itPassChildren } from "@specs-utils/it-pass-children";
 
 describe("Main Layout", () => {
 	beforeEach(() => {
@@ -22,13 +23,11 @@ describe("Main Layout", () => {
 		);
 	});
 
-	it("should pass it's children", () => {
-		expect(screen.getByTestId("children")).toBeInTheDocument();
-	});
+	itPassChildren(Container);
 
 	it("should pass it's class if className is specified and it doesn't remove default class", () => {
 		const container = screen.getByTestId("container");
-		expect(container).toHaveClass("container mx-auto px-4");
+		expect(container).toHaveClass("wrapper");
 		expect(container).toHaveClass("bg-black");
 	});
 });

@@ -4,7 +4,7 @@ import clsx from "clsx";
 /**
  * Footer component with a default text and styling.
  * @param children
- * @param className
+ * @param className Replace default styling.
  * @param props
  * @constructor
  */
