@@ -16,13 +16,7 @@ describe("Pages", () => {
 	describe("when it's found", () => {
 		it("should render page", () => {
 			render(<Login />);
-			expect(
-				screen.getByText(
-					`\u00A9 ${new Date().getFullYear()} ${
-						process.env.NEXT_PUBLIC_APPLICATION_NAME
-					}`
-				)
-			).toBeInTheDocument();
+			expect(screen.getByRole("contentinfo")).toBeInTheDocument();
 		});
 	});
 });

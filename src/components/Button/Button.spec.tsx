@@ -1,31 +1,13 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { Button } from "@/components/Button/Button";
+import { itPassChildren } from "@specs-utils/it-pass-children";
+import { itPassProps } from "@specs-utils/it-pass-props";
 
 describe("Button", () => {
-	it("should show it's children", () => {
-		render(<Button>Test Children</Button>);
-		expect(screen.getByText("Test Children")).toBeInTheDocument();
+	itPassChildren(Button);
 
-		render(
-			<Button>
-				<div data-testid="button-child">Test Children</div>
-			</Button>
-		);
-		expect(screen.getByTestId("button-child")).toBeInTheDocument();
-	});
-
-	it("should pass it's props", () => {
-		render(
-			<Button disabled type="submit" data-test="data test">
-				Test
-			</Button>
-		);
-		const button = screen.getByText("Test");
-		expect(button).toBeDisabled();
-		expect(button).toHaveAttribute("type", "submit");
-		expect(button).toHaveAttribute("data-test", "data test");
-	});
+	itPassProps(Button);
 
 	it("should have default style when color, size, rounded, and fullWidth prop are not specified", () => {
 		render(<Button>Test Default</Button>);

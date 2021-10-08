@@ -1,6 +1,7 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { Footer } from "@/components/Footer/Footer";
+import { itPassProps } from "@specs-utils/it-pass-props";
 
 describe("Footer", () => {
 	it("should have default text and styling when they are not specified", () => {
@@ -35,14 +36,5 @@ describe("Footer", () => {
 		expect(footer).toHaveClass("bg-black");
 	});
 
-	it("should pass it's props", () => {
-		render(
-			<Footer aria-labelledby="labeltest" data-test="test data">
-				Test
-			</Footer>
-		);
-		const footer = screen.getByText("Test");
-		expect(footer).toHaveAttribute("aria-labelledby", "labeltest");
-		expect(footer).toHaveAttribute("data-test", "test data");
-	});
+	itPassProps(Footer);
 });

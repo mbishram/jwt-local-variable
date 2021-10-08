@@ -1,6 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
+import { itPassProps } from "@specs-utils/it-pass-props";
 
 describe("Main Layout", () => {
 	describe("when disableNav is not set", () => {
@@ -12,17 +13,10 @@ describe("Main Layout", () => {
 			);
 		});
 
-		it("should pass it's props", () => {
-			expect(screen.getByTestId("main-layout")).toHaveAttribute(
-				"data-test",
-				"test data"
-			);
-		});
+		itPassProps(MainLayout);
 
 		it("should have Container component as it's parent element", () => {
-			expect(screen.getByTestId("main-layout")).toHaveClass(
-				"container mx-auto px-4"
-			);
+			expect(screen.getByTestId("main-layout")).toHaveClass("wrapper");
 		});
 
 		it("should have nav element", () => {
