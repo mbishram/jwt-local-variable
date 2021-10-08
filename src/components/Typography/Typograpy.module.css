@@ -1,3 +1,6 @@
 .header {
-	@apply text-2xl;
+	@apply text-4xl font-bold leading-normal;
+}
+.body2 {
+	@apply font-light;
 }
