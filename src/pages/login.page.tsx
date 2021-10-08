@@ -1,9 +1,9 @@
 import Head from "next/head";
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
-import Image from "next/image";
-import loginImg from "@/images/login-img.jpg";
 import { Typography } from "@/components/Typography/Typography";
 import style from "./login.module.css";
+import { Quote } from "@/components/Quote/Quote";
+import { QuoteModel } from "@/model/quote-model";
 
 export default function Login() {
 	return (
@@ -13,16 +13,15 @@ export default function Login() {
 					Login - {process.env.NEXT_PUBLIC_APPLICATION_NAME}
 				</title>
 			</Head>
-			<div className={style.image}>
-				<Image
-					src={loginImg}
-					layout="fill"
-					objectFit="cover"
-					alt="Kucing"
-					className="rounded-xl"
-				/>
-			</div>
-			<div>
+			<Quote
+				data={
+					new QuoteModel({
+						quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
+						name: "James Agus",
+					})
+				}
+			/>
+			<div className={style.content}>
 				<Typography variant="header">
 					Login untuk melihat kucing!
 				</Typography>

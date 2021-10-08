@@ -1,12 +1,11 @@
 .wrapper {
-	@apply max-w-screen-md;
+	@apply max-w-screen-xl;
 
 	.main {
-		@apply grid sm:grid-cols-2 gap-6 items-center;
+		@apply grid md:grid-cols-2 gap-6 content-center;
+	}
 
-		.image {
-			@apply relative sm:block hidden;
-			min-height: 24rem;
-		}
+	.content {
+		@apply self-center;
 	}
 }
