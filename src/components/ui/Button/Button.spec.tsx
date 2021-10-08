@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/ui/Button/Button";
 import { itPassChildren } from "@specs-utils/it-pass-children";
 import { itPassProps } from "@specs-utils/it-pass-props";
 

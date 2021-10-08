@@ -1,5 +1,5 @@
 import React from "react";
-import { Quote } from "@/components/Quote/Quote";
+import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
 import { itPassProps } from "@specs-utils/it-pass-props";
 import { render, screen } from "@testing-library/react";

@@ -1,5 +1,5 @@
 import React from "react";
-import { Typography } from "@/components/Typography/Typography";
+import { Typography } from "@/components/ui/Typography/Typography";
 import { itPassChildren } from "@specs-utils/it-pass-children";
 import { render, screen } from "@testing-library/react";
 

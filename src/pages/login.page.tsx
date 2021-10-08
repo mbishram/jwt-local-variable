@@ -1,8 +1,8 @@
 import Head from "next/head";
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
-import { Typography } from "@/components/Typography/Typography";
+import { Typography } from "@/components/ui/Typography/Typography";
 import style from "./login.module.css";
-import { Quote } from "@/components/Quote/Quote";
+import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
 
 export default function Login() {
@@ -22,8 +22,9 @@ export default function Login() {
 				}
 			/>
 			<div className={style.content}>
-				<Typography variant="header">
-					Login untuk melihat kucing!
+				<Typography variant="header">login</Typography>
+				<Typography variant="body2">
+					Login to create a quote!
 				</Typography>
 			</div>
 		</MainLayout>
