@@ -12,4 +12,14 @@ describe("Input", () => {
 		fireEvent.change(input, { target: { value: "test value" } });
 		expect(input.value).toBe("test value");
 	});
+
+	it("should make it full width when fullWidth prop set", () => {
+		render(<Input fullWidth data-testid="test-full" />);
+		expect(screen.getByTestId("test-full")).toHaveClass("fullWidth");
+
+		render(<Input data-testid="test-non-full" />);
+		expect(screen.getByTestId("test-non-full")).not.toHaveClass(
+			"fullWidth"
+		);
+	});
 });
