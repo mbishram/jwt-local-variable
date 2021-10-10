@@ -9,15 +9,15 @@
 }
 
 .btnTransparent {
-	@apply hover:bg-white hover:bg-opacity-5;
+	@apply hover:bg-white hover:bg-opacity-10;
 }
 
 .btnPrimary {
-	@apply bg-blue-600 text-white hover:bg-blue-500;
+	@apply bg-primary-500 text-white hover:bg-primary-400;
 }
 
 .btnSecondary {
-	@apply bg-gray-600 text-white hover:bg-gray-500;
+	@apply bg-secondary-500 text-white hover:bg-secondary-400;
 }
 
 .btnNormal {
