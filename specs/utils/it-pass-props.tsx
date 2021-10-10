@@ -7,11 +7,7 @@ import { render, screen } from "@testing-library/react";
  */
 export const itPassProps = (Component: ComponentType<any>) =>
 	it("should pass it's props", () => {
-		render(
-			<Component data-testid="test-props" data-test="test data">
-				Test Props
-			</Component>
-		);
+		render(<Component data-testid="test-props" data-test="test data" />);
 		const footer = screen.getByTestId("test-props");
 		expect(footer).toHaveAttribute("data-test", "test data");
 	});
