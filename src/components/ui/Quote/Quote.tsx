@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { HTMLProps } from "react";
 import { QuoteModel } from "@/model/quote-model";
 import styles from "./Quote.module.css";
 
@@ -11,7 +11,7 @@ import styles from "./Quote.module.css";
 export function Quote({
 	data,
 	...props
-}: Omit<HTMLAttributes<HTMLElement>, "className"> & Props) {
+}: Omit<HTMLProps<HTMLElement>, "className"> & Props) {
 	return (
 		<article className={styles.article} {...props}>
 			<p className={styles.quote}>{data?.quote || "Quote kosong!"}</p>

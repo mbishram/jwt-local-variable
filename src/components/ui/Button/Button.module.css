@@ -29,5 +29,5 @@
 }
 
 .btnFull {
-	@apply sm:w-auto w-full justify-center;
+	@apply flex w-full justify-center;
 }

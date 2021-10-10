@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { HTMLProps } from "react";
 import { TextVariant } from "@/types/components/text-variant";
 import styles from "./Typograpy.module.css";
 import clsx from "clsx";
@@ -16,7 +16,7 @@ export function Typography({
 	variant = "body1",
 	className,
 	...props
-}: HTMLAttributes<HTMLParagraphElement & HTMLHeadingElement> & Props) {
+}: HTMLProps<HTMLParagraphElement & HTMLHeadingElement> & Props) {
 	const classes = (defaultStyle?: string) => clsx(defaultStyle, className);
 
 	switch (variant) {
