@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { TextVariant } from "@/types/text-variant";
+import { TextVariant } from "@/types/components/text-variant";
 import styles from "./Typograpy.module.css";
 import clsx from "clsx";
 

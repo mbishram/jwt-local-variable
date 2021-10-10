@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.css";
 import clsx from "clsx";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
+import { Color } from "@/types/components/color";
+import { Size } from "@/types/components/size";
 
 /**
  * Button components to replace button html tag.
