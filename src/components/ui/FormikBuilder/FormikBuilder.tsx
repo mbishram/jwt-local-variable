@@ -3,15 +3,18 @@ import { InputAttr } from "@/types/forms/input-attr";
 import { InputProps } from "@/types/components/input-props";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
+import { Typography } from "@/components/ui/Typography/Typography";
 
 /**
  * Component to automatically build forms from initialValues.
  * @param inputAttr
+ * @param className
  * @param props
  * @constructor
  */
 export function FormikBuilder<T>({
 	inputAttr,
+	className,
 	...props
 }: Props & FormikConfig<T>) {
 	return (
@@ -23,7 +26,7 @@ export function FormikBuilder<T>({
 				isSubmitting,
 				values,
 			}: FormikProps<T> & { values: FormikValues }) => (
-				<form onSubmit={handleSubmit}>
+				<form onSubmit={handleSubmit} className={className} role="form">
 					{Object.keys(initialValues).map((key, index) => {
 						const { label, type } = inputAttr[key];
 
@@ -36,11 +39,14 @@ export function FormikBuilder<T>({
 							name: key,
 							label: label,
 							onChange: handleChange,
+							fullWidth: true,
 						};
 
 						return (
-							<div key={`input-key-${index}`}>
-								<label htmlFor={key}>{label}</label>
+							<div key={`input-key-${index}`} className="mb-4">
+								<Typography variant="label" htmlFor={key}>
+									{label}
+								</Typography>
 								<Input type={type} {...sharedProps} />
 							</div>
 						);
@@ -63,4 +69,5 @@ export function FormikBuilder<T>({
 
 interface Props {
 	inputAttr: InputAttr;
+	className?: string;
 }

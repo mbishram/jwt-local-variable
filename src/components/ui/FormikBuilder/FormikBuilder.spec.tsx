@@ -30,6 +30,7 @@ describe("Formik InputAttr Builder", () => {
 				inputAttr={inputAttr}
 				initialValues={initialValues}
 				onSubmit={handleSubmit}
+				className="bg-black"
 			/>
 		);
 	});
@@ -65,5 +66,9 @@ describe("Formik InputAttr Builder", () => {
 				password: "test value",
 			});
 		});
+	});
+
+	it("should pass className to form element", () => {
+		expect(screen.getByRole("form")).toHaveClass("bg-black");
 	});
 });
