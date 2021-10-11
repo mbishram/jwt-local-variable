@@ -58,7 +58,7 @@ export function FormikBuilder<T>({
 					})}
 
 					<Button
-						className="mt-6"
+						className="mt-8"
 						role="button"
 						color="primary"
 						type="submit"

@@ -24,7 +24,7 @@ export default function Login() {
 			/>
 			<div>
 				<Typography variant="header">login</Typography>
-				<Typography className="mb-6">
+				<Typography className="mb-8">
 					Login to create a quote!
 				</Typography>
 				<LoginForm />
