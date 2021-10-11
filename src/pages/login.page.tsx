@@ -4,6 +4,7 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import style from "./login.module.css";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
+import { LoginForm } from "@/components/login/Form";
 
 export default function Login() {
 	return (
@@ -21,11 +22,12 @@ export default function Login() {
 					})
 				}
 			/>
-			<div className={style.content}>
+			<div>
 				<Typography variant="header">login</Typography>
-				<Typography variant="body2">
+				<Typography className="mb-6">
 					Login to create a quote!
 				</Typography>
+				<LoginForm />
 			</div>
 		</MainLayout>
 	);

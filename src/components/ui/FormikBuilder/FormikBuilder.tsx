@@ -45,7 +45,11 @@ export function FormikBuilder<T>({
 
 						return (
 							<div key={`input-key-${index}`} className="mb-4">
-								<Typography variant="label" htmlFor={key}>
+								<Typography
+									variant="label"
+									htmlFor={key}
+									className="mb-2"
+								>
 									{label}
 								</Typography>
 								<Input type={type} {...sharedProps} />
@@ -54,6 +58,7 @@ export function FormikBuilder<T>({
 					})}
 
 					<Button
+						className="mt-6"
 						role="button"
 						color="primary"
 						type="submit"

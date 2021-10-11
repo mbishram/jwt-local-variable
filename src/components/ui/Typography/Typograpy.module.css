@@ -7,5 +7,5 @@
 }
 
 .label {
-	@apply font-light text-gray-400;
+	@apply block font-light text-gray-400;
 }
