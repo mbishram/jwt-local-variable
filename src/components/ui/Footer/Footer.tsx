@@ -16,7 +16,7 @@ export function Footer({
 	return (
 		<footer
 			className={clsx(
-				className || "text-center py-3 text-gray-400 font-light"
+				className || "text-center py-3 text-gray-400 font-light mt-4"
 			)}
 			{...props}
 		>
