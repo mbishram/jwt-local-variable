@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen } from "@testing-library/react";
 import { itRenderInput } from "@specs-utils/it-render-input";
 import { LOGIN_INPUT_ATTR } from "@/forms/login";
-import { LoginForm } from "@/components/login/Form";
+import { LoginForm } from "@/components/login/Form/Form";
 
 describe("Login Form", () => {
 	beforeEach(() => {
