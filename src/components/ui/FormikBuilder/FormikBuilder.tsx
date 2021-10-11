@@ -4,6 +4,7 @@ import { InputProps } from "@/types/components/input-props";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Typography } from "@/components/ui/Typography/Typography";
+import { HTMLProps } from "react";
 
 /**
  * Component to automatically build forms from initialValues.
@@ -16,7 +17,7 @@ export function FormikBuilder<T>({
 	inputAttr,
 	className,
 	...props
-}: Props & FormikConfig<T>) {
+}: Props & FormikConfig<T> & Pick<HTMLProps<HTMLFormElement>, "className">) {
 	return (
 		<Formik {...props}>
 			{({
@@ -69,5 +70,4 @@ export function FormikBuilder<T>({
 
 interface Props {
 	inputAttr: InputAttr;
-	className?: string;
 }

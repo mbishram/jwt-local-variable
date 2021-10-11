@@ -1,8 +1,11 @@
 import { FormikBuilder } from "@/components/ui/FormikBuilder/FormikBuilder";
 import { LOGIN_INPUT_ATTR } from "@/forms/login";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
+import { HTMLProps } from "react";
 
-export function LoginForm() {
+export function LoginForm({
+	className,
+}: Pick<HTMLProps<HTMLFormElement>, "className">) {
 	const initialValues = {
 		username: "",
 		password: "",
@@ -17,6 +20,7 @@ export function LoginForm() {
 			inputAttr={LOGIN_INPUT_ATTR}
 			initialValues={initialValues}
 			onSubmit={handleSubmit}
+			className={className}
 		/>
 	);
 }
