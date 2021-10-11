@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/react";
 import React from "react";
-import { Container } from "@/components/Container/Container";
+import { Container } from "@/components/ui/Container/Container";
 import { itPassChildren } from "@specs-utils/it-pass-children";
 import { itPassProps } from "@specs-utils/it-pass-props";
 

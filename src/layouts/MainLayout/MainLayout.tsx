@@ -1,7 +1,7 @@
-import { HTMLAttributes, ReactNode } from "react";
-import { Button } from "@/components/Button/Button";
-import { Footer } from "@/components/Footer/Footer";
-import { Container } from "@/components/Container/Container";
+import { HTMLProps, ReactNode } from "react";
+import { Button } from "@/components/ui/Button/Button";
+import { Footer } from "@/components/ui/Footer/Footer";
+import { Container } from "@/components/ui/Container/Container";
 import clsx from "clsx";
 
 /**
@@ -19,7 +19,7 @@ export function MainLayout({
 	classMain,
 	disableNav,
 	...props
-}: HTMLAttributes<HTMLDivElement> & Props) {
+}: HTMLProps<HTMLDivElement> & Props) {
 	return (
 		<Container
 			className={clsx(className, "flex flex-col h-screen")}

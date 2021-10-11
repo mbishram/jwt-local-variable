@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { Footer } from "@/components/Footer/Footer";
+import { Footer } from "@/components/ui/Footer/Footer";
 import { itPassProps } from "@specs-utils/it-pass-props";
 
 describe("Footer", () => {

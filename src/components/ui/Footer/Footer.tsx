@@ -1,4 +1,4 @@
-import { HTMLAttributes, ReactNode } from "react";
+import { HTMLProps, ReactNode } from "react";
 import clsx from "clsx";
 
 /**
@@ -12,7 +12,7 @@ export function Footer({
 	children,
 	className,
 	...props
-}: HTMLAttributes<HTMLElement> & Props) {
+}: HTMLProps<HTMLElement> & Props) {
 	return (
 		<footer
 			className={clsx(

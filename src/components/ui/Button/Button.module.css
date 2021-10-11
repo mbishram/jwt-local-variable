@@ -9,15 +9,15 @@
 }
 
 .btnTransparent {
-	@apply hover:bg-black hover:bg-opacity-5;
+	@apply hover:bg-white hover:bg-opacity-10;
 }
 
 .btnPrimary {
-	@apply bg-blue-500 text-white hover:bg-blue-400;
+	@apply bg-primary-500 text-white hover:bg-primary-400;
 }
 
 .btnSecondary {
-	@apply bg-gray-500 text-white hover:bg-gray-400;
+	@apply bg-secondary-500 text-white hover:bg-secondary-400;
 }
 
 .btnNormal {
@@ -29,5 +29,5 @@
 }
 
 .btnFull {
-	@apply sm:w-auto w-full justify-center;
+	@apply flex w-full justify-center;
 }

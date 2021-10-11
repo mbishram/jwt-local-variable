@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen } from "@testing-library/react";
-import { Button } from "@/components/Button/Button";
+import { Button } from "@/components/ui/Button/Button";
 import { itPassChildren } from "@specs-utils/it-pass-children";
 import { itPassProps } from "@specs-utils/it-pass-props";
 
@@ -47,5 +47,10 @@ describe("Button", () => {
 	it("should render full width if fullWidth prop is set", () => {
 		render(<Button fullWidth>Test Full</Button>);
 		expect(screen.getByText("Test Full")).toHaveClass("btnFull");
+	});
+
+	it("should pass className prop", () => {
+		render(<Button className="bg-black">Test Full</Button>);
+		expect(screen.getByRole("button")).toHaveClass("bg-black");
 	});
 });

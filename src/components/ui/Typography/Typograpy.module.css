@@ -1,0 +1,11 @@
+.header {
+	@apply text-5xl font-bold leading-normal;
+}
+
+.body2 {
+	@apply font-light;
+}
+
+.label {
+	@apply block font-light text-gray-400;
+}

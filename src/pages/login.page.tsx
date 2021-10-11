@@ -1,9 +1,10 @@
 import Head from "next/head";
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
-import { Typography } from "@/components/Typography/Typography";
+import { Typography } from "@/components/ui/Typography/Typography";
 import style from "./login.module.css";
-import { Quote } from "@/components/Quote/Quote";
+import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
+import { LoginForm } from "@/components/login/Form";
 
 export default function Login() {
 	return (
@@ -21,10 +22,12 @@ export default function Login() {
 					})
 				}
 			/>
-			<div className={style.content}>
-				<Typography variant="header">
-					Login untuk melihat kucing!
+			<div>
+				<Typography variant="header">login</Typography>
+				<Typography className="mb-8">
+					Login to create a quote!
 				</Typography>
+				<LoginForm />
 			</div>
 		</MainLayout>
 	);

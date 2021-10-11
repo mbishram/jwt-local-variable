@@ -1,8 +1,8 @@
 import { ButtonHTMLAttributes } from "react";
 import styles from "./Button.module.css";
 import clsx from "clsx";
-import { Color } from "@/types/color";
-import { Size } from "@/types/size";
+import { Color } from "@/types/components/color";
+import { Size } from "@/types/components/size";
 
 /**
  * Button components to replace button html tag.
@@ -11,6 +11,7 @@ import { Size } from "@/types/size";
  * @param size Default to "normal"
  * @param rounded
  * @param fullWidth
+ * @param className
  * @param props
  * @constructor
  */
@@ -20,6 +21,7 @@ export function Button({
 	size = "normal",
 	rounded = false,
 	fullWidth = false,
+	className,
 	...props
 }: ButtonHTMLAttributes<HTMLButtonElement> & Props) {
 	const colorStyle = (color: Color) => {
@@ -50,7 +52,8 @@ export function Button({
 				colorStyle(color),
 				colorSize(size),
 				rounded ? "rounded-full" : "rounded",
-				fullWidth && styles.btnFull
+				fullWidth && styles.btnFull,
+				className
 			)}
 		>
 			{children}
