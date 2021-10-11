@@ -1,8 +1,8 @@
 import { HTMLProps, ReactNode } from "react";
-import { Button } from "@/components/ui/Button/Button";
 import { Footer } from "@/components/ui/Footer/Footer";
 import { Container } from "@/components/ui/Container/Container";
 import clsx from "clsx";
+import { Navbar } from "@/components/layouts/Navbar/Navbar";
 
 /**
  * Main Layout.
@@ -25,15 +25,7 @@ export function MainLayout({
 			className={clsx(className, "flex flex-col h-screen")}
 			{...props}
 		>
-			{!disableNav && (
-				<nav className="py-4 flex justify-between items-center">
-					<p className="text-lg text-gray-400 font-light">
-						You are{" "}
-						<b className="text-black font-bold">Logged in</b>
-					</p>
-					<Button color="primary">Logout</Button>
-				</nav>
-			)}
+			{!disableNav && <Navbar />}
 			<main className={clsx(classMain, "flex-grow")}>{children}</main>
 			<Footer />
 		</Container>
