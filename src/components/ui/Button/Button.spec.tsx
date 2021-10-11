@@ -48,4 +48,9 @@ describe("Button", () => {
 		render(<Button fullWidth>Test Full</Button>);
 		expect(screen.getByText("Test Full")).toHaveClass("btnFull");
 	});
+
+	it("should pass className prop", () => {
+		render(<Button className="bg-black">Test Full</Button>);
+		expect(screen.getByRole("button")).toHaveClass("bg-black");
+	});
 });
