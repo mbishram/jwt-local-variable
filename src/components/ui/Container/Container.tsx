@@ -13,7 +13,7 @@ export function Container({
 	children,
 	className,
 	...props
-}: HTMLProps<HTMLElement>) {
+}: HTMLProps<HTMLDivElement>) {
 	return (
 		<div className={clsx(style.wrapper, className)} {...props}>
 			{children}
