@@ -1152,6 +1152,11 @@
     "@typescript-eslint/types" "4.32.0"
     eslint-visitor-keys "^2.0.0"
 
+"@videsk/tailwind-random-color@^0.2.0-beta":
+  version "0.2.0-beta"
+  resolved "https://registry.yarnpkg.com/@videsk/tailwind-random-color/-/tailwind-random-color-0.2.0-beta.tgz#378445c5250bed60369157c5ae163cf04f9d4e1f"
+  integrity sha512-RSwT59cb4qihrTRXiLTxCYNXfv+q1BXphaZKPTetXtCIR9nCKaPreENxUASgzgr+LFgS0efT4aw2iStUT12EWQ==
+
 abab@^2.0.3, abab@^2.0.5:
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/abab/-/abab-2.0.5.tgz#c0b678fb32d60fc1219c784d6a826fe385aeb79a"
