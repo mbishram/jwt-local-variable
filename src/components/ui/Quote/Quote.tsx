@@ -1,6 +1,7 @@
 import { HTMLProps } from "react";
 import { QuoteModel } from "@/model/quote-model";
 import styles from "./Quote.module.css";
+import clsx from "clsx";
 
 /**
  * Component to showcase a quote.
@@ -13,7 +14,10 @@ export function Quote({
 	...props
 }: Omit<HTMLProps<HTMLElement>, "className" | "data"> & Props) {
 	return (
-		<article className={styles.article} {...props}>
+		<article
+			className={clsx(styles.article, data?.bgColor || "bg-gray-800")}
+			{...props}
+		>
 			<p className={styles.quote}>{data?.quote || "Quote kosong!"}</p>
 			<p className={styles.name}>- {data?.name || "Anonymous"}</p>
 		</article>

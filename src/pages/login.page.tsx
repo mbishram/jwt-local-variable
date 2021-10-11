@@ -4,6 +4,7 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
 import { LoginForm } from "@/components/login/Form/Form";
+import { randomBg } from "@/utils/random-bg";
 
 export default function Login() {
 	return (
@@ -22,6 +23,7 @@ export default function Login() {
 					new QuoteModel({
 						quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 						name: "James Agus",
+						bgColor: randomBg(),
 					})
 				}
 			/>

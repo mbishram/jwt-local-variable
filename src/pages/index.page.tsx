@@ -15,6 +15,7 @@ export default function Index() {
 						new QuoteModel({
 							quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 							name: "James Agus",
+							bgColor: "bg-red-700",
 						})
 					}
 				/>
@@ -23,6 +24,7 @@ export default function Index() {
 						new QuoteModel({
 							quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 							name: "James Agus",
+							bgColor: "bg-yellow-600",
 						})
 					}
 				/>
@@ -31,6 +33,7 @@ export default function Index() {
 						new QuoteModel({
 							quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 							name: "James Agus",
+							bgColor: "bg-gray-800",
 						})
 					}
 				/>

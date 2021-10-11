@@ -1,11 +1,11 @@
 .article {
-	@apply bg-gray-800 p-8 rounded-xl;
+	@apply p-8 rounded-xl;
 
 	.quote {
 		@apply text-2xl leading-8 mb-4;
 	}
 
 	.name {
-		@apply text-gray-400;
+		@apply opacity-60;
 	}
 }
