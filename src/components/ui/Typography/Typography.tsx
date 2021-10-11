@@ -16,7 +16,8 @@ export function Typography({
 	variant = "body1",
 	className,
 	...props
-}: HTMLProps<HTMLParagraphElement & HTMLHeadingElement> & Props) {
+}: HTMLProps<HTMLParagraphElement & HTMLHeadingElement & HTMLLabelElement> &
+	Props) {
 	const classes = (defaultStyle?: string) => clsx(defaultStyle, className);
 
 	switch (variant) {
@@ -31,6 +32,12 @@ export function Typography({
 				<h1 className={classes(styles.body2)} {...props}>
 					{children}
 				</h1>
+			);
+		case "label":
+			return (
+				<label className={classes(styles.label)} {...props}>
+					{children}
+				</label>
 			);
 		default:
 			return (

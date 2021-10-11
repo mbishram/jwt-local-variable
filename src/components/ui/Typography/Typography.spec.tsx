@@ -24,6 +24,11 @@ describe("Typography", () => {
 		expect(screen.getByText("Test")).toHaveClass("body2");
 	});
 
+	it("should render label when variant prop equal label", () => {
+		render(<Typography variant="label">Test</Typography>);
+		expect(screen.getByText("Test")).toHaveClass("label");
+	});
+
 	it("should className props and doesn't overwrite default style", () => {
 		render(
 			<Typography variant="body2" className="text-blue-50">
