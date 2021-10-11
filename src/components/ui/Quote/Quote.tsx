@@ -11,7 +11,7 @@ import styles from "./Quote.module.css";
 export function Quote({
 	data,
 	...props
-}: Omit<HTMLProps<HTMLElement>, "className"> & Props) {
+}: Omit<HTMLProps<HTMLElement>, "className" | "data"> & Props) {
 	return (
 		<article className={styles.article} {...props}>
 			<p className={styles.quote}>{data?.quote || "Quote kosong!"}</p>
