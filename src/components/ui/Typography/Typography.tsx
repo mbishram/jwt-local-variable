@@ -23,15 +23,15 @@ export function Typography({
 	switch (variant) {
 		case "header":
 			return (
-				<h1 className={classes(styles.header)} {...props}>
+				<h2 className={classes(styles.header)} {...props}>
 					{children}
-				</h1>
+				</h2>
 			);
 		case "body2":
 			return (
-				<h1 className={classes(styles.body2)} {...props}>
+				<p className={classes(styles.body2)} {...props}>
 					{children}
-				</h1>
+				</p>
 			);
 		case "label":
 			return (
