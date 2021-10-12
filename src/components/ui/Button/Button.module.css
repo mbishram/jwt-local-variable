@@ -1,6 +1,5 @@
 .btn {
-	@apply inline-flex items-center cursor-pointer font-medium transition-bg gap-2;
-	width: fit-content;
+	@apply flex items-center cursor-pointer font-medium transition-bg gap-2 sm:w-auto sm:justify-start w-full justify-center;
 
 	&:disabled,
 	&[disabled] {
@@ -29,5 +28,5 @@
 }
 
 .btnFull {
-	@apply flex w-full justify-center;
+	@apply w-full justify-center;
 }

@@ -62,7 +62,6 @@ export function FormikBuilder<T>({
 						role="button"
 						color="primary"
 						type="submit"
-						fullWidth
 						disabled={isSubmitting}
 					>
 						Submit
