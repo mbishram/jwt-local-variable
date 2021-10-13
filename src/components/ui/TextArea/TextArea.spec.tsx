@@ -17,5 +17,10 @@ describe("Text Area", () => {
 		expect(input).toHaveValue("test value");
 	});
 
-	it.todo("should make it full width when fullWidth prop set");
+	it("should make it full width when fullWidth prop set", () => {
+		expect(screen.getByTestId("textarea")).not.toHaveClass("fullWidth");
+
+		render(<TextArea data-testid="textarea-full" fullWidth />);
+		expect(screen.getByTestId("textarea-full")).toHaveClass("fullWidth");
+	});
 });
