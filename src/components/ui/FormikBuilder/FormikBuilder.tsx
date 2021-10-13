@@ -37,7 +37,6 @@ export function FormikBuilder<T>({
 							value: values[key],
 							id: key,
 							name: key,
-							label: label,
 							onChange: handleChange,
 							fullWidth: true,
 						};
@@ -51,7 +50,11 @@ export function FormikBuilder<T>({
 								>
 									{label}
 								</Typography>
-								<Input type={type} {...sharedProps} />
+								<Input
+									type={type}
+									placeholder={label}
+									{...sharedProps}
+								/>
 							</div>
 						);
 					})}
