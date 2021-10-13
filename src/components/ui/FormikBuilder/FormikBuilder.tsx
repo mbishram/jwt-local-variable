@@ -1,10 +1,12 @@
 import { Formik, FormikConfig, FormikProps, FormikValues } from "formik";
 import { InputAttr } from "@/types/forms/input-attr";
-import { InputProps } from "@/types/components/input-props";
+import { InputProps, TextAreaProps } from "@/types/components/input-props";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Typography } from "@/components/ui/Typography/Typography";
 import { HTMLProps, ReactNode } from "react";
+import { INPUT_TYPES } from "@/constants/input-types";
+import { TextArea } from "@/components/ui/TextArea/TextArea";
 
 /**
  * Component to automatically build forms from initialValues.
@@ -36,11 +38,12 @@ export function FormikBuilder<T>({
 						/**
 						 * Properties shared between input type.
 						 */
-						const sharedProps: InputProps = {
+						const sharedProps: InputProps & TextAreaProps = {
 							value: values[key],
 							id: key,
 							name: key,
 							onChange: handleChange,
+							placeholder: label,
 							fullWidth: true,
 						};
 
@@ -53,11 +56,11 @@ export function FormikBuilder<T>({
 								>
 									{label}
 								</Typography>
-								<Input
-									type={type}
-									placeholder={label}
-									{...sharedProps}
-								/>
+								{type === INPUT_TYPES.TEXTAREA ? (
+									<TextArea rows={5} {...sharedProps} />
+								) : (
+									<Input type={type} {...sharedProps} />
+								)}
 							</div>
 						);
 					})}

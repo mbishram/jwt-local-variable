@@ -10,10 +10,12 @@ import { itRenderInput } from "@specs-utils/it-render-input";
 describe("Formik Input Builder", () => {
 	const inputAttr: InputAttr = {
 		text: { label: "Text", type: INPUT_TYPES.TEXT },
+		textarea: { label: "Text Area", type: INPUT_TYPES.TEXTAREA },
 		password: { label: "Password", type: INPUT_TYPES.PASSWORD },
 	};
 	const initialValues = {
 		text: "",
+		textarea: "",
 		password: "",
 	};
 	const onSubmit = jest.fn();
@@ -45,6 +47,13 @@ describe("Formik Input Builder", () => {
 		);
 	});
 
+	it("should render input textarea properly", () => {
+		expect(screen.getByLabelText(inputAttr.textarea.label)).toHaveAttribute(
+			"role",
+			"textbox"
+		);
+	});
+
 	it("should render input type password properly", () => {
 		expect(screen.getByLabelText(inputAttr.password.label)).toHaveAttribute(
 			"type",
@@ -64,6 +73,7 @@ describe("Formik Input Builder", () => {
 		await waitFor(() => {
 			expect(onSubmit).toHaveBeenCalledWith({
 				text: "test value",
+				textarea: "test value",
 				password: "test value",
 			});
 		});
