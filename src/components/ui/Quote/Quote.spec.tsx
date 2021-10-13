@@ -26,6 +26,7 @@ describe("Quote", () => {
 						new QuoteModel({
 							name: "Nama Pengguna",
 							quote: "Lorem ipsum dolor sit amet",
+							bgColor: "",
 						})
 					}
 				/>
