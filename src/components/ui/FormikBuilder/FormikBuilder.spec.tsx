@@ -7,13 +7,15 @@ import userEvent from "@testing-library/user-event";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { itRenderInput } from "@specs-utils/it-render-input";
 
-describe("Formik InputAttr Builder", () => {
+describe("Formik Input Builder", () => {
 	const inputAttr: InputAttr = {
 		text: { label: "Text", type: INPUT_TYPES.TEXT },
+		textarea: { label: "Text Area", type: INPUT_TYPES.TEXTAREA },
 		password: { label: "Password", type: INPUT_TYPES.PASSWORD },
 	};
 	const initialValues = {
 		text: "",
+		textarea: "",
 		password: "",
 	};
 	const onSubmit = jest.fn();
@@ -27,6 +29,7 @@ describe("Formik InputAttr Builder", () => {
 	beforeEach(() => {
 		render(
 			<FormikBuilder
+				beforeForm={<div data-testid="before-form" />}
 				inputAttr={inputAttr}
 				initialValues={initialValues}
 				onSubmit={handleSubmit}
@@ -41,6 +44,13 @@ describe("Formik InputAttr Builder", () => {
 		expect(screen.getByLabelText(inputAttr.text.label)).toHaveAttribute(
 			"type",
 			"text"
+		);
+	});
+
+	it("should render input textarea properly", () => {
+		expect(screen.getByLabelText(inputAttr.textarea.label)).toHaveAttribute(
+			"role",
+			"textbox"
 		);
 	});
 
@@ -63,6 +73,7 @@ describe("Formik InputAttr Builder", () => {
 		await waitFor(() => {
 			expect(onSubmit).toHaveBeenCalledWith({
 				text: "test value",
+				textarea: "test value",
 				password: "test value",
 			});
 		});
@@ -70,5 +81,11 @@ describe("Formik InputAttr Builder", () => {
 
 	it("should pass className to form element", () => {
 		expect(screen.getByRole("form")).toHaveClass("bg-black");
+	});
+
+	it("should pass the component as form first children if it's passed using beforeForm props", () => {
+		expect(screen.getByRole("form").firstChild).toBe(
+			screen.getByTestId("before-form")
+		);
 	});
 });

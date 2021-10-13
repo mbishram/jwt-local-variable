@@ -11,7 +11,3 @@ export function Input({ fullWidth, ...props }: InputProps) {
 		/>
 	);
 }
-
-export type Props = {
-	fullWidth?: boolean;
-};

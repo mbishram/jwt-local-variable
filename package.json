@@ -12,6 +12,7 @@
 		"test:watch": "jest --watch"
 	},
 	"dependencies": {
+		"@videsk/tailwind-random-color": "^0.2.0-beta",
 		"clsx": "^1.1.1",
 		"formik": "^2.2.9",
 		"next": "11.1.2",

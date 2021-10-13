@@ -3,6 +3,11 @@ import { LOGIN_INPUT_ATTR } from "@/forms/login";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps } from "react";
 
+/**
+ * To separate login logic
+ * @param className
+ * @constructor
+ */
 export function LoginForm({
 	className,
 }: Pick<HTMLProps<HTMLFormElement>, "className">) {

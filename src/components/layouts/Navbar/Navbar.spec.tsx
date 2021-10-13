@@ -15,6 +15,6 @@ describe("Navbar", () => {
 	});
 
 	it("should render links", () => {
-		expect(screen.queryAllByRole("link").length).toBe(2);
+		expect(screen.queryAllByRole("link").length).toBe(3);
 	});
 });

@@ -1,7 +1,0 @@
-.wrapper {
-	@apply max-w-screen-xl;
-
-	.main {
-		@apply grid md:grid-cols-2 gap-8 items-center content-center;
-	}
-}
