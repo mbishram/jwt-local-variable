@@ -27,7 +27,7 @@ export default function Login() {
 					})
 				}
 			/>
-			<div>
+			<div className="mx-auto md:min-w-0 min-w-full md:w-80">
 				<Typography variant="header">Login</Typography>
 				<Typography className="mb-8">
 					Login to create a quote!
