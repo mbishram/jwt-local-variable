@@ -18,7 +18,12 @@ export function Quote({
 			className={clsx(styles.article, data?.bgColor || "bg-gray-800")}
 			{...props}
 		>
-			<p className={styles.quote}>{data?.quote || "Quote kosong!"}</p>
+			<p
+				className={styles.quote}
+				dangerouslySetInnerHTML={{
+					__html: data?.quote || "Quote kosong!",
+				}}
+			/>
 			<p className={styles.name}>- {data?.name || "Anonymous"}</p>
 		</article>
 	);
