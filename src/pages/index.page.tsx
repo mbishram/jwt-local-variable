@@ -2,10 +2,14 @@ import { MainLayout } from "@/layouts/MainLayout/MainLayout";
 import { Typography } from "@/components/ui/Typography/Typography";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
+import Head from "next/head";
 
 export default function Index() {
 	return (
 		<MainLayout classMain="max-w-screen-sm mx-auto">
+			<Head>
+				<title>Home - {process.env.NEXT_PUBLIC_APPLICATION_NAME}</title>
+			</Head>
 			<Typography variant="header" className="mb-6">
 				Give a little color to your Quote!
 			</Typography>
