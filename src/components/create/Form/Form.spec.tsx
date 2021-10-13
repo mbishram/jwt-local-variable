@@ -29,8 +29,8 @@ describe("Create Form", () => {
 		expect(screen.getByRole("form")).toHaveClass("bg-black");
 	});
 
-	it("should pass the component before form if it's passed using beforeForm props", () => {
-		expect(screen.getByRole("form").parentElement?.firstChild).toBe(
+	it("should pass the component as form first children if it's passed using beforeForm props", () => {
+		expect(screen.getByRole("form").firstChild).toBe(
 			screen.getByTestId("before-form")
 		);
 	});

@@ -4,6 +4,12 @@ import { HTMLProps, ReactNode } from "react";
 import { CREATE_INPUT_ATTR } from "@/forms/create";
 import { randomBg } from "@/utils/random-bg";
 
+/**
+ * To separate create quote logic
+ * @param className
+ * @param beforeForm Put component before form
+ * @constructor
+ */
 export function CreateForm({
 	className,
 	beforeForm,
@@ -20,8 +26,8 @@ export function CreateForm({
 
 	return (
 		<>
-			{beforeForm && beforeForm}
 			<FormikBuilder
+				beforeForm={beforeForm}
 				inputAttr={CREATE_INPUT_ATTR}
 				initialValues={initialValues}
 				onSubmit={handleSubmit}

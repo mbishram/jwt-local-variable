@@ -7,7 +7,7 @@ import userEvent from "@testing-library/user-event";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { itRenderInput } from "@specs-utils/it-render-input";
 
-describe("Formik InputAttr Builder", () => {
+describe("Formik Input Builder", () => {
 	const inputAttr: InputAttr = {
 		text: { label: "Text", type: INPUT_TYPES.TEXT },
 		password: { label: "Password", type: INPUT_TYPES.PASSWORD },
@@ -27,6 +27,7 @@ describe("Formik InputAttr Builder", () => {
 	beforeEach(() => {
 		render(
 			<FormikBuilder
+				beforeForm={<div data-testid="before-form" />}
 				inputAttr={inputAttr}
 				initialValues={initialValues}
 				onSubmit={handleSubmit}
@@ -70,5 +71,11 @@ describe("Formik InputAttr Builder", () => {
 
 	it("should pass className to form element", () => {
 		expect(screen.getByRole("form")).toHaveClass("bg-black");
+	});
+
+	it("should pass the component as form first children if it's passed using beforeForm props", () => {
+		expect(screen.getByRole("form").firstChild).toBe(
+			screen.getByTestId("before-form")
+		);
 	});
 });

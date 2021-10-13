@@ -4,18 +4,20 @@ import { InputProps } from "@/types/components/input-props";
 import { Button } from "@/components/ui/Button/Button";
 import { Input } from "@/components/ui/Input/Input";
 import { Typography } from "@/components/ui/Typography/Typography";
-import { HTMLProps } from "react";
+import { HTMLProps, ReactNode } from "react";
 
 /**
  * Component to automatically build forms from initialValues.
  * @param inputAttr
  * @param className
+ * @param beforeForm Put component before form
  * @param props
  * @constructor
  */
 export function FormikBuilder<T>({
 	inputAttr,
 	className,
+	beforeForm,
 	...props
 }: Props & FormikConfig<T> & Pick<HTMLProps<HTMLFormElement>, "className">) {
 	return (
@@ -27,6 +29,7 @@ export function FormikBuilder<T>({
 				values,
 			}: FormikProps<T> & { values: FormikValues }) => (
 				<form onSubmit={handleSubmit} className={className} role="form">
+					{beforeForm && beforeForm}
 					{Object.keys(inputAttr).map((key, index) => {
 						const { label, type } = inputAttr[key];
 
@@ -76,4 +79,5 @@ export function FormikBuilder<T>({
 
 interface Props {
 	inputAttr: InputAttr;
+	beforeForm?: ReactNode;
 }
