@@ -21,14 +21,13 @@ export function FormikBuilder<T>({
 	return (
 		<Formik {...props}>
 			{({
-				initialValues,
 				handleSubmit,
 				handleChange,
 				isSubmitting,
 				values,
 			}: FormikProps<T> & { values: FormikValues }) => (
 				<form onSubmit={handleSubmit} className={className} role="form">
-					{Object.keys(initialValues).map((key, index) => {
+					{Object.keys(inputAttr).map((key, index) => {
 						const { label, type } = inputAttr[key];
 
 						/**
