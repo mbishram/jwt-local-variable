@@ -5,8 +5,22 @@ import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
 import { LoginForm } from "@/components/login/Form/Form";
 import { randomBg } from "@/utils/random-bg";
+import { useEffect, useState } from "react";
 
 export default function Login() {
+	const [quoteData, setQuoteData] = useState(
+		new QuoteModel({
+			quote: "Give a little color to your quote!",
+			name: "James Doe",
+			bgColor: randomBg(),
+		})
+	);
+
+	useEffect(() => {
+		setQuoteData({ ...quoteData, bgColor: randomBg() });
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, []);
+
 	return (
 		<MainLayout
 			className="max-w-screen-xl"
@@ -18,15 +32,7 @@ export default function Login() {
 					Login - {process.env.NEXT_PUBLIC_APPLICATION_NAME}
 				</title>
 			</Head>
-			<Quote
-				data={
-					new QuoteModel({
-						quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
-						name: "James Agus",
-						bgColor: randomBg(),
-					})
-				}
-			/>
+			<Quote data={quoteData} />
 			<div className="mx-auto md:min-w-0 min-w-full md:w-80">
 				<Typography variant="header">Login</Typography>
 				<Typography className="mb-8">

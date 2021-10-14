@@ -13,7 +13,7 @@ export function QuotePreview() {
 	 * If I didn't use useState, the color is wrong.
 	 * I do not understand why.
 	 */
-	const [{ quote, name, bgColor }, setQuoteData] = useState(
+	const [quoteData, setQuoteData] = useState(
 		new QuoteModel({ quote: "", bgColor: "", name: "" })
 	);
 	const { values }: { values: QuoteModel } = useFormikContext();
@@ -22,15 +22,5 @@ export function QuotePreview() {
 		setQuoteData(values);
 	}, [values]);
 
-	return (
-		<Quote
-			data={
-				new QuoteModel({
-					quote,
-					name,
-					bgColor,
-				})
-			}
-		/>
-	);
+	return <Quote data={quoteData} />;
 }

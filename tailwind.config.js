@@ -7,7 +7,35 @@ Object.keys(screens).forEach((key) => {
 });
 
 module.exports = {
-	purge: ["./src/**/*.{jsx,tsx}"],
+	purge: {
+		content: ["./src/**/*.{jsx,tsx}"],
+		safelist: [
+			"bg-gray-600",
+			"bg-gray-700",
+			"bg-gray-800",
+			"bg-red-600",
+			"bg-red-700",
+			"bg-red-800",
+			"bg-yellow-600",
+			"bg-yellow-700",
+			"bg-yellow-800",
+			"bg-green-600",
+			"bg-green-700",
+			"bg-green-800",
+			"bg-blue-600",
+			"bg-blue-700",
+			"bg-blue-800",
+			"bg-indigo-600",
+			"bg-indigo-700",
+			"bg-indigo-800",
+			"bg-purple-600",
+			"bg-purple-700",
+			"bg-purple-800",
+			"bg-pink-600",
+			"bg-pink-700",
+			"bg-pink-800",
+		],
+	},
 	darkMode: false,
 	theme: {
 		extend: {
