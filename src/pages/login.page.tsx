@@ -4,7 +4,7 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { Quote } from "@/components/ui/Quote/Quote";
 import { QuoteModel } from "@/model/quote-model";
 import { LoginForm } from "@/components/login/Form/Form";
-import { randomBg } from "@/utils/random-bg";
+import { randomBg } from "@/libs/random-bg";
 import { useEffect, useState } from "react";
 
 export default function Login() {

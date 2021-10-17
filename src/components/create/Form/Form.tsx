@@ -2,7 +2,7 @@ import { FormikBuilder } from "@/components/ui/FormikBuilder/FormikBuilder";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, ReactNode } from "react";
 import { CREATE_INPUT_ATTR } from "@/forms/create";
-import { randomBg } from "@/utils/random-bg";
+import { randomBg } from "@/libs/random-bg";
 
 /**
  * To separate create quote logic
