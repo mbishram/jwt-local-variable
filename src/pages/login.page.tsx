@@ -2,14 +2,14 @@ import Head from "next/head";
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
 import { Typography } from "@/components/ui/Typography/Typography";
 import { Quote } from "@/components/ui/Quote/Quote";
-import { QuoteModel } from "@/model/quote-model";
+import { QuoteClass } from "@/classes/quote-class";
 import { LoginForm } from "@/components/login/Form/Form";
 import { randomBg } from "@/libs/random-bg";
 import { useEffect, useState } from "react";
 
 export default function Login() {
 	const [quoteData, setQuoteData] = useState(
-		new QuoteModel({
+		new QuoteClass({
 			quote: "Give a little color to your quote!",
 			name: "James Doe",
 			bgColor: randomBg(),

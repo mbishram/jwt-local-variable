@@ -1,6 +1,10 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import React from "react";
 import { Quote } from "@/components/ui/Quote/Quote";
-import { QuoteModel } from "@/model/quote-model";
+import { QuoteClass } from "@/classes/quote-class";
 import { itPassProps } from "@specs-utils/it-pass-props";
 import { render, screen } from "@testing-library/react";
 
@@ -23,7 +27,7 @@ describe("Quote", () => {
 			render(
 				<Quote
 					data={
-						new QuoteModel({
+						new QuoteClass({
 							name: "Nama Pengguna",
 							quote: "Lorem ipsum dolor sit amet",
 							bgColor: "",

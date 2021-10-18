@@ -1,10 +1,6 @@
-/**
- * @jest-environment ./specs/environments/custom-test-env.ts
- */
+import { connectToDatabase } from "@/libs/mongodb/setup";
 
-import { connectToDatabase } from "@/libs/mongodb";
-
-describe("Mongodb", () => {
+describe("Setup Mongodb", () => {
 	it("should return MongoClient and MongoDb", async () => {
 		const { client, db } = await connectToDatabase();
 		expect(client).not.toBeNull();

@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import React from "react";
 import { itPassProps } from "@specs-utils/it-pass-props";
 import { Input } from "@/components/ui/Input/Input";

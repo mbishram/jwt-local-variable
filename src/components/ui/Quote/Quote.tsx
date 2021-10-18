@@ -1,12 +1,12 @@
 import { HTMLProps } from "react";
-import { QuoteModel } from "@/model/quote-model";
+import { QuoteClass } from "@/classes/quote-class";
 import styles from "./Quote.module.css";
 import clsx from "clsx";
 
 /**
  * Component to showcase a quote.
  * @param props
- * @param data {QuoteModel}
+ * @param data {QuoteClass}
  * @constructor
  */
 export function Quote({
@@ -30,5 +30,5 @@ export function Quote({
 }
 
 type Props = {
-	data?: QuoteModel;
+	data?: QuoteClass;
 };

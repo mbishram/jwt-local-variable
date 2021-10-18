@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import { itRenderInput } from "@specs-utils/it-render-input";
