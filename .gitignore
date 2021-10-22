@@ -36,3 +36,6 @@ yarn-error.log*
 
 # Intellij
 .idea
+
+# MongoDB Tests
+globalConfig.json

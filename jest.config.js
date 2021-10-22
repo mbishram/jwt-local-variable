@@ -1,4 +1,5 @@
 module.exports = {
+	preset: "@shelf/jest-mongodb",
 	collectCoverageFrom: [
 		"**/*.{js,jsx,ts,tsx}",
 		"!**/*.d.ts",
@@ -26,7 +27,6 @@ module.exports = {
 		"<rootDir>/.next/",
 		"<rootDir>/specs/e2e",
 	],
-	testEnvironment: "jsdom",
 	transform: {
 		/* Use babel-jest to transpile tests with the next/babel preset
 		https://jestjs.io/docs/configuration#transform-objectstring-pathtotransformer--pathtotransformer-object */

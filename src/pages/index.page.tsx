@@ -1,7 +1,7 @@
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
 import { Typography } from "@/components/ui/Typography/Typography";
 import { Quote } from "@/components/ui/Quote/Quote";
-import { QuoteModel } from "@/model/quote-model";
+import { QuoteClass } from "@/classes/quote-class";
 import Head from "next/head";
 
 export default function Index() {
@@ -16,7 +16,7 @@ export default function Index() {
 			<div className="grid gap-6">
 				<Quote
 					data={
-						new QuoteModel({
+						new QuoteClass({
 							quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 							name: "James Agus",
 							bgColor: "bg-red-700",
@@ -25,7 +25,7 @@ export default function Index() {
 				/>
 				<Quote
 					data={
-						new QuoteModel({
+						new QuoteClass({
 							quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 							name: "James Agus",
 							bgColor: "bg-yellow-600",
@@ -34,7 +34,7 @@ export default function Index() {
 				/>
 				<Quote
 					data={
-						new QuoteModel({
+						new QuoteClass({
 							quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
 							name: "James Agus",
 							bgColor: "bg-gray-800",
@@ -45,3 +45,21 @@ export default function Index() {
 		</MainLayout>
 	);
 }
+
+// TODO: Use getServerSideProps
+// export async function getServerSideProps(context) {
+// 	// get the current environment
+// 	let dev = process.env.NODE_ENV !== 'production';
+// 	let { DEV_URL, PROD_URL } = process.env;
+//
+// 	// request posts from api
+// 	let response = await fetch(`${dev ? DEV_URL : PROD_URL}/api/posts`);
+// 	// extract the data
+// 	let data = await response.json();
+//
+// 	return {
+// 		props: {
+// 			posts: data['message'],
+// 		},
+// 	};
+// }

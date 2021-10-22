@@ -1,3 +1,7 @@
+/**
+ * @jest-environment jsdom
+ */
+
 import React from "react";
 import { useFormikContext } from "formik";
 import { QuotePreview } from "@/components/create/QuotePreview/QuotePreview";
