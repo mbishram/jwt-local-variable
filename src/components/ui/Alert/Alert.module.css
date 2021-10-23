@@ -2,7 +2,7 @@
 	@apply py-4 px-6 rounded;
 }
 .alertFixed {
-	@apply fixed top-4 right-4 sm:top-6 sm:right-6 z-50 sm:left-auto left-4;
+	@apply fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 sm:left-auto left-4;
 }
 .default {
 	@apply bg-gray-200 text-gray-600 border border-gray-500;

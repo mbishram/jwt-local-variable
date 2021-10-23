@@ -7,6 +7,8 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { HTMLProps, ReactNode } from "react";
 import { INPUT_TYPES } from "@/constants/input-types";
 import { TextArea } from "@/components/ui/TextArea/TextArea";
+import { NextJson } from "@/classes/next-json";
+import { Alert } from "@/components/ui/Alert/Alert";
 
 /**
  * Component to automatically build forms from initialValues.
@@ -29,8 +31,19 @@ export function FormikBuilder<T>({
 				handleChange,
 				isSubmitting,
 				values,
-			}: FormikProps<T> & { values: FormikValues }) => (
+				status,
+			}: FormikProps<T> & {
+				values: FormikValues;
+				status: NextJson<T>;
+			}) => (
 				<form onSubmit={handleSubmit} className={className} role="form">
+					{status &&
+						(status?.success ? (
+							<Alert type="success">{status.message}</Alert>
+						) : (
+							<Alert type="danger">{status.message}</Alert>
+						))}
+
 					{beforeForm && beforeForm}
 					{Object.keys(inputAttr).map((key, index) => {
 						const { label, type } = inputAttr[key];
