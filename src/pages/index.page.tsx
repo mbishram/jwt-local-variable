@@ -40,9 +40,9 @@ type Props = { quotes: Array<QuoteClass> };
 
 export async function getServerSideProps() {
 	// Get the current environment
-	const dev = process.env.NODE_ENV !== "production";
+	const dev = process.env.NODE_ENV === "production";
 	const { DEV_URL, PROD_URL } = process.env;
-	const apiURL = dev ? DEV_URL : PROD_URL;
+	const apiURL = dev ? PROD_URL : DEV_URL;
 
 	// Request posts from api
 	const res = await axios.get(`${apiURL}/api/quotes`);
