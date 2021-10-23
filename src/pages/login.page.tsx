@@ -24,7 +24,7 @@ export default function Login() {
 	return (
 		<MainLayout
 			className="max-w-screen-xl"
-			classMain="grid md:grid-cols-2 gap-8 items-center content-center"
+			classMain="grid md:grid-cols-2 gap-8 items-center content-center md:mt-0 mt-6"
 			disableNav
 		>
 			<Head>
