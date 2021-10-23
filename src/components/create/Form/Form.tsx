@@ -1,6 +1,6 @@
 import { FormikBuilder } from "@/components/ui/FormikBuilder/FormikBuilder";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
-import { HTMLProps, ReactNode } from "react";
+import { HTMLProps, ReactNode, useEffect, useState } from "react";
 import { CREATE_INPUT_ATTR } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
 import axios from "axios";
@@ -17,6 +17,7 @@ export function CreateForm({
 	className,
 	beforeForm,
 }: Pick<HTMLProps<HTMLFormElement>, "className"> & Props) {
+	const [timer, setTimer] = useState(setTimeout(() => {}));
 	const initialValues = {
 		name: "",
 		quote: "",
@@ -32,7 +33,7 @@ export function CreateForm({
 		setStatus(data);
 
 		// Close alert
-		setTimeout(() => setStatus(), 4000);
+		setTimer(setTimeout(() => setStatus(), 4000));
 
 		// Clean Input
 		Object.keys(values).forEach((value) => {
@@ -40,6 +41,12 @@ export function CreateForm({
 			else setFieldValue(value, "");
 		});
 	};
+
+	useEffect(() => {
+		return () => {
+			clearTimeout(timer);
+		};
+	});
 
 	return (
 		<>
