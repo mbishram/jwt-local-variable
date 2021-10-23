@@ -16,9 +16,9 @@ describe("Fetcher", () => {
 
 		it("should be able to create quotes", async () => {
 			const req = {
-				body: JSON.stringify({
+				body: {
 					test: "Test1",
-				}),
+				},
 			} as NextApiRequest;
 			const res = {
 				status: jest.fn(() => ({
@@ -28,21 +28,20 @@ describe("Fetcher", () => {
 			} as unknown as NextApiResponse;
 
 			await createQuotes(req, res);
-			await createQuotes(req, res);
 			expect(res.json).toBeCalledWith(
 				new NextJson({
 					message: "Quotes added!",
 					success: true,
 				})
 			);
-			expect(res.json).toBeCalledTimes(2);
+			expect(res.json).toBeCalledTimes(1);
 		});
 
 		it("should be able to get all quotes", async () => {
 			const req = {
-				body: JSON.stringify({
+				body: {
 					test: "Test1",
-				}),
+				},
 			} as NextApiRequest;
 			const res = {
 				status: jest.fn(() => ({

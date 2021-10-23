@@ -32,7 +32,7 @@ export const createQuotes = async (
 ) => {
 	try {
 		let { db } = await connectToDatabase();
-		await db.collection("quotes").insertOne(JSON.parse(req.body));
+		await db.collection("quotes").insertOne(req.body);
 		return res.json(
 			new NextJson({
 				message: "Quotes added!",

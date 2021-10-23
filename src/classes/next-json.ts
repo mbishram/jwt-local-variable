@@ -1,11 +1,11 @@
 export class NextJson<Data> {
 	success: boolean;
 	message: string;
-	data?: Data;
+	data?: Array<Data>;
 
 	constructor(data: NextJson<Data>) {
-		this.success = data.success || false;
-		this.message = data.message || "";
-		this.data = data.data;
+		this.success = data.success;
+		this.message = data.message;
+		this.data = data.data || [];
 	}
 }
