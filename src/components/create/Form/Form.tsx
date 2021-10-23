@@ -24,13 +24,21 @@ export function CreateForm({
 	};
 
 	const handleSubmit: FormikHandleSubmit<typeof initialValues> = async (
-		values
+		values,
+		{ setStatus, setFieldValue }
 	) => {
-		console.log(values);
 		const res = await axios.post("/api/quotes", values);
-		const { data } = res.data as NextJson<QuoteClass>;
+		const data = res.data as NextJson<QuoteClass>;
+		setStatus(data);
 
-		console.log(data);
+		// Close alert
+		setTimeout(() => setStatus(), 4000);
+
+		// Clean Input
+		Object.keys(values).forEach((value) => {
+			if (value === "bgColor") setFieldValue(value, randomBg());
+			else setFieldValue(value, "");
+		});
 	};
 
 	return (

@@ -8,7 +8,11 @@ export const getAllQuotes = async (
 ) => {
 	try {
 		let { db } = await connectToDatabase();
-		let quotes = await db.collection("quotes").find().toArray();
+		let quotes = await db
+			.collection("quotes")
+			.find()
+			.sort({ _id: -1 })
+			.toArray();
 		return res.json(
 			new NextJson({
 				message: "Quotes successfully fetched!",
