@@ -9,6 +9,9 @@ import { NextJson } from "@/classes/next-json";
 import { Link } from "@/components/ui/Link/Link";
 
 export default function Index({ quotes }: Props) {
+	// Convert into array of class
+	const convertQuotes = convertToClass(quotes || [], QuoteClass);
+
 	return (
 		<MainLayout classMain="max-w-screen-sm mx-auto">
 			<Head>
@@ -18,16 +21,10 @@ export default function Index({ quotes }: Props) {
 				Give a little color to your Quote!
 			</Typography>
 			<div className="grid gap-6">
-				{quotes.length ? (
-					<Quote
-						data={
-							new QuoteClass({
-								quote: "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ad alias aliquam assumenda, aut blanditiis, consectetur corporis delectus ea earum eos error fugit, in iste libero nobis odit similique vero voluptatum.",
-								name: "James Agus",
-								bgColor: "bg-red-700",
-							})
-						}
-					/>
+				{convertQuotes.length ? (
+					convertQuotes.map((quote, index) => (
+						<Quote key={`quote-key-${index}`} data={quote} />
+					))
 				) : (
 					<p>
 						We can&apos;t find any quote.{" "}
@@ -51,12 +48,9 @@ export async function getServerSideProps() {
 	const res = await axios.get(`${apiURL}/api/quotes`);
 	const { data } = res.data as NextJson<QuoteClass>;
 
-	// Convert into array of class
-	const convertedArray = convertToClass(data || [], QuoteClass);
-
 	return {
 		props: {
-			quotes: convertedArray,
+			quotes: data,
 		},
 	};
 }

@@ -3,6 +3,9 @@ import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, ReactNode } from "react";
 import { CREATE_INPUT_ATTR } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
+import axios from "axios";
+import { NextJson } from "@/classes/next-json";
+import { QuoteClass } from "@/classes/quote-class";
 
 /**
  * To separate create quote logic
@@ -20,8 +23,14 @@ export function CreateForm({
 		bgColor: randomBg(),
 	};
 
-	const handleSubmit: FormikHandleSubmit<typeof initialValues> = (values) => {
+	const handleSubmit: FormikHandleSubmit<typeof initialValues> = async (
+		values
+	) => {
 		console.log(values);
+		const res = await axios.post("/api/quotes", values);
+		const { data } = res.data as NextJson<QuoteClass>;
+
+		console.log(data);
 	};
 
 	return (
