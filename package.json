@@ -7,7 +7,7 @@
 		"build": "next build",
 		"start": "next start -p 5000",
 		"lint": "next lint",
-		"e2e": "concurrently --kill-others \"next dev -p 5000\" \"playwright test\"",
+		"e2e": "playwright test",
 		"test": "jest --ci",
 		"test:watch": "jest --watch --detectOpenHandles"
 	},
