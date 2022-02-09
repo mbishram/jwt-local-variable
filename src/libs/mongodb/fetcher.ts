@@ -2,10 +2,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { NextJson } from "@/classes/next-json";
 
-export const getAllQuotes = async (
-	req: NextApiRequest,
-	res: NextApiResponse
-) => {
+export const getAllQuotes = async () => {
 	try {
 		let { db } = await connectToDatabase();
 		let quotes = await db
@@ -13,20 +10,16 @@ export const getAllQuotes = async (
 			.find()
 			.sort({ _id: -1 })
 			.toArray();
-		return res.json(
-			new NextJson({
-				message: "Quotes successfully fetched!",
-				success: true,
-				data: quotes,
-			})
-		);
+		return new NextJson({
+			message: "Quotes successfully fetched!",
+			success: true,
+			data: quotes,
+		});
 	} catch (error: any) {
-		return res.status(500).json(
-			new NextJson({
-				message: new Error(error).message,
-				success: false,
-			})
-		);
+		return new NextJson({
+			message: new Error(error).message,
+			success: false,
+		});
 	}
 };
 

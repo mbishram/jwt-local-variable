@@ -24,4 +24,8 @@ describe("Login Form", () => {
 	it("should pass className to form element", () => {
 		expect(screen.getByRole("form")).toHaveClass("bg-black");
 	});
+
+	it.todo("should login and redirect when correct credential submitted");
+
+	it.todo("should show error alert when wrong credential submitted");
 });
