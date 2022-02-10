@@ -54,8 +54,8 @@ describe("Fetcher", () => {
 
 			const { db } = await connectToDatabase();
 			const expectedData = await db.collection("quotes").find().toArray();
-			await getAllQuotes(req, res);
-			expect(res.json).toBeCalledWith(
+			const allQuotes = await getAllQuotes();
+			expect(allQuotes).toEqual(
 				new NextJson({
 					message: "Quotes successfully fetched!",
 					success: true,
