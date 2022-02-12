@@ -1,23 +1,17 @@
 import quoteApi from "./index.page";
-import { createQuotes, invalidMethod } from "@/libs/mongodb/quotes-fetcher";
-import { checkAuth } from "@/libs/api/check-auth";
+import { login, invalidMethod } from "@/libs/mongodb/auth-fetcher";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 
-jest.mock("@/libs/mongodb/quotes-fetcher", () => ({
-	createQuotes: jest.fn(),
+jest.mock("@/libs/mongodb/auth-fetcher", () => ({
+	login: jest.fn(),
 	invalidMethod: jest.fn(),
 }));
 
-jest.mock("@/libs/api/check-auth", () => ({
-	checkAuth: jest.fn(() => [true, null]), // Simulate successful authentication
-}));
-
-describe("API Quotes", () => {
+describe("API Login", () => {
 	it("should be able to separate method based on request method", () => {
 		const { req: reqPost, res: resPost } = mockAPIArgs({ method: "POST" });
 		quoteApi(reqPost, resPost);
-		expect(createQuotes).toBeCalled();
-		expect(checkAuth).toBeCalled();
+		expect(login).toBeCalled();
 
 		const { req: reqInvalid, res: resInvalid } = mockAPIArgs({
 			method: "DELETE",
@@ -25,8 +19,7 @@ describe("API Quotes", () => {
 		quoteApi(reqInvalid, resInvalid);
 		expect(invalidMethod).toBeCalled();
 
-		expect(createQuotes).toBeCalledTimes(1);
-		expect(checkAuth).toBeCalledTimes(1);
+		expect(login).toBeCalledTimes(1);
 		expect(invalidMethod).toBeCalledTimes(1);
 	});
 });

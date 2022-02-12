@@ -2,10 +2,10 @@ import {
 	createQuotes,
 	getAllQuotes,
 	invalidMethod,
-} from "@/libs/mongodb/fetcher";
-import { NextApiRequest, NextApiResponse } from "next";
+} from "@/libs/mongodb/quotes-fetcher";
 import { NextJson } from "@/classes/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
+import { mockAPIArgs } from "@specs-utils/mock-api-args";
 
 describe("Fetcher", () => {
 	describe("when method is valid", () => {
@@ -15,17 +15,11 @@ describe("Fetcher", () => {
 		});
 
 		it("should be able to create quotes", async () => {
-			const req = {
+			const { req, res } = mockAPIArgs({
 				body: {
 					test: "Test1",
 				},
-			} as NextApiRequest;
-			const res = {
-				status: jest.fn(() => ({
-					json: jest.fn(),
-				})),
-				json: jest.fn(),
-			} as unknown as NextApiResponse;
+			});
 
 			await createQuotes(req, res);
 			expect(res.json).toBeCalledWith(
@@ -38,18 +32,11 @@ describe("Fetcher", () => {
 		});
 
 		it("should be able to get all quotes", async () => {
-			const req = {
+			const { req, res } = mockAPIArgs({
 				body: {
 					test: "Test1",
 				},
-			} as NextApiRequest;
-			const res = {
-				status: jest.fn(() => ({
-					json: jest.fn(),
-				})),
-				json: jest.fn((result) => result),
-			} as unknown as NextApiResponse;
-
+			});
 			await createQuotes(req, res);
 
 			const { db } = await connectToDatabase();
@@ -67,22 +54,12 @@ describe("Fetcher", () => {
 
 	describe("when method is invalid", () => {
 		it("should return error message", async () => {
-			const json = jest.fn();
-
-			const req = {
-				method: "PUT",
-			} as NextApiRequest;
-			const res = {
-				status: jest.fn(() => ({
-					json,
-				})),
-				setHeader: jest.fn(),
-			} as unknown as NextApiResponse;
+			const { req, res } = mockAPIArgs({ method: "GET" });
 
 			await invalidMethod(req, res);
-			expect(res.setHeader).toBeCalledWith("Allow", ["GET", "POST"]);
+			expect(res.setHeader).toBeCalledWith("Allow", ["POST"]);
 			expect(res.status).toBeCalledWith(405);
-			expect(json).toBeCalledWith(
+			expect(res.status(405).json).toBeCalledWith(
 				new NextJson({
 					success: false,
 					message: `Method ${req.method} Not Allowed`,

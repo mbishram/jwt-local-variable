@@ -6,7 +6,7 @@ import Head from "next/head";
 import { convertToClass } from "@/libs/convert-to-class";
 import { NextJson } from "@/classes/next-json";
 import { Link } from "@/components/ui/Link/Link";
-import { getAllQuotes } from "@/libs/mongodb/fetcher";
+import { getAllQuotes } from "@/libs/mongodb/quotes-fetcher";
 
 export default function Index({ quotes }: Props) {
 	const parsedQuotes: Array<QuoteClass> = quotes && JSON.parse(quotes);
