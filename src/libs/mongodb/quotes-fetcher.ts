@@ -2,6 +2,9 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { NextJson } from "@/classes/next-json";
 
+/**
+ * Fetch all quotes
+ */
 export const getAllQuotes = async () => {
 	try {
 		let { db } = await connectToDatabase();
@@ -23,6 +26,9 @@ export const getAllQuotes = async () => {
 	}
 };
 
+/**
+ * Create quote document
+ */
 export const createQuotes = async (
 	req: NextApiRequest,
 	res: NextApiResponse
@@ -46,9 +52,14 @@ export const createQuotes = async (
 	}
 };
 
+/**
+ * Handle invalid request method
+ * @param req {NextApiRequest}
+ * @param res {NextApiResponse}
+ */
 export const invalidMethod = (req: NextApiRequest, res: NextApiResponse) => {
 	const { method } = req;
-	res.setHeader("Allow", ["GET", "POST"]);
+	res.setHeader("Allow", ["POST"]);
 	return res.status(405).json(
 		new NextJson({
 			success: false,

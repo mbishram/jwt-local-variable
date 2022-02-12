@@ -28,18 +28,31 @@ export function CreateForm({
 		values,
 		{ setStatus, setFieldValue }
 	) => {
-		const res = await axios.post("/api/quotes", values);
-		const data = res.data as NextJson<QuoteClass>;
-		setStatus(data);
+		try {
+			// TODO: Change ObjectId to user's
+			// TODO: Update Bearer Token
+			const res = await axios.post(
+				"/api/quotes",
+				{
+					...values,
+					userId: "61f9147cba2fd619cdcddce1",
+				},
+				{ headers: { Authorization: `Bearer Token` } }
+			);
+			const data = res.data as NextJson<QuoteClass>;
+			setStatus(data);
 
-		// Close alert
-		setTimer(setTimeout(() => setStatus(), 4000));
-
-		// Clean Input
-		Object.keys(values).forEach((value) => {
-			if (value === "bgColor") setFieldValue(value, randomBg());
-			else setFieldValue(value, "");
-		});
+			// Clean Input
+			Object.keys(values).forEach((value) => {
+				if (value === "bgColor") setFieldValue(value, randomBg());
+				else setFieldValue(value, "");
+			});
+		} catch (error: any) {
+			setStatus(error?.response?.data);
+		} finally {
+			// Close alert
+			setTimer(setTimeout(() => setStatus(), 4000));
+		}
 	};
 
 	useEffect(() => {
