@@ -13,16 +13,16 @@ jest.mock("@/libs/api/check-auth", () => ({
 }));
 
 describe("API Quotes", () => {
-	it("should be able to separate method based on request method", () => {
+	it("should be able to separate method based on request method", async () => {
 		const { req: reqPost, res: resPost } = mockAPIArgs({ method: "POST" });
-		quoteApi(reqPost, resPost);
+		await quoteApi(reqPost, resPost);
 		expect(createQuotes).toBeCalled();
 		expect(checkAuth).toBeCalled();
 
 		const { req: reqInvalid, res: resInvalid } = mockAPIArgs({
 			method: "DELETE",
 		});
-		quoteApi(reqInvalid, resInvalid);
+		await quoteApi(reqInvalid, resInvalid);
 		expect(invalidMethod).toBeCalled();
 
 		expect(createQuotes).toBeCalledTimes(1);

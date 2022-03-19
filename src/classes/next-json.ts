@@ -6,6 +6,6 @@ export class NextJson<Data> {
 	constructor(data: NextJson<Data>) {
 		this.success = data.success;
 		this.message = data.message;
-		this.data = data.data || [];
+		this.data = data?.data;
 	}
 }
