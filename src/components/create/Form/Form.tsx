@@ -4,8 +4,8 @@ import { HTMLProps, ReactNode, useEffect, useState } from "react";
 import { CREATE_INPUT_ATTR } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
 import axios from "axios";
-import { NextJson } from "@/classes/next-json";
-import { QuoteClass } from "@/classes/quote-class";
+import { NextJson } from "@/models/next-json";
+import { QuoteModel } from "@/models/quote-model";
 
 /**
  * To separate create quote logic
@@ -39,7 +39,7 @@ export function CreateForm({
 				},
 				{ headers: { Authorization: `Bearer Token` } }
 			);
-			const data = res.data as NextJson<QuoteClass>;
+			const data = res.data as NextJson<QuoteModel>;
 			setStatus(data);
 
 			// Clean Input

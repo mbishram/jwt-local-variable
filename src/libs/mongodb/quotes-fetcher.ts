@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
 import { connectToDatabase } from "@/libs/mongodb/setup";
-import { NextJson } from "@/classes/next-json";
+import { NextJson } from "@/models/next-json";
 
 /**
  * Fetch all quotes

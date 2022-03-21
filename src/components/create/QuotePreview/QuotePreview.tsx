@@ -1,12 +1,12 @@
 import { Quote } from "@/components/ui/Quote/Quote";
-import { QuoteClass } from "@/classes/quote-class";
+import { QuoteModel } from "@/models/quote-model";
 import { useFormikContext } from "formik";
 import { useEffect, useState } from "react";
 
 /**
  * To get data from Formik form.
  * @constructor
- * @extends Quote
+ * @extends QuoteModel
  */
 export function QuotePreview() {
 	/**
@@ -14,9 +14,9 @@ export function QuotePreview() {
 	 * I do not understand why.
 	 */
 	const [quoteData, setQuoteData] = useState(
-		new QuoteClass({ quote: "", bgColor: "", name: "" })
+		new QuoteModel({ quote: "", bgColor: "", name: "" })
 	);
-	const { values }: { values: QuoteClass } = useFormikContext();
+	const { values }: { values: QuoteModel } = useFormikContext();
 
 	useEffect(() => {
 		setQuoteData(values);

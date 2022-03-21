@@ -7,7 +7,7 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { HTMLProps, ReactNode } from "react";
 import { INPUT_TYPES } from "@/constants/input-types";
 import { TextArea } from "@/components/ui/TextArea/TextArea";
-import { NextJson } from "@/classes/next-json";
+import { NextJson } from "@/models/next-json";
 import { Alert } from "@/components/ui/Alert/Alert";
 
 /**

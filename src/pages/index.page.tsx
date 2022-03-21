@@ -1,15 +1,15 @@
 import { MainLayout } from "@/layouts/MainLayout/MainLayout";
 import { Typography } from "@/components/ui/Typography/Typography";
 import { Quote } from "@/components/ui/Quote/Quote";
-import { QuoteClass } from "@/classes/quote-class";
+import { QuoteModel } from "@/models/quote-model";
 import Head from "next/head";
 import { convertToClass } from "@/libs/convert-to-class";
-import { NextJson } from "@/classes/next-json";
+import { NextJson } from "@/models/next-json";
 import { Link } from "@/components/ui/Link/Link";
 import { getAllQuotes } from "@/libs/mongodb/quotes-fetcher";
 
 export default function Index({ quotes }: Props) {
-	const parsedQuotes: Array<QuoteClass> = quotes && JSON.parse(quotes);
+	const parsedQuotes: Array<QuoteModel> = quotes && JSON.parse(quotes);
 	return (
 		<MainLayout classMain="max-w-screen-sm mx-auto">
 			<Head>
@@ -38,10 +38,10 @@ type Props = { quotes: string };
 
 export async function getServerSideProps() {
 	// Request posts from api
-	const { data } = (await getAllQuotes()) as NextJson<QuoteClass>;
+	const { data } = (await getAllQuotes()) as NextJson<QuoteModel>;
 
 	// Convert into array of class
-	const convertQuotes = convertToClass(data || [], QuoteClass);
+	const convertQuotes = convertToClass(data || [], QuoteModel);
 
 	return {
 		props: {

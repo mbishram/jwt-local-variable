@@ -3,7 +3,7 @@ import {
 	getAllQuotes,
 	invalidMethod,
 } from "@/libs/mongodb/quotes-fetcher";
-import { NextJson } from "@/classes/next-json";
+import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 

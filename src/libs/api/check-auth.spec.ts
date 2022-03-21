@@ -1,6 +1,6 @@
 import { checkAuth } from "@/libs/api/check-auth";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
-import { NextJson } from "@/classes/next-json";
+import { NextJson } from "@/models/next-json";
 
 describe("Check Auth", () => {
 	describe("when JWT doesn't exist", () => {
@@ -27,6 +27,7 @@ describe("Check Auth", () => {
 		it("should return data", async () => {
 			const authorization = "Bearer " + process.env.JWT_VALID;
 			const { req, res } = mockAPIArgs({
+				body: { test: "Test Data" },
 				headers: { authorization },
 			});
 			const [data, error] = await checkAuth(req, res);
@@ -36,9 +37,30 @@ describe("Check Auth", () => {
 			expect(res.status).toBeCalledWith(200);
 			expect(res.json).toBeCalledWith(
 				new NextJson({
-					data: [{ test: "Test Data" }],
 					message: "JWT Valid",
 					success: true,
+				})
+			);
+		});
+	});
+
+	describe("when JWT is valid but wrong credential", () => {
+		it("should return error", async () => {
+			const authorization = "Bearer " + process.env.JWT_VALID;
+			const { req, res } = mockAPIArgs({
+				body: { test: "Test" },
+				headers: { authorization },
+			});
+			const [data, error] = await checkAuth(req, res);
+
+			expect(data).toEqual(null);
+			expect(error).toBeTruthy();
+			expect(res.status).toBeCalledWith(401);
+			expect(res.json).toBeCalledWith(
+				new NextJson({
+					message:
+						"Token got an invalid credential, please login again!",
+					success: false,
 				})
 			);
 		});
@@ -78,27 +100,6 @@ describe("Check Auth", () => {
 			expect(res.json).toBeCalledWith(
 				new NextJson({
 					message: "Invalid token, please login again",
-					success: false,
-				})
-			);
-		});
-	});
-
-	describe("when JWT is error", () => {
-		it("should return error", async () => {
-			const authorization = "Bearer " + process.env.JWT_ERROR;
-			const { req, res } = mockAPIArgs({
-				headers: { authorization },
-			});
-			const [data, error] = await checkAuth(req, res);
-
-			expect(data).toEqual(null);
-			expect(error).toBeTruthy();
-			expect(res.status).toBeCalledWith(400);
-			expect(res.json).toBeCalledWith(
-				new NextJson({
-					message:
-						"There is something wrong with the token, please login again",
 					success: false,
 				})
 			);
