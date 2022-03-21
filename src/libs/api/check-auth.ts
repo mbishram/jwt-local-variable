@@ -3,6 +3,7 @@ import { extractToken } from "@/libs/api/extract-token";
 import { NextJson } from "@/models/next-json";
 import jwt, { JsonWebTokenError } from "jsonwebtoken";
 import { JWT_ERROR_TYPES } from "@/constants/jwt-error-types";
+import { isTokenPayloadMatch } from "@/libs/api/is-token-payload-match";
 
 /**
  * Check user authentication
@@ -27,10 +28,11 @@ export const checkAuth = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		const jwtRes = jwt.verify(
 			token,
-			process?.env?.ACCESS_TOKEN_SECRET_KEY || ""
+			process?.env?.ACCESS_TOKEN_SECRET_KEY as string
 		);
 
-		if (JSON.stringify(jwtRes) !== JSON.stringify(req.body)) {
+		// map req.body, check on jwt res, if req.body[key] = undefined, skip it
+		if (!isTokenPayloadMatch(req.body, jwtRes)) {
 			const error = res.status(401).json(
 				new NextJson({
 					message:
@@ -38,7 +40,7 @@ export const checkAuth = async (req: NextApiRequest, res: NextApiResponse) => {
 					success: false,
 				})
 			);
-			return [null, error];
+			return [null, error, jwtRes, req.body];
 		}
 
 		const data = res.status(200).json(
