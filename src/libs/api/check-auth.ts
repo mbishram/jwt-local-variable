@@ -40,7 +40,7 @@ export const checkAuth = async (req: NextApiRequest, res: NextApiResponse) => {
 					success: false,
 				})
 			);
-			return [null, error, jwtRes, req.body];
+			return [null, error];
 		}
 
 		const data = res.status(200).json(
