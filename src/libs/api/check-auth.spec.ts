@@ -1,20 +1,18 @@
 import { checkAuth } from "@/libs/api/check-auth";
-import { mockAPIArgs } from "@specs-utils/mock-api-args";
 import { NextJson } from "@/models/next-json";
 
 describe("Check Auth", () => {
 	describe("when JWT doesn't exist", () => {
 		it("should return error", async () => {
 			const authorization = "";
-			const { req, res } = mockAPIArgs({
-				headers: { authorization },
+			const [data, error] = await checkAuth({
+				authorizationHeader: authorization,
+				secret: "",
+				dataMatch: {},
 			});
-			const [data, error] = await checkAuth(req, res);
 
 			expect(data).toEqual(null);
-			expect(error).toBeTruthy();
-			expect(res.status).toBeCalledWith(401);
-			expect(res.json).toBeCalledWith(
+			expect(error).toEqual(
 				new NextJson({
 					message: "Access denied, token is missing!",
 					success: false,
@@ -26,16 +24,15 @@ describe("Check Auth", () => {
 	describe("when JWT is valid", () => {
 		it("should return data", async () => {
 			const authorization = "Bearer " + process.env.JWT_VALID;
-			const { req, res } = mockAPIArgs({
-				body: { test: "Test Data" },
-				headers: { authorization },
+			const data = { test: "Test Data" };
+			const [success, error] = await checkAuth({
+				authorizationHeader: authorization,
+				secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
+				dataMatch: data,
 			});
-			const [data, error] = await checkAuth(req, res);
 
 			expect(error).toEqual(null);
-			expect(data).toBeTruthy();
-			expect(res.status).toBeCalledWith(200);
-			expect(res.json).toBeCalledWith(
+			expect(success).toEqual(
 				new NextJson({
 					message: "JWT Valid",
 					success: true,
@@ -47,16 +44,15 @@ describe("Check Auth", () => {
 	describe("when JWT is valid but wrong credential", () => {
 		it("should return error", async () => {
 			const authorization = "Bearer " + process.env.JWT_VALID;
-			const { req, res } = mockAPIArgs({
-				body: { test: "Test" },
-				headers: { authorization },
+			const data = { test: "Test" };
+			const [success, error] = await checkAuth({
+				authorizationHeader: authorization,
+				secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
+				dataMatch: data,
 			});
-			const [data, error] = await checkAuth(req, res);
 
-			expect(data).toEqual(null);
-			expect(error).toBeTruthy();
-			expect(res.status).toBeCalledWith(401);
-			expect(res.json).toBeCalledWith(
+			expect(success).toEqual(null);
+			expect(error).toEqual(
 				new NextJson({
 					message:
 						"Token got an invalid credential, please login again!",
@@ -69,15 +65,14 @@ describe("Check Auth", () => {
 	describe("when JWT is expired", () => {
 		it("should return error", async () => {
 			const authorization = "Bearer " + process.env.JWT_EXPIRED;
-			const { req, res } = mockAPIArgs({
-				headers: { authorization },
+			const [success, error] = await checkAuth({
+				authorizationHeader: authorization,
+				secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
+				dataMatch: {},
 			});
-			const [data, error] = await checkAuth(req, res);
 
-			expect(data).toEqual(null);
-			expect(error).toBeTruthy();
-			expect(res.status).toBeCalledWith(401);
-			expect(res.json).toBeCalledWith(
+			expect(success).toEqual(null);
+			expect(error).toEqual(
 				new NextJson({
 					message: "Session timed out, please login again",
 					success: false,
@@ -89,15 +84,14 @@ describe("Check Auth", () => {
 	describe("when JWT is invalid", () => {
 		it("should return error", async () => {
 			const authorization = "Bearer " + process.env.JWT_INVALID;
-			const { req, res } = mockAPIArgs({
-				headers: { authorization },
+			const [success, error] = await checkAuth({
+				authorizationHeader: authorization,
+				secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
+				dataMatch: {},
 			});
-			const [data, error] = await checkAuth(req, res);
 
-			expect(data).toEqual(null);
-			expect(error).toBeTruthy();
-			expect(res.status).toBeCalledWith(401);
-			expect(res.json).toBeCalledWith(
+			expect(success).toEqual(null);
+			expect(error).toEqual(
 				new NextJson({
 					message: "Invalid token, please login again",
 					success: false,

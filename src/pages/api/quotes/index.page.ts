@@ -10,7 +10,8 @@ export default async function handler(
 
 	switch (method) {
 		case "POST":
-			const [data, error] = await checkAuth(req, res);
+			// TODO: Change this back later
+			const [data, error] = [null, true]; // await checkAuth(req, res);
 
 			if (data) return await createQuotes(req, res);
 			return error;
