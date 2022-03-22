@@ -2,9 +2,8 @@ import { UserModel } from "@/models/user-model";
 import jwt from "jsonwebtoken";
 
 /**
- * Generate Access Token
+ * Generate Access Token | Payload : { user: UserModel }
  * @param userData
- * @return { user: UserModel }
  */
 export async function generateAccessToken(userData: UserModel) {
 	try {
