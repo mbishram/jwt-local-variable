@@ -14,6 +14,6 @@ export function isTokenPayloadMatch(
 
 	return Object.keys(data).every((key) => {
 		if (data[key] === undefined) return true;
-		return data[key] === tokenPayload[key];
+		return JSON.stringify(data[key]) === JSON.stringify(tokenPayload[key]);
 	});
 }

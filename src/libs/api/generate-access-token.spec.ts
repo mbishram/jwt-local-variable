@@ -27,7 +27,7 @@ describe("Generate Access Token", () => {
 		const authorization = "Bearer " + token;
 
 		const { req, res } = mockAPIArgs({
-			body: data,
+			body: { user: data },
 			headers: { authorization },
 		});
 

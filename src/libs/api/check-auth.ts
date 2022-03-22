@@ -31,7 +31,6 @@ export const checkAuth = async (req: NextApiRequest, res: NextApiResponse) => {
 			process?.env?.ACCESS_TOKEN_SECRET_KEY as string
 		);
 
-		// map req.body, check on jwt res, if req.body[key] = undefined, skip it
 		if (!isTokenPayloadMatch(req.body, jwtRes)) {
 			const error = res.status(401).json(
 				new NextJson({
