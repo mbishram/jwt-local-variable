@@ -1,5 +1,10 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { NextJson } from "@/classes/next-json";
+import { NextJson } from "@/models/next-json";
+import { connectToDatabase } from "@/libs/mongodb/setup";
+import bcrypt from "bcryptjs";
+import { LoginRequest } from "@/types/libs/login-request";
+import { aesDecrypt } from "@/libs/aes";
+import { UserModel } from "@/models/user-model";
 
 /**
  * User login
@@ -7,23 +12,54 @@ import { NextJson } from "@/classes/next-json";
  * @param res {NextApiResponse}
  */
 export const login = async (req: NextApiRequest, res: NextApiResponse) => {
-	// try {
-	// 	let { db } = await connectToDatabase();
-	// 	await db.collection("users").insertOne(req.body);
-	// 	return res.json(
-	// 		new NextJson({
-	// 			message: "Quotes added!",
-	// 			success: true,
-	// 		})
-	// 	);
-	// } catch (error: any) {
-	// 	return res.status(500).json(
-	// 		new NextJson({
-	// 			message: new Error(error).message,
-	// 			success: false,
-	// 		})
-	// 	);
-	// }
+	const reqUser: LoginRequest = req.body;
+	const reqUsername = reqUser.username;
+	const reqPassword = aesDecrypt(reqUser.password);
+
+	const notValidMessage = new NextJson({
+		message: "Login failed! Check your username and password.",
+		success: false,
+	});
+
+	try {
+		let { db } = await connectToDatabase();
+
+		const userRes = await db
+			.collection("users")
+			.findOne({ username: reqUsername });
+		if (!userRes) {
+			return res.status(401).json(
+				new NextJson({
+					message: "Login failed! User was not found.",
+					success: false,
+				})
+			);
+		}
+
+		const isPasswordValid = await bcrypt.compare(
+			reqPassword,
+			userRes.password
+		);
+		if (!isPasswordValid) {
+			return res.status(401).json(notValidMessage);
+		}
+
+		return res.json(
+			new NextJson({
+				success: true,
+				message: "Login success!",
+				data: [
+					new UserModel({
+						username: userRes.username,
+						email: userRes.email,
+						name: userRes.name,
+					}),
+				],
+			})
+		);
+	} catch (error: any) {
+		return res.status(401).json(notValidMessage);
+	}
 };
 
 /**
