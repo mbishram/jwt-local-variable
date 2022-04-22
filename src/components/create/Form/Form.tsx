@@ -3,9 +3,9 @@ import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, ReactNode, useEffect, useState } from "react";
 import { CREATE_INPUT_ATTR } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
-import axios from "axios";
 import { NextJson } from "@/models/next-json";
 import { QuoteModel } from "@/models/quote-model";
+import { createQuote } from "@/libs/fetchers/quotes";
 
 /**
  * To separate create quote logic
@@ -31,14 +31,10 @@ export function CreateForm({
 		try {
 			// TODO: Change ObjectId to user's
 			// TODO: Update Bearer Token
-			const res = await axios.post(
-				"/api/quotes",
-				{
-					...values,
-					userId: "61f9147cba2fd619cdcddce1",
-				},
-				{ headers: { Authorization: `Bearer Token` } }
-			);
+			const res = await createQuote({
+				...values,
+				userId: "61f9147cba2fd619cdcddce1",
+			});
 			const data = res.data as NextJson<QuoteModel>;
 			setStatus(data);
 
