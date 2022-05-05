@@ -5,6 +5,8 @@ import bcrypt from "bcryptjs";
 import { LoginRequest } from "@/types/libs/login-request";
 import { aesDecrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
+import { generateAccessToken } from "@/libs/api/generate-access-token";
+import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 
 /**
  * User login
@@ -44,16 +46,23 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			return res.status(401).json(notValidMessage);
 		}
 
+		const user = new UserModel({
+			username: userRes.username,
+			email: userRes.email,
+			name: userRes.name,
+		});
+		const accessToken = await generateAccessToken(user);
+		const refreshToken = await generateRefreshToken(user);
+
 		return res.json(
 			new NextJson({
 				success: true,
 				message: "Login success!",
 				data: [
-					new UserModel({
-						username: userRes.username,
-						email: userRes.email,
-						name: userRes.name,
-					}),
+					{
+						user,
+						token: { accessToken, refreshToken },
+					},
 				],
 			})
 		);
@@ -61,6 +70,9 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 		return res.status(401).json(notValidMessage);
 	}
 };
+
+// TODO: logout
+// TODO: user
 
 /**
  * Handle invalid request method

@@ -6,6 +6,9 @@ import bcrypt from "bcryptjs";
 import { login } from "@/libs/mongodb/auth-fetcher";
 import { aesEncrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
+import { generateAccessToken } from "@/libs/api/generate-access-token";
+import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
+import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 
 describe("Fetcher", () => {
 	describe("when method is valid", () => {
@@ -71,16 +74,24 @@ describe("Fetcher", () => {
 				},
 			});
 			await login(req, res);
+
+			const user = new UserModel({
+				username,
+				email,
+				name,
+			});
+			const accessToken = await generateAccessToken(user);
+			const refreshToken = await generateRefreshToken(user);
+
 			expect(res.json).toBeCalledWith(
-				new NextJson({
+				new NextJson<FetcherLoginResponseData>({
 					success: true,
 					message: "Login success!",
 					data: [
-						new UserModel({
-							username,
-							email,
-							name,
-						}),
+						{
+							user,
+							token: { accessToken, refreshToken },
+						},
 					],
 				})
 			);

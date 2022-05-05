@@ -38,4 +38,8 @@ describe("Create Form", () => {
 			screen.getByTestId("before-form")
 		);
 	});
+
+	it.todo("should show error alert when create quote failed");
+
+	it.todo("should clear input and show success alert when create quote success");
 });

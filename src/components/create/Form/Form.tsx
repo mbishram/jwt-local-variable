@@ -1,7 +1,7 @@
 import { FormikBuilder } from "@/components/ui/FormikBuilder/FormikBuilder";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, ReactNode, useEffect, useState } from "react";
-import { CREATE_INPUT_ATTR } from "@/forms/create";
+import { CREATE_INPUT_ATTR, CreateQuoteFormType } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
 import { NextJson } from "@/models/next-json";
 import { QuoteModel } from "@/models/quote-model";
@@ -24,7 +24,7 @@ export function CreateForm({
 		bgColor: randomBg(),
 	};
 
-	const handleSubmit: FormikHandleSubmit<typeof initialValues> = async (
+	const handleSubmit: FormikHandleSubmit<CreateQuoteFormType> = async (
 		values,
 		{ setStatus, setFieldValue }
 	) => {

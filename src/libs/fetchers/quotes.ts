@@ -1,16 +1,8 @@
 import { QuoteModel } from "@/models/quote-model";
-import axios from "axios";
+import { httpInstance } from "@/libs/fetchers/http";
+import { NextJson } from "@/models/next-json";
 
-const quotesInstance = axios.create();
-
-quotesInstance.interceptors.request.use((request) => {
-	if (request?.headers)
-		request.headers.Authorization = "Bearer get From Somewhere";
-	return request;
-});
-
-export const QUOTES = "/api/quotes";
-
+export const QUOTES = "/quotes";
 export async function createQuote(data: QuoteModel) {
-	return await quotesInstance.post(QUOTES, data);
+	return await httpInstance.post<NextJson<undefined>>(QUOTES, data);
 }

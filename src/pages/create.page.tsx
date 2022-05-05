@@ -5,6 +5,8 @@ import { QuotePreview } from "@/components/create/QuotePreview/QuotePreview";
 import Head from "next/head";
 
 export default function Create() {
+	// TODO: Redirect to /login, when user is not logged in
+
 	return (
 		<MainLayout classMain="md:min-w-screen-sm min-w-full max-w-screen-sm mx-auto">
 			<Head>

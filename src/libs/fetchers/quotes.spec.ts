@@ -1,6 +1,10 @@
-import { createQuote, QUOTES } from "@/libs/fetchers/quotes";
+/**
+ * @jest-environment jsdom
+ */
+
+import { createQuote } from "@/libs/fetchers/quotes";
 import { QuoteModel } from "@/models/quote-model";
-import mockAxios from "../../../specs/__mocks__/axios";
+import { createMethodHandler } from "../../../specs/__mocks__/api/quotesFetcher";
 
 describe("Quotes Fetcher", () => {
 	const data = new QuoteModel({
@@ -10,15 +14,10 @@ describe("Quotes Fetcher", () => {
 		userId: "",
 	});
 
-	beforeEach(() => {
-		createQuote(data);
-	});
+	it("should be able to create quote", async () => {
+		createMethodHandler(data);
 
-	it("should have Authorization headers", () => {
-		expect(mockAxios.interceptors.request.use).toHaveBeenCalledTimes(1);
-	});
-
-	it("should be able to create quote", () => {
-		expect(mockAxios.create().post).toBeCalledWith(QUOTES, data);
+		const res = await createQuote(data);
+		expect(res.data).toEqual("Success");
 	});
 });

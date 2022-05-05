@@ -1,7 +1,9 @@
 import { FormikBuilder } from "@/components/ui/FormikBuilder/FormikBuilder";
-import { LOGIN_INPUT_ATTR } from "@/forms/login";
+import { LOGIN_INPUT_ATTR, LoginFormType } from "@/forms/login";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
-import { HTMLProps } from "react";
+import { HTMLProps, useEffect, useState } from "react";
+import { login } from "@/libs/fetchers/auth";
+import { useRouter } from "next/router";
 
 /**
  * To separate login logic
@@ -11,14 +13,34 @@ import { HTMLProps } from "react";
 export function LoginForm({
 	className,
 }: Pick<HTMLProps<HTMLFormElement>, "className">) {
+	const router = useRouter();
+	const [timer, setTimer] = useState(setTimeout(() => {}));
 	const initialValues = {
 		username: "",
 		password: "",
 	};
 
-	const handleSubmit: FormikHandleSubmit<typeof initialValues> = (values) => {
-		console.log(values);
+	const handleSubmit: FormikHandleSubmit<LoginFormType> = async (
+		values,
+		{ setStatus }
+	) => {
+		try {
+			const { data } = await login(values);
+
+			if (data?.success) await router.push("/");
+		} catch (error: any) {
+			setStatus(error?.response?.data);
+		} finally {
+			// Close alert
+			setTimer(setTimeout(() => setStatus(), 4000));
+		}
 	};
+
+	useEffect(() => {
+		return () => {
+			clearTimeout(timer);
+		};
+	});
 
 	return (
 		<FormikBuilder
