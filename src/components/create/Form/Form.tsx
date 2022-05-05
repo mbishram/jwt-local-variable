@@ -3,8 +3,6 @@ import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, ReactNode, useEffect, useState } from "react";
 import { CREATE_INPUT_ATTR, CreateQuoteFormType } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
-import { NextJson } from "@/models/next-json";
-import { QuoteModel } from "@/models/quote-model";
 import { createQuote } from "@/libs/fetchers/quotes";
 
 /**
@@ -35,7 +33,7 @@ export function CreateForm({
 				...values,
 				userId: "61f9147cba2fd619cdcddce1",
 			});
-			const data = res.data as NextJson<QuoteModel>;
+			const data = res.data;
 			setStatus(data);
 
 			// Clean Input
