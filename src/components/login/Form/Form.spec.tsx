@@ -14,6 +14,12 @@ import {
 } from "../../../../specs/__mocks__/api/login";
 import { renderHook, act } from "@testing-library/react-hooks/dom";
 import { useRouter } from "next/router";
+import {
+	getAccessToken,
+	getRefreshToken,
+	removeAccessToken,
+	removeRefreshToken,
+} from "@/libs/token/local-storage-handler";
 
 jest.mock("next/router", () => require("next-router-mock"));
 
@@ -63,7 +69,15 @@ describe("Login Form", () => {
 		});
 
 		it("should login and redirect when correct credential submitted", async () => {
-			loginHandler();
+			removeAccessToken();
+			removeRefreshToken();
+
+			loginHandler({
+				token: {
+					accessToken: "accessToken",
+					refreshToken: "refreshToken",
+				},
+			});
 
 			await waitFor(() => {
 				userEvent.click(submitButton);
@@ -76,6 +90,9 @@ describe("Login Form", () => {
 				await waitForNextUpdate();
 				expect(result.current).toMatchObject({ asPath: "/" });
 			});
+
+			expect(getAccessToken()).toBeTruthy();
+			expect(getRefreshToken()).toBeTruthy();
 		});
 	});
 });

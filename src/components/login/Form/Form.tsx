@@ -5,6 +5,10 @@ import { HTMLProps, useEffect, useState } from "react";
 import { login } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 import { aesEncrypt } from "@/libs/aes";
+import {
+	setAccessToken,
+	setRefreshToken,
+} from "@/libs/token/local-storage-handler";
 
 /**
  * To separate login logic
@@ -31,7 +35,14 @@ export function LoginForm({
 				password: aesEncrypt(values.password),
 			});
 
-			if (data?.success) await router.push("/");
+			if (data?.success) {
+				const token = data.data?.[0].token;
+				if (token?.accessToken && token?.refreshToken) {
+					setAccessToken(token.accessToken);
+					setRefreshToken(token.refreshToken);
+				}
+				await router.push("/");
+			}
 		} catch (error: any) {
 			setStatus(error?.response?.data);
 
