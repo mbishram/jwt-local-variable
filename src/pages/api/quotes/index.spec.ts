@@ -1,6 +1,5 @@
 import quoteApi from "./index.page";
-import { createQuotes, invalidMethod } from "@/libs/mongodb/quotes-fetcher";
-import { checkAuth } from "@/libs/api/check-auth";
+import { invalidMethod } from "@/libs/mongodb/quotes-fetcher";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 
 jest.mock("@/libs/mongodb/quotes-fetcher", () => ({

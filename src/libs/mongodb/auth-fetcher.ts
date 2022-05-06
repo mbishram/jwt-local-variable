@@ -7,6 +7,7 @@ import { aesDecrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
+import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 
 /**
  * User login
@@ -55,15 +56,10 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 		const refreshToken = await generateRefreshToken(user);
 
 		return res.json(
-			new NextJson({
+			new NextJson<FetcherLoginResponseData>({
 				success: true,
 				message: "Login success!",
-				data: [
-					{
-						user,
-						token: { accessToken, refreshToken },
-					},
-				],
+				data: [{ accessToken, refreshToken }],
 			})
 		);
 	} catch (error: any) {

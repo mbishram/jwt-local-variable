@@ -36,7 +36,7 @@ export function LoginForm({
 			});
 
 			if (data?.success) {
-				const token = data.data?.[0].token;
+				const token = data.data?.[0];
 				if (token?.accessToken && token?.refreshToken) {
 					setAccessToken(token.accessToken);
 					setRefreshToken(token.refreshToken);

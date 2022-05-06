@@ -87,12 +87,7 @@ describe("Fetcher", () => {
 				new NextJson<FetcherLoginResponseData>({
 					success: true,
 					message: "Login success!",
-					data: [
-						{
-							user,
-							token: { accessToken, refreshToken },
-						},
-					],
+					data: [{ accessToken, refreshToken }],
 				})
 			);
 		});
