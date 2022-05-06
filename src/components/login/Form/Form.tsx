@@ -4,6 +4,7 @@ import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, useEffect, useState } from "react";
 import { login } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
+import { aesEncrypt } from "@/libs/aes";
 
 /**
  * To separate login logic
@@ -25,12 +26,15 @@ export function LoginForm({
 		{ setStatus }
 	) => {
 		try {
-			const { data } = await login(values);
+			const { data } = await login({
+				username: values.username,
+				password: aesEncrypt(values.password),
+			});
 
 			if (data?.success) await router.push("/");
 		} catch (error: any) {
 			setStatus(error?.response?.data);
-		} finally {
+
 			// Close alert
 			setTimer(setTimeout(() => setStatus(), 4000));
 		}

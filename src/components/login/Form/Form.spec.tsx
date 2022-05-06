@@ -12,7 +12,7 @@ import {
 	loginExceptionHandler,
 	loginHandler,
 } from "../../../../specs/__mocks__/api/login";
-import { renderHook } from "@testing-library/react-hooks";
+import { renderHook, act } from "@testing-library/react-hooks/dom";
 import { useRouter } from "next/router";
 
 jest.mock("next/router", () => require("next-router-mock"));
@@ -65,10 +65,15 @@ describe("Login Form", () => {
 		it("should login and redirect when correct credential submitted", async () => {
 			loginHandler();
 
-			userEvent.click(submitButton);
-
 			await waitFor(() => {
-				const { result } = renderHook(() => useRouter());
+				userEvent.click(submitButton);
+			});
+
+			await act(async () => {
+				const { result, waitForNextUpdate } = renderHook(() =>
+					useRouter()
+				);
+				await waitForNextUpdate();
 				expect(result.current).toMatchObject({ asPath: "/" });
 			});
 		});

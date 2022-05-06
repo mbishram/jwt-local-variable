@@ -26,9 +26,9 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		let { db } = await connectToDatabase();
 
-		const userRes = await db
-			.collection("users")
-			.findOne({ username: reqUsername });
+		const userRes = await db.collection("users").findOne({
+			$or: [{ username: reqUsername }, { email: reqUsername }],
+		});
 		if (!userRes) {
 			return res.status(401).json(
 				new NextJson({
