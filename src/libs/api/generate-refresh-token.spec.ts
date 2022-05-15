@@ -1,6 +1,6 @@
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { UserModel } from "@/models/user-model";
-import { checkAuth } from "@/libs/api/check-auth";
+import { getTokenData } from "@/libs/api/get-token-data";
 
 describe("Generate Refresh Token", () => {
 	const data = new UserModel({
@@ -25,11 +25,10 @@ describe("Generate Refresh Token", () => {
 		const token = await generateRefreshToken(data);
 		const authorization = "Bearer " + token;
 
-		const [success, error] = await checkAuth({
-			authorizationHeader: authorization,
-			secret: process?.env?.REFRESH_TOKEN_SECRET_KEY as string,
-			dataMatch: { user: data },
-		});
+		const [success, error] = await getTokenData(
+			authorization,
+			process?.env?.REFRESH_TOKEN_SECRET_KEY as string
+		);
 		expect(success).toBeTruthy();
 		expect(error).toBeFalsy();
 	});

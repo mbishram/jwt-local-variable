@@ -1,6 +1,6 @@
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { UserModel } from "@/models/user-model";
-import { checkAuth } from "@/libs/api/check-auth";
+import { getTokenData } from "@/libs/api/get-token-data";
 
 describe("Generate Access Token", () => {
 	const data = new UserModel({
@@ -25,11 +25,10 @@ describe("Generate Access Token", () => {
 		const token = await generateAccessToken(data);
 		const authorization = "Bearer " + token;
 
-		const [success, error] = await checkAuth({
-			authorizationHeader: authorization,
-			secret: process?.env?.ACCESS_TOKEN_SECRET_KEY as string,
-			dataMatch: { user: data },
-		});
+		const [success, error] = await getTokenData(
+			authorization,
+			process?.env?.ACCESS_TOKEN_SECRET_KEY as string
+		);
 		expect(success).toBeTruthy();
 		expect(error).toBeFalsy();
 	});

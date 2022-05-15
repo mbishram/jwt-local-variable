@@ -6,8 +6,8 @@ jest.mock("@/libs/mongodb/quotes-fetcher", () => ({
 	createQuotes: jest.fn(),
 }));
 
-jest.mock("@/libs/api/check-auth", () => ({
-	checkAuth: jest.fn(() => [true, null]), // Simulate successful authentication
+jest.mock("@/libs/api/get-token-data", () => ({
+	getTokenData: jest.fn(() => [true, null]), // Simulate successful authentication
 }));
 
 jest.mock("@/libs/mongodb/fetcher-utils", () => ({
@@ -20,7 +20,7 @@ describe("API Quotes", () => {
 		await quoteApi(reqPost, resPost);
 		// TODO: Change this back later
 		// expect(createQuotes).toBeCalled();
-		// expect(checkAuth).toBeCalled();
+		// expect(getTokenData).toBeCalled();
 
 		const { req: reqInvalid, res: resInvalid } = mockAPIArgs({
 			method: "DELETE",
@@ -32,7 +32,7 @@ describe("API Quotes", () => {
 
 		// TODO: Change this back later
 		// expect(createQuotes).toBeCalledTimes(1);
-		// expect(checkAuth).toBeCalledTimes(1);
+		// expect(getTokenData).toBeCalledTimes(1);
 		expect(invalidMethod).toBeCalledTimes(1);
 	});
 });
