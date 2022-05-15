@@ -1,8 +1,4 @@
-import {
-	createQuotes,
-	getAllQuotes,
-	invalidMethod,
-} from "@/libs/mongodb/quotes-fetcher";
+import { createQuotes, getAllQuotes } from "@/libs/mongodb/quotes-fetcher";
 import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
@@ -47,22 +43,6 @@ describe("Fetcher", () => {
 					message: "Quotes successfully fetched!",
 					success: true,
 					data: expectedData,
-				})
-			);
-		});
-	});
-
-	describe("when method is invalid", () => {
-		it("should return error message", async () => {
-			const { req, res } = mockAPIArgs({ method: "GET" });
-
-			await invalidMethod(req, res);
-			expect(res.setHeader).toBeCalledWith("Allow", ["POST"]);
-			expect(res.status).toBeCalledWith(405);
-			expect(res.status(405).json).toBeCalledWith(
-				new NextJson({
-					success: false,
-					message: `Method ${req.method} Not Allowed`,
 				})
 			);
 		});

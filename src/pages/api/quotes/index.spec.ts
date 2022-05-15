@@ -1,14 +1,17 @@
 import quoteApi from "./index.page";
-import { invalidMethod } from "@/libs/mongodb/quotes-fetcher";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
+import { invalidMethod } from "@/libs/mongodb/fetcher-utils";
 
 jest.mock("@/libs/mongodb/quotes-fetcher", () => ({
 	createQuotes: jest.fn(),
-	invalidMethod: jest.fn(),
 }));
 
 jest.mock("@/libs/api/check-auth", () => ({
 	checkAuth: jest.fn(() => [true, null]), // Simulate successful authentication
+}));
+
+jest.mock("@/libs/mongodb/fetcher-utils", () => ({
+	invalidMethod: jest.fn(),
 }));
 
 describe("API Quotes", () => {
@@ -23,7 +26,9 @@ describe("API Quotes", () => {
 			method: "DELETE",
 		});
 		await quoteApi(reqInvalid, resInvalid);
-		expect(invalidMethod).toBeCalled();
+		expect(invalidMethod).toBeCalledWith(reqInvalid, resInvalid, {
+			allowMethod: ["POST"],
+		});
 
 		// TODO: Change this back later
 		// expect(createQuotes).toBeCalledTimes(1);

@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createQuotes, invalidMethod } from "@/libs/mongodb/quotes-fetcher";
+import { createQuotes } from "@/libs/mongodb/quotes-fetcher";
+import { invalidMethod } from "@/libs/mongodb/fetcher-utils";
 
 export default async function handler(
 	req: NextApiRequest,
@@ -15,6 +16,6 @@ export default async function handler(
 			if (data) return await createQuotes(req, res);
 			return error;
 		default:
-			return invalidMethod(req, res);
+			return invalidMethod(req, res, { allowMethod: ["POST"] });
 	}
 }

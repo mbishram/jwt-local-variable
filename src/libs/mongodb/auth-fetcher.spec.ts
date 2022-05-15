@@ -1,9 +1,8 @@
-import { invalidMethod } from "@/libs/mongodb/quotes-fetcher";
 import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 import bcrypt from "bcryptjs";
-import { login } from "@/libs/mongodb/auth-fetcher";
+import { getUser, login } from "@/libs/mongodb/auth-fetcher";
 import { aesEncrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
@@ -11,7 +10,7 @@ import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 
 describe("Fetcher", () => {
-	describe("when method is valid", () => {
+	describe("when login method is called", () => {
 		const username = process.env.NEXT_PUBLIC_USER || "username";
 		const email = process.env.NEXT_PUBLIC_EMAIL || "email@test.com";
 		const password = process.env.NEXT_PUBLIC_PASS || "password";
@@ -37,7 +36,6 @@ describe("Fetcher", () => {
 
 		it("should be rejected on incorrect username", async () => {
 			const { req, res } = mockAPIArgs({
-				method: "POST",
 				body: { username: "", password: "" },
 			});
 			await login(req, res);
@@ -52,7 +50,6 @@ describe("Fetcher", () => {
 
 		it("should be rejected on incorrect password", async () => {
 			const { req, res } = mockAPIArgs({
-				method: "POST",
 				body: { username, password: "" },
 			});
 			await login(req, res);
@@ -67,7 +64,6 @@ describe("Fetcher", () => {
 
 		it("should be able to login on correct credential", async () => {
 			const { req, res } = mockAPIArgs({
-				method: "POST",
 				body: {
 					username,
 					password: aesEncrypt(password),
@@ -93,18 +89,14 @@ describe("Fetcher", () => {
 		});
 	});
 
-	describe("when method is invalid", () => {
-		const { req, res } = mockAPIArgs({ method: "GET" });
-		it("should return error message", async () => {
-			await invalidMethod(req, res);
-			expect(res.setHeader).toBeCalledWith("Allow", ["POST"]);
-			expect(res.status).toBeCalledWith(405);
-			expect(res.json).toBeCalledWith(
-				new NextJson({
-					success: false,
-					message: `Method ${req.method} Not Allowed`,
-				})
-			);
+	describe("when getUser method is called", () => {
+		it("Should be rejected on invalid/missing token", () => {
+			const { req, res } = mockAPIArgs({
+				headers: { Authorization: "" },
+			});
+
+			getUser(req, res);
 		});
+		it.todo("Should return user info on valid token");
 	});
 });

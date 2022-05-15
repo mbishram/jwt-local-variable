@@ -67,21 +67,14 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 };
 
-// TODO: logout
-// TODO: user
-
 /**
- * Handle invalid request method
+ * Get User Info
  * @param req {NextApiRequest}
  * @param res {NextApiResponse}
  */
-export const invalidMethod = (req: NextApiRequest, res: NextApiResponse) => {
-	const { method } = req;
-	res.setHeader("Allow", ["POST"]);
-	return res.status(405).json(
-		new NextJson({
-			success: false,
-			message: `Method ${method} Not Allowed`,
-		})
-	);
+export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
+	console.log(req);
 };
+
+// TODO: refreshToken
+// TODO: logout

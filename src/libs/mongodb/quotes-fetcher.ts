@@ -51,19 +51,3 @@ export const createQuotes = async (
 		);
 	}
 };
-
-/**
- * Handle invalid request method
- * @param req {NextApiRequest}
- * @param res {NextApiResponse}
- */
-export const invalidMethod = (req: NextApiRequest, res: NextApiResponse) => {
-	const { method } = req;
-	res.setHeader("Allow", ["POST"]);
-	return res.status(405).json(
-		new NextJson({
-			success: false,
-			message: `Method ${method} Not Allowed`,
-		})
-	);
-};
