@@ -73,10 +73,8 @@ describe("Login Form", () => {
 			removeRefreshToken();
 
 			loginHandler({
-				token: {
-					accessToken: "accessToken",
-					refreshToken: "refreshToken",
-				},
+				accessToken: "accessToken",
+				refreshToken: "refreshToken",
 			});
 
 			await waitFor(() => {
