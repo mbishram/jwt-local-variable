@@ -8,6 +8,7 @@ import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
+import { getTokenData } from "@/libs/api/get-token-data";
 
 /**
  * User login
@@ -73,8 +74,33 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
  * @param res {NextApiResponse}
  */
 export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
+	const authorizationHeader = (req?.headers?.Authorization || "") as string;
+	const [data, error] = await getTokenData(
+		authorizationHeader,
+		String(process.env.ACCESS_TOKEN_SECRET_KEY)
+	);
+
+	if (error) {
+		return res.status(401).json(error);
+	}
+
+	return res.status(200).json(
+		new NextJson({
+			success: true,
+			message: "Get user success!",
+			data: data?.data,
+		})
+	);
+};
+
+/**
+ * Get new access token from refresh token
+ * @param req {NextApiRequest}
+ * @param res {NextApiResponse}
+ */
+export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
+	console.log(req.headers.Authorization);
 	console.log(req);
 };
 
-// TODO: refreshToken
 // TODO: logout

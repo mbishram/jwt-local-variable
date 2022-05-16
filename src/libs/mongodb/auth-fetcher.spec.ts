@@ -90,13 +90,57 @@ describe("Fetcher", () => {
 	});
 
 	describe("when getUser method is called", () => {
-		it("Should be rejected on invalid/missing token", () => {
-			const { req, res } = mockAPIArgs({
-				headers: { Authorization: "" },
-			});
+		describe("on invalid/missing access token", () => {
+			it("should be rejected", async () => {
+				const { req, res } = mockAPIArgs({
+					headers: { Authorization: "invalid" },
+				});
 
-			getUser(req, res);
+				await getUser(req, res);
+
+				expect(res.status).toBeCalledTimes(1);
+				expect(res.status).toBeCalledWith(401);
+				expect(res.json).toBeCalledTimes(1);
+				expect(res.json).toBeCalledWith(
+					new NextJson({
+						success: false,
+						message: "Access denied, token is missing!",
+					})
+				);
+			});
 		});
-		it.todo("Should return user info on valid token");
+
+		describe("on valid access token", () => {
+			it("should return user info", async () => {
+				const authorization = "Bearer " + process.env.JWT_VALID;
+
+				const { req, res } = mockAPIArgs({
+					headers: { Authorization: authorization },
+				});
+
+				await getUser(req, res);
+
+				expect(res.status).toBeCalledTimes(1);
+				expect(res.status).toBeCalledWith(200);
+				expect(res.json).toBeCalledTimes(1);
+				expect(res.json).toBeCalledWith(
+					new NextJson({
+						success: true,
+						message: "Get user success!",
+						data: [{ test: "Test Data" }],
+					})
+				);
+			});
+		});
+	});
+
+	describe("when getToken method is called", () => {
+		describe("on invalid/missing refresh token", () => {
+			it.todo("should be rejected");
+		});
+
+		describe("on valid refresh token", () => {
+			it.todo("should return the new access token");
+		});
 	});
 });
