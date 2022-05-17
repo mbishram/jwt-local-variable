@@ -127,7 +127,6 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	const accessToken = await generateAccessToken(cleanedPayload);
 	const refreshToken = await generateRefreshToken(cleanedPayload);
 
-	console.log(payload, cleanedPayload, accessToken, refreshToken);
 	return res.status(200).json(
 		new NextJson({
 			success: true,
