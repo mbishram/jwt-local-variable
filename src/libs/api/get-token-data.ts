@@ -1,16 +1,18 @@
 import { extractToken } from "@/libs/api/extract-token";
 import { NextJson } from "@/models/next-json";
-import jwt, { JsonWebTokenError } from "jsonwebtoken";
+import jwt, { JsonWebTokenError, VerifyOptions } from "jsonwebtoken";
 import { JWT_ERROR_TYPES } from "@/constants/jwt-error-types";
 
 /**
  * Get token data
  * @param authorizationHeader
  * @param secret
+ * @param options
  */
 export const getTokenData = async (
 	authorizationHeader: string,
-	secret: string
+	secret: string,
+	options?: VerifyOptions
 ) => {
 	let token = extractToken(authorizationHeader);
 
@@ -23,7 +25,7 @@ export const getTokenData = async (
 	}
 
 	try {
-		const jwtRes = await jwt.verify(token, secret);
+		const jwtRes = await jwt.verify(token, secret, options);
 
 		const data = new NextJson<typeof jwtRes>({
 			message: "JWT Valid",

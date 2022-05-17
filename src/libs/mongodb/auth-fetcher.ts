@@ -9,6 +9,8 @@ import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { getTokenData } from "@/libs/api/get-token-data";
+import { cleanTokenPayload } from "@/libs/clean-token-payload";
+import { JwtPayload } from "jsonwebtoken";
 
 /**
  * User login
@@ -81,7 +83,12 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 	);
 
 	if (error) {
-		return res.status(401).json(error);
+		return res.status(401).json(
+			new NextJson({
+				success: false,
+				message: "Failed to fetch user! Token is invalid",
+			})
+		);
 	}
 
 	return res.status(200).json(
@@ -94,13 +101,40 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 /**
- * Get new access token from refresh token
+ * Generate new access token from refresh token
  * @param req {NextApiRequest}
  * @param res {NextApiResponse}
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
-	console.log(req.headers.Authorization);
-	console.log(req);
+	const authorizationHeader = (req?.headers?.Authorization || "") as string;
+	const [data, error] = await getTokenData(
+		authorizationHeader,
+		String(process.env.ACCESS_TOKEN_SECRET_KEY),
+		{ ignoreExpiration: true }
+	);
+
+	if (error) {
+		return res.status(401).json(
+			new NextJson({
+				success: false,
+				message: "Failed to generate token! Token is invalid",
+			})
+		);
+	}
+
+	const payload = data?.data?.[0] as JwtPayload;
+	const cleanedPayload = cleanTokenPayload(payload) as UserModel;
+	const accessToken = await generateAccessToken(cleanedPayload);
+	const refreshToken = await generateRefreshToken(cleanedPayload);
+
+	console.log(payload, cleanedPayload, accessToken, refreshToken);
+	return res.status(200).json(
+		new NextJson({
+			success: true,
+			message: "Token generated!",
+			data: [{ accessToken, refreshToken }],
+		})
+	);
 };
 
 // TODO: logout

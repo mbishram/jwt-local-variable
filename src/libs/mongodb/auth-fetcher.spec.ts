@@ -2,7 +2,7 @@ import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 import bcrypt from "bcryptjs";
-import { getUser, login } from "@/libs/mongodb/auth-fetcher";
+import { getToken, getUser, login } from "@/libs/mongodb/auth-fetcher";
 import { aesEncrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
@@ -10,6 +10,8 @@ import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 
 describe("Fetcher", () => {
+	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
+
 	describe("when login method is called", () => {
 		const username = process.env.NEXT_PUBLIC_USER || "username";
 		const email = process.env.NEXT_PUBLIC_EMAIL || "email@test.com";
@@ -104,7 +106,7 @@ describe("Fetcher", () => {
 				expect(res.json).toBeCalledWith(
 					new NextJson({
 						success: false,
-						message: "Access denied, token is missing!",
+						message: "Failed to fetch user! Token is invalid",
 					})
 				);
 			});
@@ -127,7 +129,7 @@ describe("Fetcher", () => {
 					new NextJson({
 						success: true,
 						message: "Get user success!",
-						data: [{ test: "Test Data" }],
+						data: [tokenPayload],
 					})
 				);
 			});
@@ -136,11 +138,48 @@ describe("Fetcher", () => {
 
 	describe("when getToken method is called", () => {
 		describe("on invalid/missing refresh token", () => {
-			it.todo("should be rejected");
+			it("should be rejected", async () => {
+				const { req, res } = mockAPIArgs({
+					headers: { Authorization: "invalid" },
+				});
+
+				await getToken(req, res);
+
+				expect(res.status).toBeCalledTimes(1);
+				expect(res.status).toBeCalledWith(401);
+				expect(res.json).toBeCalledTimes(1);
+				expect(res.json).toBeCalledWith(
+					new NextJson({
+						success: false,
+						message: "Failed to generate token! Token is invalid",
+					})
+				);
+			});
 		});
 
 		describe("on valid refresh token", () => {
-			it.todo("should return the new access token");
+			it("should return the new access token", async () => {
+				const authorization = "Bearer " + process.env.JWT_EXPIRED;
+				const accessToken = await generateAccessToken(tokenPayload);
+				const refreshToken = await generateRefreshToken(tokenPayload);
+
+				const { req, res } = mockAPIArgs({
+					headers: { Authorization: authorization },
+				});
+
+				await getToken(req, res);
+
+				expect(res.status).toBeCalledTimes(1);
+				expect(res.status).toBeCalledWith(200);
+				expect(res.json).toBeCalledTimes(1);
+				expect(res.json).toBeCalledWith(
+					new NextJson({
+						success: true,
+						message: "Token generated!",
+						data: [{ accessToken, refreshToken }],
+					})
+				);
+			});
 		});
 	});
 });
