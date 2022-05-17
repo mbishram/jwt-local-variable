@@ -2,8 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { login } from "./auth";
-import { loginMethodHandler } from "../../../specs/__mocks__/api/authFetcher";
+import { getToken, getUser, login } from "./auth";
+import {
+	getTokenMethodHandler,
+	loginMethodHandler,
+	userMethodHandler,
+} from "../../../specs/__mocks__/api/authFetcher";
 
 describe("Auth Fetcher", () => {
 	describe("on login method", () => {
@@ -15,11 +19,19 @@ describe("Auth Fetcher", () => {
 		});
 	});
 
-	describe("on logout method", () => {
-		it.todo("should be able to logout");
+	describe("on user method", () => {
+		it("should pass /auth/user endpoint", async () => {
+			userMethodHandler();
+			const res = await getUser();
+			expect(res?.data).toEqual("Success");
+		});
 	});
 
-	describe("on getUser method", () => {
-		it.todo("should be able to get user");
+	describe("on get token method", () => {
+		it("should pass /auth/get-token endpoint", async () => {
+			getTokenMethodHandler();
+			const res = await getToken();
+			expect(res?.data).toEqual("Success");
+		});
 	});
 });
