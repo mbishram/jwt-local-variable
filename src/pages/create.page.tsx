@@ -3,9 +3,10 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { CreateForm } from "@/components/create/Form/Form";
 import { QuotePreview } from "@/components/create/QuotePreview/QuotePreview";
 import Head from "next/head";
+import { useUser } from "@/hooks/use-user";
 
 export default function Create() {
-	// TODO: Redirect to /login, when user is not logged in
+	useUser("/login");
 
 	return (
 		<MainLayout classMain="md:min-w-screen-sm min-w-full max-w-screen-sm mx-auto">

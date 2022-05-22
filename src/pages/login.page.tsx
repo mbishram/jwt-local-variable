@@ -6,8 +6,11 @@ import { QuoteModel } from "@/models/quote-model";
 import { LoginForm } from "@/components/login/Form/Form";
 import { randomBg } from "@/libs/random-bg";
 import { useEffect, useState } from "react";
+import { useUser } from "@/hooks/use-user";
 
 export default function Login() {
+	useUser("/", { redirectIfFound: true });
+
 	const [quoteData, setQuoteData] = useState(
 		new QuoteModel({
 			quote: "Give a little color to your quote!",

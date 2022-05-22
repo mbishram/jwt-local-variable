@@ -3,6 +3,7 @@ import { UseUserOptions } from "@/types/hooks/use-user-options";
 import useSWR from "swr";
 import { USER } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
+import { refreshTokenMiddleware } from "@/libs/swr/middlewares/refresh-token";
 
 export function useUser(
 	redirectTo: string = "",
@@ -14,6 +15,7 @@ export function useUser(
 		error,
 	} = useSWR(USER, {
 		refreshInterval: 5000,
+		use: [refreshTokenMiddleware],
 	});
 	const history = useRouter();
 

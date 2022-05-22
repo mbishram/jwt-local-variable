@@ -76,7 +76,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
  * @param res {NextApiResponse}
  */
 export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
-	const authorizationHeader = (req?.headers?.Authorization || "") as string;
+	const authorizationHeader = (req?.headers?.authorization || "") as string;
 	const [data, error] = await getTokenData(
 		authorizationHeader,
 		String(process.env.ACCESS_TOKEN_SECRET_KEY)
@@ -106,7 +106,7 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
  * @param res {NextApiResponse}
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
-	const authorizationHeader = (req?.headers?.Authorization || "") as string;
+	const authorizationHeader = (req?.headers?.authorization || "") as string;
 	const [data, error] = await getTokenData(
 		authorizationHeader,
 		String(process.env.ACCESS_TOKEN_SECRET_KEY),

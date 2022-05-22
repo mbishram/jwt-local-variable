@@ -12,14 +12,18 @@ import * as useSWR from "swr";
 import { customRenderHook } from "@specs-utils/custom-render-hook";
 import { USER } from "@/libs/fetchers/auth";
 import Router from "next/router";
+import { refreshTokenMiddleware } from "@/libs/swr/middlewares/refresh-token";
 
 describe("useUser Hook", () => {
 	const redirectTo = "/test";
 
-	it("should fetch data using swr and refetch it every 5 second", async () => {
+	it("should fetch data using swr, refetch it every 5 second, and use a refresh token middleware", async () => {
 		jest.spyOn(useSWR, "default");
 		renderHook(() => useUser());
-		expect(useSWR.default).toBeCalledWith(USER, { refreshInterval: 5000 });
+		expect(useSWR.default).toBeCalledWith(USER, {
+			refreshInterval: 5000,
+			use: [refreshTokenMiddleware],
+		});
 		jest.clearAllMocks();
 	});
 

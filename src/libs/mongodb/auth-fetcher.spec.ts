@@ -95,7 +95,7 @@ describe("Fetcher", () => {
 		describe("on invalid/missing access token", () => {
 			it("should be rejected", async () => {
 				const { req, res } = mockAPIArgs({
-					headers: { Authorization: "invalid" },
+					headers: { authorization: "invalid" },
 				});
 
 				await getUser(req, res);
@@ -117,7 +117,7 @@ describe("Fetcher", () => {
 				const authorization = "Bearer " + process.env.JWT_VALID;
 
 				const { req, res } = mockAPIArgs({
-					headers: { Authorization: authorization },
+					headers: { authorization },
 				});
 
 				await getUser(req, res);
@@ -140,7 +140,7 @@ describe("Fetcher", () => {
 		describe("on invalid/missing refresh token", () => {
 			it("should be rejected", async () => {
 				const { req, res } = mockAPIArgs({
-					headers: { Authorization: "invalid" },
+					headers: { authorization: "invalid" },
 				});
 
 				await getToken(req, res);
@@ -164,7 +164,7 @@ describe("Fetcher", () => {
 				const refreshToken = await generateRefreshToken(tokenPayload);
 
 				const { req, res } = mockAPIArgs({
-					headers: { Authorization: authorization },
+					headers: { authorization },
 				});
 
 				await getToken(req, res);
