@@ -1,10 +1,12 @@
 import "../styles/globals.css";
 import type { AppProps } from "next/app";
 import Head from "next/head";
+import { SWRConfig } from "swr";
+import { fetcher } from "@/libs/swr/fetcher";
 
 function CustomApp({ Component, pageProps }: AppProps) {
 	return (
-		<>
+		<SWRConfig value={{ fetcher }}>
 			<Head>
 				<title>{process.env.NEXT_PUBLIC_APPLICATION_NAME}</title>
 				<meta
@@ -14,7 +16,7 @@ function CustomApp({ Component, pageProps }: AppProps) {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<Component {...pageProps} />
-		</>
+		</SWRConfig>
 	);
 }
 

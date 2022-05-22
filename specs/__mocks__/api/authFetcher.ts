@@ -1,7 +1,7 @@
 import nock from "nock";
 import { baseURL } from "@/libs/fetchers/http";
 import { LoginFormType } from "@/forms/login";
-import { LOGIN, GET_TOKEN, USER } from "@/libs/fetchers/auth";
+import { LOGIN, GET_TOKEN } from "@/libs/fetchers/auth";
 
 const scope = nock(baseURL);
 
@@ -14,10 +14,6 @@ export const loginMethodHandler = (data: LoginFormType) => {
 				body.password === data.password
 		)
 		.reply(200, "Success");
-};
-
-export const userMethodHandler = () => {
-	scope.get(USER).reply(200, "Success");
 };
 
 export const getTokenMethodHandler = () => {

@@ -12,16 +12,13 @@ import {
 	loginExceptionHandler,
 	loginHandler,
 } from "../../../../specs/__mocks__/api/login";
-import { renderHook, act } from "@testing-library/react-hooks/dom";
-import { useRouter } from "next/router";
+import Router from "next/router";
 import {
 	getAccessToken,
 	getRefreshToken,
 	removeAccessToken,
 	removeRefreshToken,
 } from "@/libs/token/local-storage-handler";
-
-jest.mock("next/router", () => require("next-router-mock"));
 
 describe("Login Form", () => {
 	let usernameInput: Element;
@@ -79,14 +76,7 @@ describe("Login Form", () => {
 
 			await waitFor(() => {
 				userEvent.click(submitButton);
-			});
-
-			await act(async () => {
-				const { result, waitForNextUpdate } = renderHook(() =>
-					useRouter()
-				);
-				await waitForNextUpdate();
-				expect(result.current).toMatchObject({ asPath: "/" });
+				expect(Router).toMatchObject({ asPath: "/" });
 			});
 
 			expect(getAccessToken()).toBeTruthy();
