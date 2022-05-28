@@ -8,11 +8,13 @@ import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
+import { ObjectId } from "bson";
 
 describe("Fetcher", () => {
 	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
 
 	describe("when login method is called", () => {
+		let id: ObjectId;
 		const username = process.env.NEXT_PUBLIC_USER || "username";
 		const email = process.env.NEXT_PUBLIC_EMAIL || "email@test.com";
 		const password = process.env.NEXT_PUBLIC_PASS || "password";
@@ -29,6 +31,11 @@ describe("Fetcher", () => {
 					Number(process.env.SALT_ROUND_BE)
 				),
 			});
+
+			const userRes = await db.collection("users").findOne({ username });
+			if (userRes) {
+				id = userRes._id;
+			}
 		});
 
 		afterEach(async () => {
@@ -74,6 +81,7 @@ describe("Fetcher", () => {
 			await login(req, res);
 
 			const user = new UserModel({
+				id,
 				username,
 				email,
 				name,

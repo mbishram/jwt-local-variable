@@ -1,9 +1,11 @@
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { UserModel } from "@/models/user-model";
 import { getTokenData } from "@/libs/api/get-token-data";
+import { ObjectId } from "bson";
 
 describe("Generate Access Token", () => {
 	const data = new UserModel({
+		id: new ObjectId("D92A6298709507AAC819F33D"),
 		name: "Test",
 		username: "test",
 		email: "email@test.com",

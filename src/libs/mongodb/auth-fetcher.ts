@@ -51,6 +51,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 		}
 
 		const user = new UserModel({
+			id: userRes._id,
 			username: userRes.username,
 			email: userRes.email,
 			name: userRes.name,
@@ -144,5 +145,3 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 		);
 	}
 };
-
-// TODO: logout

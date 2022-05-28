@@ -28,7 +28,6 @@ export function CreateForm({
 	) => {
 		try {
 			// TODO: Change ObjectId to user's
-			// TODO: Update Bearer Token
 			const res = await createQuote({
 				...values,
 				userId: "61f9147cba2fd619cdcddce1",
