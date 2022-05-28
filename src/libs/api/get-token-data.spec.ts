@@ -19,7 +19,7 @@ describe("Get Token Data", () => {
 
 	describe("when JWT is valid", () => {
 		it("should return data", async () => {
-			const authorization = "Bearer " + process.env.JWT_VALID;
+			const authorization = "Bearer " + process.env.JWT_VALID_ACCESS;
 			const data = { test: "Test Data" };
 			const [success, error] = await getTokenData(
 				authorization,

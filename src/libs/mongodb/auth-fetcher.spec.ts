@@ -79,7 +79,7 @@ describe("Fetcher", () => {
 				name,
 			});
 			const accessToken = await generateAccessToken(user);
-			const refreshToken = await generateRefreshToken(user);
+			const refreshToken = await generateRefreshToken();
 
 			expect(res.json).toBeCalledWith(
 				new NextJson<FetcherLoginResponseData>({
@@ -101,7 +101,7 @@ describe("Fetcher", () => {
 				await getUser(req, res);
 
 				expect(res.status).toBeCalledTimes(1);
-				expect(res.status).toBeCalledWith(401);
+				expect(res.status).toBeCalledWith(200);
 				expect(res.json).toBeCalledTimes(1);
 				expect(res.json).toBeCalledWith(
 					new NextJson({
@@ -114,7 +114,7 @@ describe("Fetcher", () => {
 
 		describe("on valid access token", () => {
 			it("should return user info", async () => {
-				const authorization = "Bearer " + process.env.JWT_VALID;
+				const authorization = "Bearer " + process.env.JWT_VALID_ACCESS;
 
 				const { req, res } = mockAPIArgs({
 					headers: { authorization },
@@ -159,12 +159,16 @@ describe("Fetcher", () => {
 
 		describe("on valid refresh token", () => {
 			it("should return the new access token", async () => {
-				const authorization = "Bearer " + process.env.JWT_EXPIRED;
+				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
+				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
 				const accessToken = await generateAccessToken(tokenPayload);
-				const refreshToken = await generateRefreshToken(tokenPayload);
+				const refreshToken = await generateRefreshToken();
 
 				const { req, res } = mockAPIArgs({
-					headers: { authorization },
+					headers: {
+						authorization,
+						"token-access": headerAccessToken,
+					},
 				});
 
 				await getToken(req, res);

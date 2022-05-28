@@ -12,11 +12,7 @@ export function useUser(
 	redirectTo: string = "",
 	options: UseUserOptions = { redirectIfFound: false }
 ) {
-	const {
-		data: user,
-		mutate: mutateUser,
-		error,
-	} = useSWR(USER, {
+	const { data: user, mutate: mutateUser } = useSWR(USER, {
 		refreshInterval: 2000,
 	});
 	const history = useRouter();
@@ -26,11 +22,11 @@ export function useUser(
 			let isFinallySkipped = false;
 
 			// Is loading, do nothing
-			if (!error && !user) return;
+			if (!user) return;
 
 			try {
 				// If error, try to refresh token
-				if (error) {
+				if (!user.success) {
 					const { data } = await getToken();
 					if (data?.success) {
 						const token = data.data?.[0];
@@ -49,12 +45,10 @@ export function useUser(
 					!isFinallySkipped &&
 					// On user fetch failed and redirectTo is set, redirect to it
 					((!user?.success &&
-						error &&
 						!options?.redirectIfFound &&
 						redirectTo) ||
 						// On user fetch success, redirectIfFound is true, and redirectTo is set, redirect to it
 						(user?.success &&
-							!error &&
 							options?.redirectIfFound &&
 							redirectTo))
 				) {
@@ -62,7 +56,7 @@ export function useUser(
 				}
 			}
 		})();
-	}, [user, error, redirectTo]);
+	}, [user, redirectTo]);
 
-	return { user, mutateUser, error };
+	return { user, mutateUser };
 }

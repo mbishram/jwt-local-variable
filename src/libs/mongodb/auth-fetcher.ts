@@ -56,7 +56,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			name: userRes.name,
 		});
 		const accessToken = await generateAccessToken(user);
-		const refreshToken = await generateRefreshToken(user);
+		const refreshToken = await generateRefreshToken();
 
 		return res.json(
 			new NextJson<FetcherLoginResponseData>({
@@ -83,7 +83,7 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 	);
 
 	if (error) {
-		return res.status(401).json(
+		return res.status(200).json(
 			new NextJson({
 				success: false,
 				message: "Failed to fetch user! Token is invalid",
@@ -91,11 +91,13 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 		);
 	}
 
+	const payload = data?.data?.[0] as JwtPayload;
+	const cleanedPayload = cleanTokenPayload(payload) as UserModel;
 	return res.status(200).json(
 		new NextJson({
 			success: true,
 			message: "Get user success!",
-			data: data?.data,
+			data: [cleanedPayload],
 		})
 	);
 };
@@ -107,13 +109,18 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const [data, error] = await getTokenData(
+	const [refreshTokenData, refreshTokenError] = await getTokenData(
 		authorizationHeader,
+		String(process.env.REFRESH_TOKEN_SECRET_KEY)
+	);
+	const accessTokenHeader = (req?.headers?.["token-access"] || "") as string;
+	const [accessTokenData, accessTokenError] = await getTokenData(
+		accessTokenHeader,
 		String(process.env.ACCESS_TOKEN_SECRET_KEY),
 		{ ignoreExpiration: true }
 	);
 
-	if (error) {
+	if (refreshTokenError || accessTokenError) {
 		return res.status(401).json(
 			new NextJson({
 				success: false,
@@ -122,18 +129,20 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 		);
 	}
 
-	const payload = data?.data?.[0] as JwtPayload;
-	const cleanedPayload = cleanTokenPayload(payload) as UserModel;
-	const accessToken = await generateAccessToken(cleanedPayload);
-	const refreshToken = await generateRefreshToken(cleanedPayload);
+	if (refreshTokenData?.success) {
+		const payload = accessTokenData?.data?.[0] as JwtPayload;
+		const cleanedPayload = cleanTokenPayload(payload) as UserModel;
+		const accessToken = await generateAccessToken(cleanedPayload);
+		const refreshToken = await generateRefreshToken();
 
-	return res.status(200).json(
-		new NextJson({
-			success: true,
-			message: "Token generated!",
-			data: [{ accessToken, refreshToken }],
-		})
-	);
+		return res.status(200).json(
+			new NextJson({
+				success: true,
+				message: "Token generated!",
+				data: [{ accessToken, refreshToken }],
+			})
+		);
+	}
 };
 
 // TODO: logout

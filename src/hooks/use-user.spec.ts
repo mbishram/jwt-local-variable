@@ -64,7 +64,7 @@ describe("useUser Hook", () => {
 	});
 
 	describe("on no params set", () => {
-		it("should return mutateUser method, error, and didn't redirect on failed fetch", async () => {
+		it("should return mutateUser method and didn't redirect on failed fetch", async () => {
 			const userCall = userExceptionHandler();
 			const tokenCall = getTokenExceptionHandler();
 
@@ -74,11 +74,10 @@ describe("useUser Hook", () => {
 				expect(tokenCall.isDone()).toBeTruthy();
 			});
 
-			const { user, mutateUser, error } = result.current;
-			expect(user?.data).toBeFalsy();
-			expect(mutateUser).toBeTruthy();
-			expect(error?.response?.data?.data).toEqual("Failed!");
+			const { user, mutateUser } = result.current;
 			expect(Router.asPath).toEqual("/initial");
+			expect(user?.success).toBeFalsy();
+			expect(mutateUser).toBeTruthy();
 		});
 
 		it("should return user, mutateUser method, and didn't redirect on successful fetch", async () => {
@@ -89,16 +88,15 @@ describe("useUser Hook", () => {
 				expect(userCall.isDone()).toBeTruthy();
 			});
 
-			const { user, mutateUser, error } = result.current;
-			expect(user?.data).toEqual("Success!");
+			const { user, mutateUser } = result.current;
+			expect(user?.success).toBeTruthy();
 			expect(mutateUser).toBeTruthy();
-			expect(error).toBeFalsy();
 			expect(Router.asPath).toEqual("/initial");
 		});
 	});
 
 	describe("on redirectTo params is set", () => {
-		it("should return mutateUser, error, and redirect the page to redirectTo params on failed fetch", async () => {
+		it("should return mutateUser and redirect the page to redirectTo params on failed fetch", async () => {
 			const userCall = userExceptionHandler();
 			const tokenCall = getTokenExceptionHandler();
 
@@ -110,11 +108,10 @@ describe("useUser Hook", () => {
 				expect(tokenCall.isDone()).toBeTruthy();
 			});
 
-			const { user, mutateUser, error } = result.current;
-			expect(user).toBeFalsy();
+			const { user, mutateUser } = result.current;
+			expect(user?.success).toBeFalsy();
 			expect(mutateUser).toBeTruthy();
 			expect(Router.asPath).toEqual(redirectTo);
-			expect(error?.response?.data?.data).toEqual("Failed!");
 		});
 
 		it("should return mutateUser and didn't redirect on successful fetch", async () => {
@@ -127,17 +124,16 @@ describe("useUser Hook", () => {
 				expect(userCall.isDone()).toBeTruthy();
 			});
 
-			const { user, mutateUser, error } = result.current;
-			expect(user?.data).toEqual("Success!");
+			const { user, mutateUser } = result.current;
+			expect(user?.success).toBeTruthy();
 			expect(mutateUser).toBeTruthy();
 			expect(Router.asPath).toEqual("/initial");
-			expect(error).toBeFalsy();
 		});
 	});
 
 	describe("on redirectTo and options params is set", () => {
 		describe("(redirectIfFound)", () => {
-			it("should return mutateUser, error, and didn't redirect on failed fetch", async () => {
+			it("should return mutateUser and didn't redirect on failed fetch", async () => {
 				const userCall = userExceptionHandler();
 				const tokenCall = getTokenExceptionHandler();
 
@@ -149,10 +145,9 @@ describe("useUser Hook", () => {
 					expect(tokenCall.isDone()).toBeTruthy();
 				});
 
-				const { user, mutateUser, error } = result.current;
-				expect(user).toBeFalsy();
+				const { user, mutateUser } = result.current;
+				expect(user?.success).toBeFalsy();
 				expect(mutateUser).toBeTruthy();
-				expect(error?.response?.data?.data).toEqual("Failed!");
 				expect(Router.asPath).toEqual("/initial");
 			});
 
@@ -166,10 +161,9 @@ describe("useUser Hook", () => {
 					expect(userCall.isDone()).toBeTruthy();
 				});
 
-				const { user, mutateUser, error } = result.current;
-				expect(user?.data).toEqual("Success!");
+				const { user, mutateUser } = result.current;
+				expect(user?.success).toBeTruthy();
 				expect(mutateUser).toBeTruthy();
-				expect(error).toBeFalsy();
 				expect(Router.asPath).toEqual(redirectTo);
 			});
 		});

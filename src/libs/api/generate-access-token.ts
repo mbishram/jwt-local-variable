@@ -8,9 +8,9 @@ import jwt from "jsonwebtoken";
 export async function generateAccessToken(userData: UserModel) {
 	try {
 		return jwt.sign(
-			{ user: userData },
+			{ ...userData },
 			process?.env?.ACCESS_TOKEN_SECRET_KEY as string,
-			{ expiresIn: "10m" }
+			{ expiresIn: "5m" }
 		);
 	} catch (error) {
 		return;

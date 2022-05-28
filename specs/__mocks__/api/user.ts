@@ -9,5 +9,5 @@ export const userHandler = () => {
 };
 
 export const userExceptionHandler = () => {
-	return scope.get(USER).reply(401, { success: false, data: "Failed!" });
+	return scope.get(USER).reply(200, { success: false, data: "Failed!" });
 };

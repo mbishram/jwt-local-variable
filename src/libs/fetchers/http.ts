@@ -26,8 +26,10 @@ const httpRefreshInstance = axios.create({
 
 httpRefreshInstance.interceptors.request.use((request) => {
 	const refreshTokenString = "Bearer " + (!isServer ? getRefreshToken() : "");
+	const accessTokenString = "Bearer " + (!isServer ? getAccessToken() : "");
 	if (request?.headers) {
 		request.headers.authorization = refreshTokenString;
+		request.headers["token-access"] = accessTokenString;
 	}
 	return request;
 });
