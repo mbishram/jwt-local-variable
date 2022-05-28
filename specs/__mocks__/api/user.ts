@@ -5,7 +5,12 @@ import { USER } from "@/libs/fetchers/auth";
 const scope = nock(baseURL);
 
 export const userHandler = () => {
-	return scope.get(USER).reply(200, { success: true, data: "Success!" });
+	return scope
+		.get(USER)
+		.reply(200, {
+			success: true,
+			data: [{ name: "Muhammad Bishram Yashir Alfarizi Aminuddin" }],
+		});
 };
 
 export const userExceptionHandler = () => {
