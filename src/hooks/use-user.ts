@@ -1,9 +1,12 @@
 import { useEffect } from "react";
 import { UseUserOptions } from "@/types/hooks/use-user-options";
 import useSWR from "swr";
-import { USER } from "@/libs/fetchers/auth";
+import { getToken, USER } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
-import { refreshTokenMiddleware } from "@/libs/swr/middlewares/refresh-token";
+import {
+	setAccessToken,
+	setRefreshToken,
+} from "@/libs/token/local-storage-handler";
 
 export function useUser(
 	redirectTo: string = "",
@@ -14,23 +17,51 @@ export function useUser(
 		mutate: mutateUser,
 		error,
 	} = useSWR(USER, {
-		refreshInterval: 5000,
-		use: [refreshTokenMiddleware],
+		refreshInterval: 2000,
 	});
 	const history = useRouter();
 
 	useEffect(() => {
-		if (!redirectTo || (!error && !user)) return;
+		(async () => {
+			let isFinallySkipped = false;
 
-		if (
-			(!user?.success &&
-				error &&
-				!options?.redirectIfFound &&
-				redirectTo) ||
-			(user?.success && !error && options?.redirectIfFound && redirectTo)
-		) {
-			void history.push(redirectTo);
-		}
+			// Is loading, do nothing
+			if (!error && !user) return;
+
+			try {
+				// If error, try to refresh token
+				if (error) {
+					const { data } = await getToken();
+					if (data?.success) {
+						const token = data.data?.[0];
+						if (token?.accessToken && token?.refreshToken) {
+							setAccessToken(token.accessToken);
+							setRefreshToken(token.refreshToken);
+
+							isFinallySkipped = true;
+						}
+					}
+				}
+			} catch (e) {
+			} finally {
+				if (
+					// If isFinallySkipped is true, skip finally block
+					!isFinallySkipped &&
+					// On user fetch failed and redirectTo is set, redirect to it
+					((!user?.success &&
+						error &&
+						!options?.redirectIfFound &&
+						redirectTo) ||
+						// On user fetch success, redirectIfFound is true, and redirectTo is set, redirect to it
+						(user?.success &&
+							!error &&
+							options?.redirectIfFound &&
+							redirectTo))
+				) {
+					void (await history.push(redirectTo));
+				}
+			}
+		})();
 	}, [user, error, redirectTo]);
 
 	return { user, mutateUser, error };

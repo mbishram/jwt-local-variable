@@ -15,7 +15,9 @@ export async function login(data: LoginFormType) {
 }
 
 export async function getToken() {
-	return await httpRefreshInstance.get(GET_TOKEN);
+	return await httpRefreshInstance.get<NextJson<FetcherLoginResponseData>>(
+		GET_TOKEN
+	);
 }
 
 export function logout() {}
