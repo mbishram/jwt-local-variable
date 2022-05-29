@@ -19,7 +19,3 @@ export async function getToken() {
 		GET_TOKEN
 	);
 }
-
-export function logout() {
-	// TODO: remove refresh and access token from localstorage
-}

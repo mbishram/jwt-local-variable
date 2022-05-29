@@ -5,9 +5,17 @@
 import React from "react";
 import { itPassProps } from "@specs-utils/it-pass-props";
 import { Navbar } from "@/components/layouts/Navbar/Navbar";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import * as useUserHook from "@/hooks/use-user";
 import { useUser } from "@/hooks/use-user";
+import {
+	getAccessToken,
+	getRefreshToken,
+	setAccessToken,
+	setRefreshToken,
+} from "@/libs/token/local-storage-handler";
+import Router from "next/router";
+import userEvent from "@testing-library/user-event";
 
 describe("Navbar", () => {
 	describe("on default state", () => {
@@ -75,6 +83,25 @@ describe("Navbar", () => {
 		it("should render logout button", () => {
 			expect(screen.queryByText("Logout")).toBeTruthy();
 		});
-		it.todo("should be able to logout");
+		it("should be able to logout", async () => {
+			const accessTokenString = "AccessToken";
+			const refreshTokenString = "RefreshToken";
+			setAccessToken(accessTokenString);
+			setRefreshToken(refreshTokenString);
+
+			expect(getAccessToken()).toEqual(accessTokenString);
+			expect(getRefreshToken()).toEqual(refreshTokenString);
+			expect(Router).toMatchObject({ asPath: "/initial" });
+
+			const logoutButton = screen.getByText("Logout");
+			userEvent.click(logoutButton);
+
+			await waitFor(() => {
+				expect(getAccessToken()).toBeFalsy();
+				expect(getRefreshToken()).toBeFalsy();
+				expect(Router).toMatchObject({ asPath: "/" });
+				expect(useUser().mutateUser).toBeCalledTimes(1);
+			});
+		});
 	});
 });

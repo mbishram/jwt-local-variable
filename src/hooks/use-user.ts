@@ -52,7 +52,7 @@ export function useUser(
 							options?.redirectIfFound &&
 							redirectTo))
 				) {
-					void (await history.push(redirectTo));
+					void (await history.replace(redirectTo));
 				}
 			}
 		})();
