@@ -12,6 +12,7 @@ import {
 jest.mock("next/router", () => require("next-router-mock"));
 
 beforeEach(() => {
+	jest.restoreAllMocks();
 	mockRouter.setCurrentUrl("/initial");
 
 	// If environment is jsdom

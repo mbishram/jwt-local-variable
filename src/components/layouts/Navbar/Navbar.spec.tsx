@@ -6,7 +6,6 @@ import React from "react";
 import { itPassProps } from "@specs-utils/it-pass-props";
 import { Navbar } from "@/components/layouts/Navbar/Navbar";
 import { render, screen, waitFor } from "@testing-library/react";
-import * as useUserHook from "@/hooks/use-user";
 import { useUser } from "@/hooks/use-user";
 import {
 	getAccessToken,
@@ -16,6 +15,7 @@ import {
 } from "@/libs/token/local-storage-handler";
 import Router from "next/router";
 import userEvent from "@testing-library/user-event";
+import { spyOnUseUser } from "@specs-utils/spy-on-useuser";
 
 describe("Navbar", () => {
 	describe("on default state", () => {
@@ -38,11 +38,8 @@ describe("Navbar", () => {
 
 	describe("when not login", () => {
 		beforeEach(() => {
-			jest.spyOn(useUserHook, "useUser").mockReturnValue({
-				user: {
-					success: false,
-				},
-				mutateUser: jest.fn(),
+			spyOnUseUser({
+				success: false,
 			});
 			render(<Navbar />);
 		});
@@ -59,15 +56,10 @@ describe("Navbar", () => {
 	});
 
 	describe("when login", () => {
-		beforeEach(async () => {
-			jest.spyOn(useUserHook, "useUser").mockReturnValue({
-				user: {
-					success: true,
-					data: [
-						{ name: "Muhammad Bishram Yashir Alfarizi Aminuddin" },
-					],
-				},
-				mutateUser: jest.fn(),
+		beforeEach(() => {
+			spyOnUseUser({
+				success: true,
+				data: [{ name: "Muhammad Bishram Yashir Alfarizi Aminuddin" }],
 			});
 			render(<Navbar />);
 		});
@@ -83,7 +75,7 @@ describe("Navbar", () => {
 		it("should render logout button", () => {
 			expect(screen.queryByText("Logout")).toBeTruthy();
 		});
-		it("should be able to logout", async () => {
+		it("should be able to logout, redirect, and mutateUser", async () => {
 			const accessTokenString = "AccessToken";
 			const refreshTokenString = "RefreshToken";
 			setAccessToken(accessTokenString);
@@ -99,8 +91,8 @@ describe("Navbar", () => {
 			await waitFor(() => {
 				expect(getAccessToken()).toBeFalsy();
 				expect(getRefreshToken()).toBeFalsy();
-				expect(Router).toMatchObject({ asPath: "/" });
 				expect(useUser().mutateUser).toBeCalledTimes(1);
+				expect(Router).toMatchObject({ asPath: "/login" });
 			});
 		});
 	});

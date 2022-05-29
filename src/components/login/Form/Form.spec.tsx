@@ -16,17 +16,16 @@ import Router from "next/router";
 import {
 	getAccessToken,
 	getRefreshToken,
-	removeAccessToken,
-	removeRefreshToken,
 } from "@/libs/token/local-storage-handler";
 
 describe("Login Form", () => {
 	let usernameInput: Element;
 	let passwordInput: Element;
 	let submitButton: Element;
+	const mutateUser = jest.fn();
 
 	beforeEach(() => {
-		render(<LoginForm className="bg-black" />);
+		render(<LoginForm className="bg-black" mutateUser={mutateUser} />);
 
 		usernameInput = screen.getByLabelText("Email/Username");
 		passwordInput = screen.getByLabelText("Password");
@@ -65,22 +64,20 @@ describe("Login Form", () => {
 			});
 		});
 
-		it("should login and redirect when correct credential submitted", async () => {
-			removeAccessToken();
-			removeRefreshToken();
-
+		it("should login, redirect, and mutateUser when correct credential submitted", async () => {
 			loginHandler({
 				accessToken: "accessToken",
 				refreshToken: "refreshToken",
 			});
 
+			userEvent.click(submitButton);
+
 			await waitFor(() => {
-				userEvent.click(submitButton);
+				expect(getAccessToken()).toBeTruthy();
+				expect(getRefreshToken()).toBeTruthy();
+				expect(mutateUser).toBeCalledTimes(1);
 				expect(Router).toMatchObject({ asPath: "/" });
 			});
-
-			expect(getAccessToken()).toBeTruthy();
-			expect(getRefreshToken()).toBeTruthy();
 		});
 	});
 });

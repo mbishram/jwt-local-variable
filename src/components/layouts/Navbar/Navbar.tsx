@@ -18,8 +18,8 @@ export function Navbar(props: HTMLProps<HTMLElement>) {
 		removeAccessToken();
 		removeRefreshToken();
 
-		await router.replace("/");
 		await mutateUser();
+		await router.replace("/login");
 	};
 
 	return (

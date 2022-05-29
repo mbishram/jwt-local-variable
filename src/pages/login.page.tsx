@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 import { useUser } from "@/hooks/use-user";
 
 export default function Login() {
-	useUser("/", { redirectIfFound: true });
+	const { mutateUser } = useUser("/", { redirectIfFound: true });
 
 	const [quoteData, setQuoteData] = useState(
 		new QuoteModel({
@@ -28,7 +28,6 @@ export default function Login() {
 		<MainLayout
 			className="max-w-screen-xl"
 			classMain="grid md:grid-cols-2 gap-8 items-center content-center md:mt-0 mt-6"
-			disableNav
 		>
 			<Head>
 				<title>
@@ -41,7 +40,7 @@ export default function Login() {
 				<Typography className="mb-8">
 					Login to create a quote!
 				</Typography>
-				<LoginForm />
+				<LoginForm mutateUser={mutateUser} />
 			</div>
 		</MainLayout>
 	);

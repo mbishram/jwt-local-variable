@@ -9,15 +9,20 @@ import {
 	setAccessToken,
 	setRefreshToken,
 } from "@/libs/token/local-storage-handler";
+import { KeyedMutator } from "swr";
 
 /**
  * To separate login logic
  * @param className
+ * @param mutateUser
  * @constructor
  */
 export function LoginForm({
 	className,
-}: Pick<HTMLProps<HTMLFormElement>, "className">) {
+	mutateUser,
+}: Pick<HTMLProps<HTMLFormElement>, "className"> & {
+	mutateUser: KeyedMutator<any>;
+}) {
 	const router = useRouter();
 	const [timer, setTimer] = useState(setTimeout(() => {}));
 	const initialValues = {
@@ -41,7 +46,8 @@ export function LoginForm({
 					setAccessToken(token.accessToken);
 					setRefreshToken(token.refreshToken);
 				}
-				await router.push("/");
+				await mutateUser();
+				await router.replace("/");
 			}
 		} catch (error: any) {
 			setStatus(error?.response?.data);
