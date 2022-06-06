@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { invalidMethod, login } from "@/libs/mongodb/auth-fetcher";
+import { login } from "@/libs/mongodb/auth-fetcher";
+import { invalidMethod } from "@/libs/mongodb/fetcher-utils";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {
 	const { method } = req;
@@ -8,6 +9,6 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
 		case "POST":
 			return login(req, res);
 		default:
-			return invalidMethod(req, res);
+			return invalidMethod(req, res, { allowMethod: ["POST"] });
 	}
 }

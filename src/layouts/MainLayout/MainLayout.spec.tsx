@@ -46,8 +46,8 @@ describe("Main Layout", () => {
 			render(<MainLayout disableNav>Test Children</MainLayout>);
 		});
 
-		it("should not render nav", () => {
-			expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+		it("should not render create button", () => {
+			expect(screen.queryByText("navigation")).not.toBeInTheDocument();
 		});
 	});
 });

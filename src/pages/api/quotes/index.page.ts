@@ -1,17 +1,18 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import { createQuotes, invalidMethod } from "@/libs/mongodb/quotes-fetcher";
-import { checkAuth } from "@/libs/api/check-auth";
+import { createQuotes } from "@/libs/mongodb/quotes-fetcher";
+import { invalidMethod } from "@/libs/mongodb/fetcher-utils";
 
-export default function handler(req: NextApiRequest, res: NextApiResponse) {
+export default async function handler(
+	req: NextApiRequest,
+	res: NextApiResponse
+) {
 	const { method } = req;
 
 	switch (method) {
 		case "POST":
-			const [data, error] = checkAuth(req, res);
+			return await createQuotes(req, res);
 
-			if (data) return createQuotes(req, res);
-			return error;
 		default:
-			return invalidMethod(req, res);
+			return invalidMethod(req, res, { allowMethod: ["POST"] });
 	}
 }

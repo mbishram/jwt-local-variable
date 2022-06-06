@@ -31,7 +31,7 @@ describe("Footer", () => {
 		expect(screen.getByTestId("button-child")).toBeInTheDocument();
 	});
 
-	it("should override it's classes if specified", () => {
+	it("should override it's models if specified", () => {
 		render(<Footer className="bg-black">Test</Footer>);
 		const footer = screen.getByText("Test");
 		expect(footer).not.toHaveClass(

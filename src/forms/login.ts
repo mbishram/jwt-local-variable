@@ -8,3 +8,5 @@ export const LOGIN_INPUT_ATTR: InputAttr = {
 	username: { label: "Email/Username", type: INPUT_TYPES.TEXT },
 	password: { label: "Password", type: INPUT_TYPES.PASSWORD },
 };
+
+export type LoginFormType = { username: string; password: string };

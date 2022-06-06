@@ -4,7 +4,7 @@
 
 import React from "react";
 import { Quote } from "@/components/ui/Quote/Quote";
-import { QuoteClass } from "@/classes/quote-class";
+import { QuoteModel } from "@/models/quote-model";
 import { itPassProps } from "@specs-utils/it-pass-props";
 import { render, screen } from "@testing-library/react";
 
@@ -27,7 +27,7 @@ describe("Quote", () => {
 			render(
 				<Quote
 					data={
-						new QuoteClass({
+						new QuoteModel({
 							name: "Nama Pengguna",
 							quote: "Lorem ipsum dolor sit amet",
 							bgColor: "",

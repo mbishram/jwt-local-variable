@@ -1,10 +1,10 @@
-export class QuoteClass {
+export class QuoteModel {
 	name: string;
 	quote: string;
 	bgColor: string;
-	userId: string;
+	userId?: string;
 
-	constructor(data: QuoteClass) {
+	constructor(data: QuoteModel) {
 		this.name = data.name;
 		this.quote = data.quote;
 		this.bgColor = data.bgColor;

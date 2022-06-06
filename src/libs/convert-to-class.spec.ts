@@ -1,5 +1,5 @@
 import { convertToClass } from "@/libs/convert-to-class";
-import { QuoteClass } from "@/classes/quote-class";
+import { QuoteModel } from "@/models/quote-model";
 
 describe("Convert to class", () => {
 	const data = [
@@ -8,8 +8,8 @@ describe("Convert to class", () => {
 	];
 
 	it("should return array of Model", () => {
-		const arrayClass = convertToClass(data, QuoteClass);
+		const arrayClass = convertToClass(data, QuoteModel);
 		expect(arrayClass.length).toBe(2);
-		expect(arrayClass[0] instanceof QuoteClass).toBeTruthy();
+		expect(arrayClass[0] instanceof QuoteModel).toBeTruthy();
 	});
 });

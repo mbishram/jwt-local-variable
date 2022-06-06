@@ -1,11 +1,9 @@
 import { FormikBuilder } from "@/components/ui/FormikBuilder/FormikBuilder";
 import { FormikHandleSubmit } from "@/types/forms/formik-handle-submit";
 import { HTMLProps, ReactNode, useEffect, useState } from "react";
-import { CREATE_INPUT_ATTR } from "@/forms/create";
+import { CREATE_INPUT_ATTR, CreateQuoteFormType } from "@/forms/create";
 import { randomBg } from "@/libs/random-bg";
-import axios from "axios";
-import { NextJson } from "@/classes/next-json";
-import { QuoteClass } from "@/classes/quote-class";
+import { createQuote } from "@/libs/fetchers/quotes";
 
 /**
  * To separate create quote logic
@@ -24,22 +22,15 @@ export function CreateForm({
 		bgColor: randomBg(),
 	};
 
-	const handleSubmit: FormikHandleSubmit<typeof initialValues> = async (
+	const handleSubmit: FormikHandleSubmit<CreateQuoteFormType> = async (
 		values,
 		{ setStatus, setFieldValue }
 	) => {
 		try {
-			// TODO: Change ObjectId to user's
-			// TODO: Update Bearer Token
-			const res = await axios.post(
-				"/api/quotes",
-				{
-					...values,
-					userId: "61f9147cba2fd619cdcddce1",
-				},
-				{ headers: { Authorization: `Bearer Token` } }
-			);
-			const data = res.data as NextJson<QuoteClass>;
+			const res = await createQuote({
+				...values,
+			});
+			const data = res.data;
 			setStatus(data);
 
 			// Clean Input
