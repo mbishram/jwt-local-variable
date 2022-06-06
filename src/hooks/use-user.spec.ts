@@ -28,7 +28,7 @@ describe("useUser Hook", () => {
 		jest.spyOn(useSWR, "default");
 		renderHook(() => useUser());
 		expect(useSWR.default).toBeCalledWith(USER, {
-			refreshInterval: 2000,
+			refreshInterval: 1000,
 		});
 		jest.clearAllMocks();
 	});

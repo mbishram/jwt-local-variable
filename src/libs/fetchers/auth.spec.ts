@@ -6,7 +6,7 @@ import { getToken, login } from "./auth";
 import {
 	getTokenMethodHandler,
 	loginMethodHandler,
-} from "../../../specs/__mocks__/api/authFetcher";
+} from "../../../specs/__mocks__/api/auth-fetcher";
 
 describe("Auth Fetcher", () => {
 	describe("on login method", () => {

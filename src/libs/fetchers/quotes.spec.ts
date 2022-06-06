@@ -4,7 +4,7 @@
 
 import { createQuote } from "@/libs/fetchers/quotes";
 import { QuoteModel } from "@/models/quote-model";
-import { createMethodHandler } from "../../../specs/__mocks__/api/quotesFetcher";
+import { createMethodHandler } from "../../../specs/__mocks__/api/quotes-fetcher";
 
 describe("Quotes Fetcher", () => {
 	const data = new QuoteModel({

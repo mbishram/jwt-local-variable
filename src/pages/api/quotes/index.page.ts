@@ -10,11 +10,8 @@ export default async function handler(
 
 	switch (method) {
 		case "POST":
-			// TODO: Change this back later
-			const [data, error] = [null, true]; // await getTokenData(req, res);
+			return await createQuotes(req, res);
 
-			if (data) return await createQuotes(req, res);
-			return error;
 		default:
 			return invalidMethod(req, res, { allowMethod: ["POST"] });
 	}

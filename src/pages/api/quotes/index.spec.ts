@@ -1,13 +1,10 @@
 import quoteApi from "./index.page";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 import { invalidMethod } from "@/libs/mongodb/fetcher-utils";
+import { createQuotes } from "@/libs/mongodb/quotes-fetcher";
 
 jest.mock("@/libs/mongodb/quotes-fetcher", () => ({
 	createQuotes: jest.fn(),
-}));
-
-jest.mock("@/libs/api/get-token-data", () => ({
-	getTokenData: jest.fn(() => [true, null]), // Simulate successful authentication
 }));
 
 jest.mock("@/libs/mongodb/fetcher-utils", () => ({
@@ -16,11 +13,14 @@ jest.mock("@/libs/mongodb/fetcher-utils", () => ({
 
 describe("API Quotes", () => {
 	it("should be able to separate method based on request method", async () => {
-		const { req: reqPost, res: resPost } = mockAPIArgs({ method: "POST" });
+		const { req: reqPost, res: resPost } = mockAPIArgs({
+			method: "POST",
+			headers: {
+				authorization: "Bearer " + process.env.JWT_VALID_ACCESS,
+			},
+		});
 		await quoteApi(reqPost, resPost);
-		// TODO: Change this back later
-		// expect(createQuotes).toBeCalled();
-		// expect(getTokenData).toBeCalled();
+		expect(createQuotes).toBeCalled();
 
 		const { req: reqInvalid, res: resInvalid } = mockAPIArgs({
 			method: "DELETE",
@@ -30,9 +30,7 @@ describe("API Quotes", () => {
 			allowMethod: ["POST"],
 		});
 
-		// TODO: Change this back later
-		// expect(createQuotes).toBeCalledTimes(1);
-		// expect(getTokenData).toBeCalledTimes(1);
+		expect(createQuotes).toBeCalledTimes(1);
 		expect(invalidMethod).toBeCalledTimes(1);
 	});
 });

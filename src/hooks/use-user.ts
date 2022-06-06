@@ -13,7 +13,7 @@ export function useUser(
 	options: UseUserOptions = { redirectIfFound: false }
 ) {
 	const { data: user, mutate: mutateUser } = useSWR(USER, {
-		refreshInterval: 2000,
+		refreshInterval: 1000,
 	});
 	const history = useRouter();
 

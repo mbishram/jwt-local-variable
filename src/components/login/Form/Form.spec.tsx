@@ -19,16 +19,12 @@ import {
 } from "@/libs/token/local-storage-handler";
 
 describe("Login Form", () => {
-	let usernameInput: Element;
-	let passwordInput: Element;
 	let submitButton: Element;
 	const mutateUser = jest.fn();
 
 	beforeEach(() => {
 		render(<LoginForm className="bg-black" mutateUser={mutateUser} />);
 
-		usernameInput = screen.getByLabelText("Email/Username");
-		passwordInput = screen.getByLabelText("Password");
 		submitButton = screen.getByText("Submit");
 	});
 

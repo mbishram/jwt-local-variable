@@ -27,10 +27,8 @@ export function CreateForm({
 		{ setStatus, setFieldValue }
 	) => {
 		try {
-			// TODO: Change ObjectId to user's
 			const res = await createQuote({
 				...values,
-				userId: "61f9147cba2fd619cdcddce1",
 			});
 			const data = res.data;
 			setStatus(data);
