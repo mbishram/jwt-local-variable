@@ -4,8 +4,8 @@ import useSWR from "swr";
 import { getToken, USER } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 import {
-	setAccessToken,
-	setRefreshToken,
+	saveAccessToken,
+	saveRefreshToken,
 } from "@/libs/token/local-storage-handler";
 
 export function useUser(
@@ -31,8 +31,8 @@ export function useUser(
 					if (data?.success) {
 						const token = data.data?.[0];
 						if (token?.accessToken && token?.refreshToken) {
-							setAccessToken(token.accessToken);
-							setRefreshToken(token.refreshToken);
+							saveAccessToken(token.accessToken);
+							saveRefreshToken(token.refreshToken);
 
 							isFinallySkipped = true;
 						}

@@ -3,14 +3,14 @@
  */
 
 import {
-	getAccessToken,
-	getRefreshToken,
+	returnAccessToken,
+	returnRefreshToken,
 	JWT_ACCESS_TOKEN_KEY,
 	JWT_REFRESH_TOKEN_KEY,
-	removeAccessToken,
-	removeRefreshToken,
-	setAccessToken,
-	setRefreshToken,
+	deleteAccessToken,
+	deleteRefreshToken,
+	saveAccessToken,
+	saveRefreshToken,
 } from "@/libs/token/local-storage-handler";
 
 describe("Local Storage Handler", () => {
@@ -22,18 +22,18 @@ describe("Local Storage Handler", () => {
 		it("should able to set it", () => {
 			localStorage.removeItem(JWT_ACCESS_TOKEN_KEY);
 
-			setAccessToken("test123token");
+			saveAccessToken("test123token");
 			const token = localStorage.getItem(JWT_ACCESS_TOKEN_KEY);
 			expect(token).toEqual("test123token");
 		});
 
 		it("should able to get it", () => {
-			expect(getAccessToken()).toEqual("testloremipsumtoken");
+			expect(returnAccessToken()).toEqual("testloremipsumtoken");
 		});
 
 		it("should able to remove it", () => {
-			expect(getAccessToken()).toEqual("testloremipsumtoken");
-			removeAccessToken();
+			expect(returnAccessToken()).toEqual("testloremipsumtoken");
+			deleteAccessToken();
 			const token = localStorage.getItem(JWT_ACCESS_TOKEN_KEY);
 			expect(token).toBeFalsy();
 		});
@@ -47,18 +47,18 @@ describe("Local Storage Handler", () => {
 		it("should able to set it", () => {
 			localStorage.removeItem(JWT_REFRESH_TOKEN_KEY);
 
-			setRefreshToken("refreshtoken");
+			saveRefreshToken("refreshtoken");
 			const token = localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
 			expect(token).toEqual("refreshtoken");
 		});
 
 		it("should able to get it", () => {
-			expect(getRefreshToken()).toEqual("testrefreshtoken");
+			expect(returnRefreshToken()).toEqual("testrefreshtoken");
 		});
 
 		it("should able to remove it", () => {
-			expect(getRefreshToken()).toEqual("testrefreshtoken");
-			removeRefreshToken();
+			expect(returnRefreshToken()).toEqual("testrefreshtoken");
+			deleteRefreshToken();
 			const token = localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
 			expect(token).toBeFalsy();
 		});

@@ -8,8 +8,8 @@ import {
 	httpRefreshInstanceHandler,
 } from "../../../specs/__mocks__/api/http";
 import {
-	setAccessToken,
-	setRefreshToken,
+	saveAccessToken,
+	saveRefreshToken,
 } from "@/libs/token/local-storage-handler";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 
@@ -20,8 +20,8 @@ describe("HTTP", () => {
 	const refreshTokenHeader = "Bearer " + refreshToken;
 
 	beforeEach(() => {
-		setAccessToken(accessToken);
-		setRefreshToken(refreshToken);
+		saveAccessToken(accessToken);
+		saveRefreshToken(refreshToken);
 	});
 
 	describe("httpInstance", () => {

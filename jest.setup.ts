@@ -6,9 +6,13 @@ axios.defaults.adapter = require("axios/lib/adapters/http");
 // NextJS Router setup
 import mockRouter from "next-router-mock";
 import {
+	deleteAccessToken,
+	deleteRefreshToken,
+} from "@/libs/token/local-storage-handler";
+import {
 	removeAccessToken,
 	removeRefreshToken,
-} from "@/libs/token/local-storage-handler";
+} from "@/libs/token/variable-handler";
 jest.mock("next/router", () => require("next-router-mock"));
 
 beforeEach(() => {
@@ -17,6 +21,8 @@ beforeEach(() => {
 
 	// If environment is jsdom
 	if (typeof window !== "undefined") {
+		deleteAccessToken();
+		deleteRefreshToken();
 		removeAccessToken();
 		removeRefreshToken();
 	}

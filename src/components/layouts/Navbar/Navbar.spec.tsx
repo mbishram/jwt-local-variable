@@ -8,10 +8,10 @@ import { Navbar } from "@/components/layouts/Navbar/Navbar";
 import { render, screen, waitFor } from "@testing-library/react";
 import { useUser } from "@/hooks/use-user";
 import {
-	getAccessToken,
-	getRefreshToken,
-	setAccessToken,
-	setRefreshToken,
+	returnAccessToken,
+	returnRefreshToken,
+	saveAccessToken,
+	saveRefreshToken,
 } from "@/libs/token/local-storage-handler";
 import Router from "next/router";
 import userEvent from "@testing-library/user-event";
@@ -78,19 +78,19 @@ describe("Navbar", () => {
 		it("should be able to logout, redirect, and mutateUser", async () => {
 			const accessTokenString = "AccessToken";
 			const refreshTokenString = "RefreshToken";
-			setAccessToken(accessTokenString);
-			setRefreshToken(refreshTokenString);
+			saveAccessToken(accessTokenString);
+			saveRefreshToken(refreshTokenString);
 
-			expect(getAccessToken()).toEqual(accessTokenString);
-			expect(getRefreshToken()).toEqual(refreshTokenString);
+			expect(returnAccessToken()).toEqual(accessTokenString);
+			expect(returnRefreshToken()).toEqual(refreshTokenString);
 			expect(Router).toMatchObject({ asPath: "/initial" });
 
 			const logoutButton = screen.getByText("Logout");
 			userEvent.click(logoutButton);
 
 			await waitFor(() => {
-				expect(getAccessToken()).toBeFalsy();
-				expect(getRefreshToken()).toBeFalsy();
+				expect(returnAccessToken()).toBeFalsy();
+				expect(returnRefreshToken()).toBeFalsy();
 				expect(useUser().mutateUser).toBeCalledTimes(1);
 				expect(Router).toMatchObject({ asPath: "/login" });
 			});

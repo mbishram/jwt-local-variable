@@ -1,4 +1,4 @@
-let accessToken: string | undefined;
+let accessToken: string | null;
 
 export function setAccessToken(value: string) {
 	accessToken = value;
@@ -9,10 +9,10 @@ export function getAccessToken() {
 }
 
 export function removeAccessToken() {
-	accessToken = undefined;
+	accessToken = null;
 }
 
-let refreshToken: string | undefined;
+let refreshToken: string | null;
 
 export function setRefreshToken(value: string) {
 	refreshToken = value;
@@ -23,5 +23,5 @@ export function getRefreshToken() {
 }
 
 export function removeRefreshToken() {
-	refreshToken = undefined;
+	refreshToken = null;
 }

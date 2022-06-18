@@ -6,8 +6,8 @@ import { login } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 import { aesEncrypt } from "@/libs/aes";
 import {
-	setAccessToken,
-	setRefreshToken,
+	saveAccessToken,
+	saveRefreshToken,
 } from "@/libs/token/local-storage-handler";
 import { KeyedMutator } from "swr";
 
@@ -43,8 +43,8 @@ export function LoginForm({
 			if (data?.success) {
 				const token = data.data?.[0];
 				if (token?.accessToken && token?.refreshToken) {
-					setAccessToken(token.accessToken);
-					setRefreshToken(token.refreshToken);
+					saveAccessToken(token.accessToken);
+					saveRefreshToken(token.refreshToken);
 				}
 				await mutateUser();
 				await router.replace("/");
