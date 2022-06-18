@@ -1,8 +1,5 @@
 import axios from "axios";
-import {
-	returnAccessToken,
-	returnRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 export const baseURL = process?.env?.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -13,8 +10,7 @@ const httpInstance = axios.create({
 	baseURL,
 });
 httpInstance.interceptors.request.use((request) => {
-	const accessTokenString =
-		"Bearer " + (!isServer ? returnAccessToken() : "");
+	const accessTokenString = "Bearer " + (!isServer ? getAccessToken() : "");
 	if (request?.headers) {
 		request.headers.authorization = accessTokenString;
 	}
@@ -26,10 +22,8 @@ const httpRefreshInstance = axios.create({
 });
 
 httpRefreshInstance.interceptors.request.use((request) => {
-	const refreshTokenString =
-		"Bearer " + (!isServer ? returnRefreshToken() : "");
-	const accessTokenString =
-		"Bearer " + (!isServer ? returnAccessToken() : "");
+	const refreshTokenString = "Bearer " + (!isServer ? getRefreshToken() : "");
+	const accessTokenString = "Bearer " + (!isServer ? getAccessToken() : "");
 	if (request?.headers) {
 		request.headers.authorization = refreshTokenString;
 		request.headers["token-access"] = accessTokenString;

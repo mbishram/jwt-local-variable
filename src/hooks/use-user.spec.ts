@@ -16,10 +16,7 @@ import {
 	getTokenExceptionHandler,
 	getTokenHandler,
 } from "../../specs/__mocks__/api/get-token";
-import {
-	returnAccessToken,
-	returnRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 describe("useUser Hook", () => {
 	const redirectTo = "/test";
@@ -44,8 +41,8 @@ describe("useUser Hook", () => {
 				expect(tokenCall.isDone()).toBeTruthy();
 			});
 
-			expect(returnAccessToken()).toBeFalsy();
-			expect(returnRefreshToken()).toBeFalsy();
+			expect(getAccessToken()).toBeFalsy();
+			expect(getRefreshToken()).toBeFalsy();
 		});
 
 		it("on fetch new token success", async () => {
@@ -58,8 +55,8 @@ describe("useUser Hook", () => {
 				expect(tokenCall.isDone()).toBeTruthy();
 			});
 
-			expect(returnAccessToken()).toEqual("Access Token");
-			expect(returnRefreshToken()).toEqual("Refresh Token");
+			expect(getAccessToken()).toEqual("Access Token");
+			expect(getRefreshToken()).toEqual("Refresh Token");
 		});
 	});
 

@@ -13,10 +13,7 @@ import {
 	loginHandler,
 } from "../../../../specs/__mocks__/api/login";
 import Router from "next/router";
-import {
-	returnAccessToken,
-	returnRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 describe("Login Form", () => {
 	let submitButton: Element;
@@ -69,8 +66,8 @@ describe("Login Form", () => {
 			userEvent.click(submitButton);
 
 			await waitFor(() => {
-				expect(returnAccessToken()).toBeTruthy();
-				expect(returnRefreshToken()).toBeTruthy();
+				expect(getAccessToken()).toBeTruthy();
+				expect(getRefreshToken()).toBeTruthy();
 				expect(mutateUser).toBeCalledTimes(1);
 				expect(Router).toMatchObject({ asPath: "/" });
 			});

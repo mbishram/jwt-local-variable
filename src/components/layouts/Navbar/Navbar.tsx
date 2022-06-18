@@ -2,11 +2,11 @@ import { HTMLProps, MouseEvent } from "react";
 import { NavbarLink } from "@/components/layouts/NavbarLink/NavbarLink";
 import Link from "next/link";
 import { useUser } from "@/hooks/use-user";
-import {
-	deleteAccessToken,
-	deleteRefreshToken,
-} from "@/libs/token/local-storage-handler";
 import { useRouter } from "next/router";
+import {
+	removeAccessToken,
+	removeRefreshToken,
+} from "@/libs/token/variable-handler";
 
 export function Navbar(props: HTMLProps<HTMLElement>) {
 	const { user, mutateUser } = useUser();
@@ -15,8 +15,8 @@ export function Navbar(props: HTMLProps<HTMLElement>) {
 	const handleLogoutClick = async (e: MouseEvent) => {
 		e.preventDefault();
 
-		deleteAccessToken();
-		deleteRefreshToken();
+		removeAccessToken();
+		removeRefreshToken();
 
 		await mutateUser();
 		await router.replace("/login");

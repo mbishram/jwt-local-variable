@@ -18,6 +18,8 @@ import {
 	setAccessToken,
 	setRefreshToken,
 } from "@/libs/token/variable-handler";
+import { spyOnUseUser } from "@specs-utils/spy-on-useuser";
+import { useUser } from "@/hooks/use-user";
 
 describe("useSaveToken Hook", () => {
 	const accessToken = "accessToken";
@@ -46,7 +48,12 @@ describe("useSaveToken Hook", () => {
 		expect(getRefreshToken()).toBeFalsy();
 	});
 
-	it("should restore token from localStorage on reopening application", () => {
+	it("should restore token from localStorage and mutate useUser on reopening application", () => {
+		spyOnUseUser({
+			success: true,
+			data: [{ name: "Muhammad Bishram Yashir Alfarizi Aminuddin" }],
+		});
+
 		saveAccessToken(accessToken);
 		saveRefreshToken(refreshToken);
 
@@ -59,6 +66,7 @@ describe("useSaveToken Hook", () => {
 			useSaveToken();
 		});
 
+		expect(useUser().mutateUser).toBeCalledTimes(1);
 		expect(getAccessToken()).toEqual(accessToken);
 		expect(getRefreshToken()).toEqual(refreshToken);
 		expect(returnAccessToken()).toBeFalsy();

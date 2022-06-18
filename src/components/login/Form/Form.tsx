@@ -5,10 +5,7 @@ import { HTMLProps, useEffect, useState } from "react";
 import { login } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 import { aesEncrypt } from "@/libs/aes";
-import {
-	saveAccessToken,
-	saveRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
 import { KeyedMutator } from "swr";
 
 /**
@@ -43,8 +40,8 @@ export function LoginForm({
 			if (data?.success) {
 				const token = data.data?.[0];
 				if (token?.accessToken && token?.refreshToken) {
-					saveAccessToken(token.accessToken);
-					saveRefreshToken(token.refreshToken);
+					setAccessToken(token.accessToken);
+					setRefreshToken(token.refreshToken);
 				}
 				await mutateUser();
 				await router.replace("/");

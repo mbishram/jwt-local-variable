@@ -7,15 +7,15 @@ import { itPassProps } from "@specs-utils/it-pass-props";
 import { Navbar } from "@/components/layouts/Navbar/Navbar";
 import { render, screen, waitFor } from "@testing-library/react";
 import { useUser } from "@/hooks/use-user";
-import {
-	returnAccessToken,
-	returnRefreshToken,
-	saveAccessToken,
-	saveRefreshToken,
-} from "@/libs/token/local-storage-handler";
 import Router from "next/router";
 import userEvent from "@testing-library/user-event";
 import { spyOnUseUser } from "@specs-utils/spy-on-useuser";
+import {
+	getAccessToken,
+	getRefreshToken,
+	setAccessToken,
+	setRefreshToken,
+} from "@/libs/token/variable-handler";
 
 describe("Navbar", () => {
 	describe("on default state", () => {
@@ -78,19 +78,19 @@ describe("Navbar", () => {
 		it("should be able to logout, redirect, and mutateUser", async () => {
 			const accessTokenString = "AccessToken";
 			const refreshTokenString = "RefreshToken";
-			saveAccessToken(accessTokenString);
-			saveRefreshToken(refreshTokenString);
+			setAccessToken(accessTokenString);
+			setRefreshToken(refreshTokenString);
 
-			expect(returnAccessToken()).toEqual(accessTokenString);
-			expect(returnRefreshToken()).toEqual(refreshTokenString);
+			expect(getAccessToken()).toEqual(accessTokenString);
+			expect(getRefreshToken()).toEqual(refreshTokenString);
 			expect(Router).toMatchObject({ asPath: "/initial" });
 
 			const logoutButton = screen.getByText("Logout");
 			userEvent.click(logoutButton);
 
 			await waitFor(() => {
-				expect(returnAccessToken()).toBeFalsy();
-				expect(returnRefreshToken()).toBeFalsy();
+				expect(getAccessToken()).toBeFalsy();
+				expect(getRefreshToken()).toBeFalsy();
 				expect(useUser().mutateUser).toBeCalledTimes(1);
 				expect(Router).toMatchObject({ asPath: "/login" });
 			});
