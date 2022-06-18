@@ -7,15 +7,15 @@ import { itPassProps } from "@specs-utils/it-pass-props";
 import { Navbar } from "@/components/layouts/Navbar/Navbar";
 import { render, screen, waitFor } from "@testing-library/react";
 import { useUser } from "@/hooks/use-user";
+import Router from "next/router";
+import userEvent from "@testing-library/user-event";
+import { spyOnUseUser } from "@specs-utils/spy-on-useuser";
 import {
 	getAccessToken,
 	getRefreshToken,
 	setAccessToken,
 	setRefreshToken,
-} from "@/libs/token/local-storage-handler";
-import Router from "next/router";
-import userEvent from "@testing-library/user-event";
-import { spyOnUseUser } from "@specs-utils/spy-on-useuser";
+} from "@/libs/token/variable-handler";
 
 describe("Navbar", () => {
 	describe("on default state", () => {

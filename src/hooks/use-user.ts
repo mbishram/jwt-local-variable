@@ -3,10 +3,7 @@ import { UseUserOptions } from "@/types/hooks/use-user-options";
 import useSWR from "swr";
 import { getToken, USER } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
-import {
-	setAccessToken,
-	setRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
 
 export function useUser(
 	redirectTo: string = "",

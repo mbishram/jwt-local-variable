@@ -1,8 +1,5 @@
 import axios from "axios";
-import {
-	getAccessToken,
-	getRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 export const baseURL = process?.env?.NEXT_PUBLIC_API_BASE_URL || "";
 

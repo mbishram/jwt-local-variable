@@ -13,10 +13,7 @@ import {
 	loginHandler,
 } from "../../../../specs/__mocks__/api/login";
 import Router from "next/router";
-import {
-	getAccessToken,
-	getRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 describe("Login Form", () => {
 	let submitButton: Element;

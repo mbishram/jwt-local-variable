@@ -3,8 +3,10 @@ import type { AppProps } from "next/app";
 import Head from "next/head";
 import { SWRConfig } from "swr";
 import { fetcher } from "@/libs/swr/fetcher";
+import { useSaveToken } from "@/hooks/use-save-token";
 
 function CustomApp({ Component, pageProps }: AppProps) {
+	useSaveToken();
 	return (
 		<SWRConfig value={{ fetcher }}>
 			<Head>

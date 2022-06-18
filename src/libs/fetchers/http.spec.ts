@@ -7,11 +7,8 @@ import {
 	httpInstanceHandler,
 	httpRefreshInstanceHandler,
 } from "../../../specs/__mocks__/api/http";
-import {
-	setAccessToken,
-	setRefreshToken,
-} from "@/libs/token/local-storage-handler";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
+import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
 
 describe("HTTP", () => {
 	const accessToken = "AccessToken";

@@ -5,10 +5,7 @@ import { HTMLProps, useEffect, useState } from "react";
 import { login } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 import { aesEncrypt } from "@/libs/aes";
-import {
-	setAccessToken,
-	setRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
 import { KeyedMutator } from "swr";
 
 /**

@@ -1,27 +1,27 @@
 export const JWT_ACCESS_TOKEN_KEY = "JWT_ACCESS_TOKEN_KEY";
 
-export function setAccessToken(value: string) {
+export function saveAccessToken(value: string) {
 	localStorage.setItem(JWT_ACCESS_TOKEN_KEY, value);
 }
 
-export function getAccessToken() {
+export function returnAccessToken() {
 	return localStorage.getItem(JWT_ACCESS_TOKEN_KEY);
 }
 
-export function removeAccessToken() {
+export function deleteAccessToken() {
 	localStorage.removeItem(JWT_ACCESS_TOKEN_KEY);
 }
 
 export const JWT_REFRESH_TOKEN_KEY = "JWT_REFRESH_TOKEN_KEY";
 
-export function setRefreshToken(value: string) {
+export function saveRefreshToken(value: string) {
 	localStorage.setItem(JWT_REFRESH_TOKEN_KEY, value);
 }
 
-export function getRefreshToken() {
+export function returnRefreshToken() {
 	return localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
 }
 
-export function removeRefreshToken() {
+export function deleteRefreshToken() {
 	localStorage.removeItem(JWT_REFRESH_TOKEN_KEY);
 }

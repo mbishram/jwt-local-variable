@@ -16,10 +16,7 @@ import {
 	getTokenExceptionHandler,
 	getTokenHandler,
 } from "../../specs/__mocks__/api/get-token";
-import {
-	getAccessToken,
-	getRefreshToken,
-} from "@/libs/token/local-storage-handler";
+import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 describe("useUser Hook", () => {
 	const redirectTo = "/test";
