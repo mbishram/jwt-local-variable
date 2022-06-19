@@ -3,7 +3,7 @@ A way to store JSON Web Token on Local Variable to make it more secure from an X
 
 Attack script/website used: [Click here!](https://github.com/mbishram/jwt-local-variable-attacks)
 
-Developed using `node v16.13.`
+Developed using `node v16.13.1`
 
 >Start: __30 September 2021__ | End: __19 June 2022__
 
