@@ -35,6 +35,9 @@ export const createQuotes = async (
 	req: NextApiRequest,
 	res: NextApiResponse
 ) => {
+	// Try to get token from cookie first,
+	// This is done to make them vulnerable to CSRF
+	// TODO: get it from cookie first || req?.header?.authorization
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
 	const [data, error] = await getTokenData(
 		authorizationHeader,

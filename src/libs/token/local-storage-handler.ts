@@ -2,6 +2,8 @@ export const JWT_ACCESS_TOKEN_KEY = "JWT_ACCESS_TOKEN_KEY";
 
 export function setAccessToken(value: string) {
 	localStorage.setItem(JWT_ACCESS_TOKEN_KEY, value);
+	// TODO: Set cookie!
+	document.cookie = `token=${value}; SameSite=None`;
 }
 
 export function getAccessToken() {

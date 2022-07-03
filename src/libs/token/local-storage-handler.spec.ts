@@ -25,6 +25,8 @@ describe("Local Storage Handler", () => {
 			setAccessToken("test123token");
 			const token = localStorage.getItem(JWT_ACCESS_TOKEN_KEY);
 			expect(token).toEqual("test123token");
+
+			// TODO: Test cookie!
 		});
 
 		it("should able to get it", () => {
