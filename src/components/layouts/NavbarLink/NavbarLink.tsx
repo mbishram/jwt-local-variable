@@ -12,7 +12,10 @@ export function NavbarLink({
 		<Link href={href}>
 			<a
 				{...props}
-				className={clsx(className, "hover:underline font-medium")}
+				className={clsx(
+					className,
+					"no-underline hover:underline font-medium"
+				)}
 			>
 				{children}
 			</a>
