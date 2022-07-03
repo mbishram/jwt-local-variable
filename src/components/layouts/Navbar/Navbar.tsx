@@ -25,7 +25,7 @@ export function Navbar(props: HTMLProps<HTMLElement>) {
 	return (
 		<nav {...props} className="py-6 flex justify-between items-center">
 			<Link href="/">
-				<a>
+				<a className="no-underline">
 					<h1 className="text-2xl font-bold">quote.me</h1>
 				</a>
 			</Link>

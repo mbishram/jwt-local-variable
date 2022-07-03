@@ -3,6 +3,7 @@ import { Footer } from "@/components/ui/Footer/Footer";
 import { Container } from "@/components/ui/Container/Container";
 import clsx from "clsx";
 import { Navbar } from "@/components/layouts/Navbar/Navbar";
+import { useSetCookie } from "@/hooks/use-set-cookie";
 
 /**
  * Main Layout.
@@ -20,6 +21,8 @@ export function MainLayout({
 	disableNav,
 	...props
 }: HTMLProps<HTMLDivElement> & Props) {
+	useSetCookie();
+
 	return (
 		<Container
 			className={clsx(className, "flex flex-col h-screen")}
