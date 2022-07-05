@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/libs/mongodb/setup";
 import { NextJson } from "@/models/next-json";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { UserModel } from "@/models/user-model";
+import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
 
 /**
  * Fetch all quotes
@@ -35,10 +36,16 @@ export const createQuotes = async (
 	req: NextApiRequest,
 	res: NextApiResponse
 ) => {
-	// Try to get token from cookie first,
-	// This is done to make them vulnerable to CSRF
-	// TODO: get it from cookie first || req?.header?.authorization
-	const authorizationHeader = (req?.headers?.authorization || "") as string;
+	// Use cookie if there's no authorization header.
+	// This is done to make them vulnerable to CSRF.
+	// DON'T DO THIS! This is unnecessary on real application.
+	const tokenCookie =
+		req?.headers?.cookie
+			?.match("(^|;)\\s*" + JWT_ACCESS_TOKEN_COOKIE + "\\s*=\\s*([^;]+)")
+			?.pop() || "";
+	const authorizationHeader = (req?.headers?.authorization ||
+		tokenCookie ||
+		"") as string;
 	const [data, error] = await getTokenData(
 		authorizationHeader,
 		String(process.env.ACCESS_TOKEN_SECRET_KEY)

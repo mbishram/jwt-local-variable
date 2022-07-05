@@ -2,6 +2,7 @@ import { createQuotes, getAllQuotes } from "@/libs/mongodb/quotes-fetcher";
 import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
+import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
 
 describe("Fetcher", () => {
 	describe("when method is valid", () => {
@@ -32,6 +33,7 @@ describe("Fetcher", () => {
 
 			const headers = {
 				authorization: "Bearer " + process.env.JWT_VALID_ACCESS,
+				cookie: `${JWT_ACCESS_TOKEN_COOKIE}=${process.env.JWT_VALID_ACCESS}`,
 			};
 
 			it("should be able to create quotes", async () => {

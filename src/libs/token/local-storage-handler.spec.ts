@@ -7,7 +7,6 @@ import {
 	getRefreshToken,
 	JWT_ACCESS_TOKEN_COOKIE,
 	JWT_ACCESS_TOKEN_KEY,
-	JWT_REFRESH_TOKEN_COOKIE,
 	JWT_REFRESH_TOKEN_KEY,
 	removeAccessToken,
 	removeRefreshToken,
@@ -50,10 +49,10 @@ describe("Local Storage Handler", () => {
 
 		it("should able to get it", () => {
 			spyOnGetCookie("testtoken");
-			expect(getAccessToken()).toEqual("testtoken");
-
-			spyOnGetCookie("");
 			expect(getAccessToken()).toEqual("testloremipsumtoken");
+
+			localStorage.removeItem(JWT_ACCESS_TOKEN_KEY);
+			expect(getAccessToken()).toEqual("testtoken");
 		});
 
 		it("should able to remove it", () => {
@@ -74,23 +73,11 @@ describe("Local Storage Handler", () => {
 			localStorage.removeItem(JWT_REFRESH_TOKEN_KEY);
 
 			setRefreshToken("refreshtoken");
-			expect(Cookies.set).toBeCalledWith(
-				JWT_REFRESH_TOKEN_COOKIE,
-				"refreshtoken",
-				{
-					sameSite: "None",
-					secure: true,
-				}
-			);
 			const token = localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
 			expect(token).toEqual("refreshtoken");
 		});
 
 		it("should able to get it", () => {
-			spyOnGetCookie("testtoken");
-			expect(getRefreshToken()).toEqual("testtoken");
-
-			spyOnGetCookie("");
 			expect(getRefreshToken()).toEqual("testrefreshtoken");
 		});
 
@@ -99,7 +86,6 @@ describe("Local Storage Handler", () => {
 			removeRefreshToken();
 			const token = localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
 			expect(token).toBeFalsy();
-			expect(Cookies.remove).toBeCalledWith(JWT_REFRESH_TOKEN_COOKIE);
 		});
 	});
 });

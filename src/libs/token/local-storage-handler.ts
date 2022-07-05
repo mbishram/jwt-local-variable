@@ -13,8 +13,8 @@ export function setAccessToken(value: string) {
 
 export function getAccessToken() {
 	return (
-		Cookies.get(JWT_ACCESS_TOKEN_COOKIE) ||
-		localStorage.getItem(JWT_ACCESS_TOKEN_KEY)
+		localStorage.getItem(JWT_ACCESS_TOKEN_KEY) ||
+		Cookies.get(JWT_ACCESS_TOKEN_COOKIE)
 	);
 }
 
@@ -24,24 +24,15 @@ export function removeAccessToken() {
 }
 
 export const JWT_REFRESH_TOKEN_KEY = "JWT_REFRESH_TOKEN_KEY";
-export const JWT_REFRESH_TOKEN_COOKIE = "refreshToken";
 
 export function setRefreshToken(value: string) {
-	Cookies.set(JWT_REFRESH_TOKEN_COOKIE, value, {
-		sameSite: "None",
-		secure: true,
-	});
 	localStorage.setItem(JWT_REFRESH_TOKEN_KEY, value);
 }
 
 export function getRefreshToken() {
-	return (
-		Cookies.get(JWT_REFRESH_TOKEN_COOKIE) ||
-		localStorage.getItem(JWT_REFRESH_TOKEN_KEY)
-	);
+	return localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
 }
 
 export function removeRefreshToken() {
-	Cookies.remove(JWT_REFRESH_TOKEN_COOKIE);
 	localStorage.removeItem(JWT_REFRESH_TOKEN_KEY);
 }
