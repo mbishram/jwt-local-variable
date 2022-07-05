@@ -43,8 +43,9 @@ export const createQuotes = async (
 		req?.headers?.cookie
 			?.match("(^|;)\\s*" + JWT_ACCESS_TOKEN_COOKIE + "\\s*=\\s*([^;]+)")
 			?.pop() || "";
+	const authorizationCookie = tokenCookie && "Bearer " + tokenCookie;
 	const authorizationHeader = (req?.headers?.authorization ||
-		tokenCookie ||
+		authorizationCookie ||
 		"") as string;
 	const [data, error] = await getTokenData(
 		authorizationHeader,
