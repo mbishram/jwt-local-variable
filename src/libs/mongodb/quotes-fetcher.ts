@@ -48,7 +48,9 @@ export const createQuotes = async (
 
 		try {
 			let { db } = await connectToDatabase();
-			await db.collection("quotes").insertOne({ ...req.body, userId });
+			const body =
+				typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+			await db.collection("quotes").insertOne({ ...body, userId });
 			return res.json(
 				new NextJson({
 					message: "Quotes added!",
