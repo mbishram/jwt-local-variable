@@ -12,6 +12,7 @@ describe("Quotes Fetcher", () => {
 		name: "",
 		bgColor: "",
 		userId: "",
+		username: "",
 	});
 
 	it("should be able to create quote", async () => {

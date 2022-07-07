@@ -16,6 +16,7 @@ export default function Login() {
 			quote: "Give a little color to your quote!",
 			name: "James Doe",
 			bgColor: randomBg(),
+			username: "Andy",
 		})
 	);
 

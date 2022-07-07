@@ -45,12 +45,15 @@ export const createQuotes = async (
 
 	if (data) {
 		const userId = (data?.data?.[0] as UserModel)?.id || "";
+		const username = (data?.data?.[0] as UserModel)?.name || "";
 
 		try {
 			let { db } = await connectToDatabase();
 			const body =
 				typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-			await db.collection("quotes").insertOne({ ...body, userId });
+			await db
+				.collection("quotes")
+				.insertOne({ ...body, userId, username });
 			return res.json(
 				new NextJson({
 					message: "Quotes added!",
