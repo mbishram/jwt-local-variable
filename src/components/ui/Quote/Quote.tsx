@@ -23,7 +23,9 @@ export function Quote({
 				className={styles.quote}
 				html={data?.quote || "Quote kosong!"}
 			/>
-			<p className={styles.name}>- {data?.name || "Anonymous"}</p>
+			<p className={styles.name}>
+				- {data?.name || "Anonymous"} ({data?.username || "Unknown"})
+			</p>
 		</article>
 	);
 }

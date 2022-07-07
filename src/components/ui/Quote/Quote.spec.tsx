@@ -17,7 +17,9 @@ describe("Quote", () => {
 		itPassProps(Quote);
 
 		it("should show indicator that data is empty", () => {
-			expect(screen.getByText("- Anonymous")).toBeInTheDocument();
+			expect(
+				screen.getByText("- Anonymous (Unknown)")
+			).toBeInTheDocument();
 			expect(screen.getByText("Quote kosong!")).toBeInTheDocument();
 		});
 	});
@@ -31,6 +33,7 @@ describe("Quote", () => {
 							name: "Nama Pengguna",
 							quote: "Lorem ipsum dolor sit amet",
 							bgColor: "",
+							username: "Test",
 						})
 					}
 				/>
@@ -38,7 +41,9 @@ describe("Quote", () => {
 		});
 
 		it("should render element using it's data", () => {
-			expect(screen.getByText("- Nama Pengguna")).toBeInTheDocument();
+			expect(
+				screen.getByText("- Nama Pengguna (Test)")
+			).toBeInTheDocument();
 			expect(
 				screen.getByText("Lorem ipsum dolor sit amet")
 			).toBeInTheDocument();
