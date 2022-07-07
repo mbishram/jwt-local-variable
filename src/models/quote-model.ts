@@ -3,7 +3,7 @@ export class QuoteModel {
 	quote: string;
 	bgColor: string;
 	userId?: string;
-	username: string;
+	username?: string;
 
 	constructor(data: QuoteModel) {
 		this.name = data.name;
