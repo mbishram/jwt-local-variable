@@ -18,7 +18,12 @@ export async function saveValidationToken(
 		const validationToken = crypto.randomBytes(32).toString("hex");
 		await db
 			.collection(TOKENS_COLLECTION_NAME)
-			.insertOne({ token: accessToken, validationToken, userId });
+			.insertOne({
+				token: accessToken,
+				validationToken,
+				userId,
+				createdAt: new Date(),
+			});
 
 		return validationToken;
 	} catch (e) {

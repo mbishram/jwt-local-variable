@@ -17,5 +17,7 @@ describe("Save Validation Token", () => {
 
 		expect(tokenRes?.token).toBe(token);
 		expect(tokenRes?.userId).toEqual(userId);
+		expect(tokenRes?.validationToken).toBeTruthy();
+		expect(tokenRes?.createdAt).toBeTruthy();
 	});
 });
