@@ -1,4 +1,8 @@
-import { createQuotes, getAllQuotes } from "@/libs/mongodb/quotes-fetcher";
+import {
+	createQuotes,
+	getAllQuotes,
+	QUOTES_COLLECTION_NAME,
+} from "@/libs/mongodb/quotes-fetcher";
 import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
@@ -27,7 +31,7 @@ describe("Fetcher", () => {
 		describe("on authorized user", () => {
 			afterEach(async () => {
 				const { db } = await connectToDatabase();
-				await db.dropCollection("quotes");
+				await db.dropCollection(QUOTES_COLLECTION_NAME);
 			});
 
 			const headers = {
@@ -63,7 +67,7 @@ describe("Fetcher", () => {
 
 				const { db } = await connectToDatabase();
 				const expectedData = await db
-					.collection("quotes")
+					.collection(QUOTES_COLLECTION_NAME)
 					.find()
 					.toArray();
 				const allQuotes = await getAllQuotes();

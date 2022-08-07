@@ -2,13 +2,22 @@ import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
 import bcrypt from "bcryptjs";
-import { getToken, getUser, login } from "@/libs/mongodb/auth-fetcher";
+import {
+	getToken,
+	getUser,
+	login,
+	USERS_COLLECTION_NAME,
+} from "@/libs/mongodb/auth-fetcher";
 import { aesEncrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { ObjectId } from "bson";
+import {
+	spyOnProcessValidationToken,
+	spyOnProcessValidationTokenFailedResponse,
+} from "@specs-utils/spy-on-process-validation-token";
 
 describe("Fetcher", () => {
 	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
@@ -22,7 +31,7 @@ describe("Fetcher", () => {
 
 		beforeEach(async () => {
 			const { db } = await connectToDatabase();
-			await db.collection("users").insertOne({
+			await db.collection(USERS_COLLECTION_NAME).insertOne({
 				username,
 				email,
 				name,
@@ -32,7 +41,9 @@ describe("Fetcher", () => {
 				),
 			});
 
-			const userRes = await db.collection("users").findOne({ username });
+			const userRes = await db
+				.collection(USERS_COLLECTION_NAME)
+				.findOne({ username });
 			if (userRes) {
 				id = userRes._id;
 			}
@@ -40,7 +51,7 @@ describe("Fetcher", () => {
 
 		afterEach(async () => {
 			const { db } = await connectToDatabase();
-			await db.dropCollection("users");
+			await db.dropCollection(USERS_COLLECTION_NAME);
 		});
 
 		it("should be rejected on incorrect username", async () => {
@@ -71,7 +82,27 @@ describe("Fetcher", () => {
 			);
 		});
 
-		it("should be able to login on correct credential", async () => {
+		it("should be rejected on validation token failed to generate", async () => {
+			spyOnProcessValidationToken(false);
+			const { req, res } = mockAPIArgs({
+				body: {
+					username,
+					password: aesEncrypt(password),
+				},
+			});
+			await login(req, res);
+
+			expect(res.status).toBeCalledWith(500);
+			expect(res.json).toBeCalledWith(
+				spyOnProcessValidationTokenFailedResponse
+			);
+
+			jest.restoreAllMocks();
+		});
+
+		it("should be able to login and generate validationToken on correct credential", async () => {
+			spyOnProcessValidationToken();
+
 			const { req, res } = mockAPIArgs({
 				body: {
 					username,
@@ -96,6 +127,8 @@ describe("Fetcher", () => {
 					data: [{ accessToken, refreshToken }],
 				})
 			);
+
+			jest.restoreAllMocks();
 		});
 	});
 
@@ -166,7 +199,32 @@ describe("Fetcher", () => {
 		});
 
 		describe("on valid refresh token", () => {
+			it("should be rejected when validation token failed to generate", async () => {
+				spyOnProcessValidationToken(false);
+
+				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
+				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
+
+				const { req, res } = mockAPIArgs({
+					headers: {
+						authorization,
+						"token-access": headerAccessToken,
+					},
+				});
+
+				await getToken(req, res);
+
+				expect(res.status).toBeCalledWith(500);
+				expect(res.json).toBeCalledWith(
+					spyOnProcessValidationTokenFailedResponse
+				);
+
+				jest.restoreAllMocks();
+			});
+
 			it("should return the new access token", async () => {
+				spyOnProcessValidationToken();
+
 				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
 				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
 				const accessToken = await generateAccessToken(tokenPayload);
@@ -191,6 +249,8 @@ describe("Fetcher", () => {
 						data: [{ accessToken, refreshToken }],
 					})
 				);
+
+				jest.restoreAllMocks();
 			});
 		});
 	});

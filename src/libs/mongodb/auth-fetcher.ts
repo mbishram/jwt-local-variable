@@ -11,6 +11,10 @@ import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { cleanTokenPayload } from "@/libs/clean-token-payload";
 import { JwtPayload } from "jsonwebtoken";
+import { processValidationToken } from "@/libs/api/process-validation-token";
+import { ObjectId } from "bson";
+
+export const USERS_COLLECTION_NAME = "users";
 
 /**
  * User login
@@ -30,7 +34,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		let { db } = await connectToDatabase();
 
-		const userRes = await db.collection("users").findOne({
+		const userRes = await db.collection(USERS_COLLECTION_NAME).findOne({
 			$or: [{ username: reqUsername }, { email: reqUsername }],
 		});
 		if (!userRes) {
@@ -58,6 +62,24 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 		const accessToken = await generateAccessToken(user);
 		const refreshToken = await generateRefreshToken();
+
+		if (!(accessToken && refreshToken)) {
+			return res.status(500).json(
+				new NextJson({
+					message: "Something went wrong! Failed to generate token.",
+					success: false,
+				})
+			);
+		}
+
+		const [validationTokenData, validationTokenError] =
+			await processValidationToken(accessToken, userRes._id, {
+				req,
+				res,
+			});
+		if (!validationTokenData && validationTokenError) {
+			return res.status(500).json(validationTokenError);
+		}
 
 		return res.json(
 			new NextJson<FetcherLoginResponseData>({
@@ -133,8 +155,21 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (refreshTokenData?.success) {
 		const payload = accessTokenData?.data?.[0] as JwtPayload;
 		const cleanedPayload = cleanTokenPayload(payload) as UserModel;
-		const accessToken = await generateAccessToken(cleanedPayload);
+		const accessToken = (await generateAccessToken(cleanedPayload)) || "";
 		const refreshToken = await generateRefreshToken();
+
+		const [validationTokenData, validationTokenError] =
+			await processValidationToken(
+				accessToken,
+				new ObjectId(cleanedPayload.id),
+				{
+					req,
+					res,
+				}
+			);
+		if (!validationTokenData && validationTokenError) {
+			return res.status(500).json(validationTokenError);
+		}
 
 		return res.status(200).json(
 			new NextJson({
@@ -145,3 +180,5 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 		);
 	}
 };
+
+// TODO: Create logout method, it delete token from db, and delete cookie

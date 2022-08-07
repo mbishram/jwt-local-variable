@@ -2,6 +2,8 @@ import { extractToken } from "@/libs/api/extract-token";
 import { NextJson } from "@/models/next-json";
 import jwt, { JsonWebTokenError, VerifyOptions } from "jsonwebtoken";
 import { JWT_ERROR_TYPES } from "@/constants/jwt-error-types";
+import { getCookie } from "cookies-next";
+import { VALIDATION_TOKEN_COOKIE_NAME } from "@/libs/api/process-validation-token";
 
 /**
  * Get token data
@@ -15,6 +17,12 @@ export const getTokenData = async (
 	options?: VerifyOptions
 ) => {
 	let token = extractToken(authorizationHeader);
+
+	// TODO: Remove this later, add req and res to options
+	console.log(
+		"_TST",
+		getCookie(VALIDATION_TOKEN_COOKIE_NAME /*, { req, res }*/)
+	);
 
 	if (!token) {
 		const error = new NextJson({

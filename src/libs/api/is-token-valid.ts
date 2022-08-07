@@ -2,6 +2,8 @@ import { connectToDatabase } from "@/libs/mongodb/setup";
 
 export const TOKENS_COLLECTION_NAME = "tokens";
 
+// TODO: use this on getTokenData?
+
 /**
  * Checking if token exist on database and is valid
  * @param token {string}
