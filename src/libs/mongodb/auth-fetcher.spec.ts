@@ -6,6 +6,7 @@ import {
 	getToken,
 	getUser,
 	login,
+	logout,
 	USERS_COLLECTION_NAME,
 } from "@/libs/mongodb/auth-fetcher";
 import { aesEncrypt } from "@/libs/aes";
@@ -19,9 +20,17 @@ import {
 	spyOnProcessValidationTokenFailedResponse,
 } from "@specs-utils/spy-on-process-validation-token";
 import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
+import { VALIDATION_TOKEN_COOKIE_NAME } from "@/libs/api/process-validation-token";
+import * as cookiesNext from "cookies-next";
+import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
+import { deleteCookie } from "cookies-next";
 
 describe("Fetcher", () => {
 	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
+	const username = process.env.NEXT_PUBLIC_USER || "username";
+	const email = process.env.NEXT_PUBLIC_EMAIL || "email@test.com";
+	const password = process.env.NEXT_PUBLIC_PASS || "password";
+	const name = process.env.NEXT_PUBLIC_NAME || "UserModel Name";
 
 	beforeEach(() => {
 		spyOnIsTokenValid();
@@ -33,10 +42,6 @@ describe("Fetcher", () => {
 
 	describe("when login method is called", () => {
 		let id: ObjectId;
-		const username = process.env.NEXT_PUBLIC_USER || "username";
-		const email = process.env.NEXT_PUBLIC_EMAIL || "email@test.com";
-		const password = process.env.NEXT_PUBLIC_PASS || "password";
-		const name = process.env.NEXT_PUBLIC_NAME || "UserModel Name";
 
 		beforeEach(async () => {
 			const { db } = await connectToDatabase();
@@ -261,6 +266,73 @@ describe("Fetcher", () => {
 
 				jest.restoreAllMocks();
 			});
+		});
+	});
+
+	describe("when logout method is called", () => {
+		const user = new UserModel({
+			id: new ObjectId(),
+			username,
+			email,
+			name,
+		});
+
+		it("should remove token data from db and cookie", async () => {
+			jest.spyOn(cookiesNext, "deleteCookie").mockImplementation(
+				jest.fn()
+			);
+			let { db } = await connectToDatabase();
+			const tokenCollection = db.collection(TOKENS_COLLECTION_NAME);
+
+			const cookieValue = "CookieValue";
+			const token = await generateAccessToken(user);
+			const authorization = "Bearer " + token;
+
+			const { req, res } = mockAPIArgs({
+				cookies: { [VALIDATION_TOKEN_COOKIE_NAME]: cookieValue },
+				headers: { authorization },
+			});
+
+			const userId = user.id;
+			await tokenCollection.insertMany([
+				{
+					token,
+					validationToken: cookieValue,
+					userId,
+					createdAt: new Date(),
+				},
+				{
+					token: "Other token",
+					validationToken: "Loremipsum",
+					userId: new ObjectId(),
+					createdAt: new Date(),
+				},
+			]);
+			expect(
+				(await db.collection(TOKENS_COLLECTION_NAME).find().toArray())
+					.length
+			).toBe(2);
+
+			await logout(req, res);
+
+			expect(deleteCookie).toBeCalledWith(VALIDATION_TOKEN_COOKIE_NAME, {
+				req,
+				res,
+			});
+			expect(
+				(await db.collection(TOKENS_COLLECTION_NAME).find().toArray())
+					.length
+			).toBe(1);
+
+			expect(res.status).toBeCalledWith(200);
+			expect(res.json).toBeCalledWith(
+				new NextJson({
+					success: true,
+					message: "Logout success!",
+				})
+			);
+
+			jest.restoreAllMocks();
 		});
 	});
 });

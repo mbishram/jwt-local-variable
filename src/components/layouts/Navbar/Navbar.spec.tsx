@@ -16,6 +16,7 @@ import {
 	setAccessToken,
 	setRefreshToken,
 } from "@/libs/token/variable-handler";
+import { logoutMethodHandler } from "../../../../specs/__mocks__/api/auth-fetcher";
 
 describe("Navbar", () => {
 	describe("on default state", () => {
@@ -76,6 +77,7 @@ describe("Navbar", () => {
 			expect(screen.queryByText("Logout")).toBeTruthy();
 		});
 		it("should be able to logout, redirect, and mutateUser", async () => {
+			const call = logoutMethodHandler();
 			const accessTokenString = "AccessToken";
 			const refreshTokenString = "RefreshToken";
 			setAccessToken(accessTokenString);
@@ -89,9 +91,11 @@ describe("Navbar", () => {
 			userEvent.click(logoutButton);
 
 			await waitFor(() => {
+				expect(call.isDone()).toBeTruthy();
 				expect(getAccessToken()).toBeFalsy();
 				expect(getRefreshToken()).toBeFalsy();
 				expect(useUser().mutateUser).toBeCalledTimes(1);
+				expect(useUser().mutateUser).toBeCalledWith({ success: false });
 				expect(Router).toMatchObject({ asPath: "/login" });
 			});
 		});

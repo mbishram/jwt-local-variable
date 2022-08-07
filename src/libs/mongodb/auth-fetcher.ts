@@ -11,9 +11,14 @@ import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { cleanTokenPayload } from "@/libs/clean-token-payload";
 import { JwtPayload } from "jsonwebtoken";
-import { processValidationToken } from "@/libs/api/process-validation-token";
+import {
+	processValidationToken,
+	VALIDATION_TOKEN_COOKIE_NAME,
+} from "@/libs/api/process-validation-token";
 import { ObjectId } from "bson";
 import { getValidationTokenCookie } from "@/libs/api/get-validation-token-cookie";
+import { deleteCookie } from "cookies-next";
+import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
 
 export const USERS_COLLECTION_NAME = "users";
 
@@ -192,4 +197,42 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 };
 
-// TODO: Create logout method, it delete token from db, and delete cookie
+/**
+ * User logout.
+ * @param req {NextApiRequest}
+ * @param res {NextApiResponse}
+ */
+export const logout = async (req: NextApiRequest, res: NextApiResponse) => {
+	try {
+		let { db } = await connectToDatabase();
+		const tokenCollection = db.collection(TOKENS_COLLECTION_NAME);
+
+		const authorizationHeader = (req?.headers?.authorization ||
+			"") as string;
+		const validationToken = getValidationTokenCookie(req, res);
+		const [data] = await getTokenData(
+			{
+				authorizationHeader,
+				secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+				validationToken,
+			},
+			{ alwaysValid: true }
+		);
+		const userId = new ObjectId(
+			(data as NextJson<UserModel>)?.data?.[0]?.id
+		);
+		await tokenCollection.deleteMany({
+			$or: [{ userId }, { validationToken }],
+		});
+	} catch (e) {
+	} finally {
+		deleteCookie(VALIDATION_TOKEN_COOKIE_NAME, { req, res });
+
+		res.status(200).json(
+			new NextJson({
+				success: true,
+				message: "Logout success!",
+			})
+		);
+	}
+};
