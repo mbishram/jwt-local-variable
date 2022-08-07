@@ -136,11 +136,14 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
 	const validationToken = getValidationTokenCookie(req, res);
-	const [refreshTokenData, refreshTokenError] = await getTokenData({
-		authorizationHeader,
-		secret: String(process.env.REFRESH_TOKEN_SECRET_KEY),
-		validationToken,
-	});
+	const [refreshTokenData, refreshTokenError] = await getTokenData(
+		{
+			authorizationHeader,
+			secret: String(process.env.REFRESH_TOKEN_SECRET_KEY),
+			validationToken,
+		},
+		{ alwaysValid: true }
+	);
 	const accessTokenHeader = (req?.headers?.["token-access"] || "") as string;
 	const [accessTokenData, accessTokenError] = await getTokenData(
 		{

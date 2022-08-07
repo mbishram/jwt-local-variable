@@ -16,7 +16,7 @@ export type ProcessValidationTokenReturnValue = [
 ];
 
 export const VALIDATION_TOKEN_COOKIE_NAME = "validationToken";
-export const VALIDATION_TOKEN_COOKIE_MAX_AGE = 5 * 60; // 5 minutes.
+export const VALIDATION_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // A week
 
 /**
  * Save token and validationToken to db.

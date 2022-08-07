@@ -10,15 +10,17 @@ export type GetTokenDataParams = {
 	secret: string;
 	validationToken: CookieValueTypes;
 };
+export type GetTokenDataOptions = VerifyOptions & { alwaysValid?: boolean };
 
 /**
  * Get token data
  * @param params {GetTokenDataParams}
+ * @param alwaysValid {boolean} - Flag to disable token check
  * @param options
  */
 export const getTokenData = async (
 	params: GetTokenDataParams,
-	options?: VerifyOptions
+	{ alwaysValid, ...options }: GetTokenDataOptions = { alwaysValid: false }
 ) => {
 	const { authorizationHeader, secret, validationToken } = params;
 	let token = extractToken(authorizationHeader);
@@ -32,7 +34,8 @@ export const getTokenData = async (
 	}
 
 	const isValid = await isTokenValid(token, validationToken);
-	if (!isValid) {
+	console.log("_TST", isValid, token, validationToken);
+	if (!alwaysValid && !isValid) {
 		const error = new NextJson({
 			message: "Access denied, token is not valid!",
 			success: false,
