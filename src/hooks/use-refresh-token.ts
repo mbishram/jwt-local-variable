@@ -2,19 +2,14 @@ import { useUser } from "@/hooks/use-user";
 import { useEffect } from "react";
 import { getToken } from "@/libs/fetchers/auth";
 import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
-import { useRouter } from "next/router";
 
 export function useRefreshToken() {
 	const { user } = useUser();
-	const router = useRouter();
-
-	// History not from /login, baru fetch get token
 
 	useEffect(() => {
 		(async () => {
 			// Is loading, do nothing
 			if (!user) return;
-			console.log("_TST", router);
 
 			try {
 				// If error, try to refresh token
