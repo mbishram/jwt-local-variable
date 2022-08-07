@@ -18,7 +18,7 @@ export function Navbar(props: HTMLProps<HTMLElement>) {
 		removeAccessToken();
 		removeRefreshToken();
 
-		await mutateUser();
+		await mutateUser({ success: false });
 		await router.replace("/login");
 	};
 

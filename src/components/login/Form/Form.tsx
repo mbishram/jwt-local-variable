@@ -43,7 +43,7 @@ export function LoginForm({
 					setAccessToken(token.accessToken);
 					setRefreshToken(token.refreshToken);
 				}
-				await mutateUser();
+				await mutateUser({ success: true });
 				await router.replace("/");
 			}
 		} catch (error: any) {

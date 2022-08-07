@@ -69,6 +69,7 @@ describe("Login Form", () => {
 				expect(getAccessToken()).toBeTruthy();
 				expect(getRefreshToken()).toBeTruthy();
 				expect(mutateUser).toBeCalledTimes(1);
+				expect(mutateUser).toBeCalledWith({ success: true });
 				expect(Router).toMatchObject({ asPath: "/" });
 			});
 		});
