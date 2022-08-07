@@ -6,8 +6,17 @@ import {
 import { NextJson } from "@/models/next-json";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { mockAPIArgs } from "@specs-utils/mock-api-args";
+import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
 
 describe("Fetcher", () => {
+	beforeEach(() => {
+		spyOnIsTokenValid();
+	});
+
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
+
 	describe("when method is valid", () => {
 		describe("on unauthorized user", () => {
 			it("should return 401", async () => {

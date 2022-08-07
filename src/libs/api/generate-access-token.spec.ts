@@ -2,6 +2,7 @@ import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { UserModel } from "@/models/user-model";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { ObjectId } from "bson";
+import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
 
 describe("Generate Access Token", () => {
 	const data = new UserModel({
@@ -24,14 +25,19 @@ describe("Generate Access Token", () => {
 	});
 
 	it("should be able to generate access token", async () => {
+		spyOnIsTokenValid();
+
 		const token = await generateAccessToken(data);
 		const authorization = "Bearer " + token;
 
-		const [success, error] = await getTokenData(
-			authorization,
-			process?.env?.ACCESS_TOKEN_SECRET_KEY as string
-		);
+		const [success, error] = await getTokenData({
+			authorizationHeader: authorization,
+			secret: process?.env?.ACCESS_TOKEN_SECRET_KEY as string,
+			validationToken: "",
+		});
 		expect(success).toBeTruthy();
 		expect(error).toBeFalsy();
+
+		jest.restoreAllMocks();
 	});
 });

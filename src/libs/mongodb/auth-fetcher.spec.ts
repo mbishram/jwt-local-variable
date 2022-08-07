@@ -18,9 +18,18 @@ import {
 	spyOnProcessValidationToken,
 	spyOnProcessValidationTokenFailedResponse,
 } from "@specs-utils/spy-on-process-validation-token";
+import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
 
 describe("Fetcher", () => {
 	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
+
+	beforeEach(() => {
+		spyOnIsTokenValid();
+	});
+
+	afterEach(() => {
+		jest.restoreAllMocks();
+	});
 
 	describe("when login method is called", () => {
 		let id: ObjectId;

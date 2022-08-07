@@ -2,31 +2,39 @@ import { extractToken } from "@/libs/api/extract-token";
 import { NextJson } from "@/models/next-json";
 import jwt, { JsonWebTokenError, VerifyOptions } from "jsonwebtoken";
 import { JWT_ERROR_TYPES } from "@/constants/jwt-error-types";
-import { getCookie } from "cookies-next";
-import { VALIDATION_TOKEN_COOKIE_NAME } from "@/libs/api/process-validation-token";
+import { CookieValueTypes } from "cookies-next";
+import { isTokenValid } from "@/libs/api/is-token-valid";
+
+export type GetTokenDataParams = {
+	authorizationHeader: string;
+	secret: string;
+	validationToken: CookieValueTypes;
+};
 
 /**
  * Get token data
- * @param authorizationHeader
- * @param secret
+ * @param params {GetTokenDataParams}
  * @param options
  */
 export const getTokenData = async (
-	authorizationHeader: string,
-	secret: string,
+	params: GetTokenDataParams,
 	options?: VerifyOptions
 ) => {
+	const { authorizationHeader, secret, validationToken } = params;
 	let token = extractToken(authorizationHeader);
-
-	// TODO: Remove this later, add req and res to options
-	console.log(
-		"_TST",
-		getCookie(VALIDATION_TOKEN_COOKIE_NAME /*, { req, res }*/)
-	);
 
 	if (!token) {
 		const error = new NextJson({
 			message: "Access denied, token is missing!",
+			success: false,
+		});
+		return [null, error];
+	}
+
+	const isValid = await isTokenValid(token, validationToken);
+	if (!isValid) {
+		const error = new NextJson({
+			message: "Access denied, token is not valid!",
 			success: false,
 		});
 		return [null, error];

@@ -13,6 +13,7 @@ import { cleanTokenPayload } from "@/libs/clean-token-payload";
 import { JwtPayload } from "jsonwebtoken";
 import { processValidationToken } from "@/libs/api/process-validation-token";
 import { ObjectId } from "bson";
+import { getValidationTokenCookie } from "@/libs/api/get-validation-token-cookie";
 
 export const USERS_COLLECTION_NAME = "users";
 
@@ -100,10 +101,12 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const [data, error] = await getTokenData(
+	const validationToken = getValidationTokenCookie(req, res);
+	const [data, error] = await getTokenData({
 		authorizationHeader,
-		String(process.env.ACCESS_TOKEN_SECRET_KEY)
-	);
+		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+		validationToken,
+	});
 
 	if (error) {
 		return res.status(200).json(
@@ -132,14 +135,19 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const [refreshTokenData, refreshTokenError] = await getTokenData(
+	const validationToken = getValidationTokenCookie(req, res);
+	const [refreshTokenData, refreshTokenError] = await getTokenData({
 		authorizationHeader,
-		String(process.env.REFRESH_TOKEN_SECRET_KEY)
-	);
+		secret: String(process.env.REFRESH_TOKEN_SECRET_KEY),
+		validationToken,
+	});
 	const accessTokenHeader = (req?.headers?.["token-access"] || "") as string;
 	const [accessTokenData, accessTokenError] = await getTokenData(
-		accessTokenHeader,
-		String(process.env.ACCESS_TOKEN_SECRET_KEY),
+		{
+			authorizationHeader: accessTokenHeader,
+			secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+			validationToken,
+		},
 		{ ignoreExpiration: true }
 	);
 
