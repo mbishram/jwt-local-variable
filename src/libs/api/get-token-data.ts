@@ -34,7 +34,6 @@ export const getTokenData = async (
 	}
 
 	const isValid = await isTokenValid(token, validationToken);
-	console.log("_TST", isValid, token, validationToken);
 	if (!alwaysValid && !isValid) {
 		const error = new NextJson({
 			message: "Access denied, token is not valid!",
