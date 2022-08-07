@@ -15,15 +15,18 @@ export async function saveValidationToken(
 ) {
 	try {
 		let { db } = await connectToDatabase();
+
+		await db.collection(TOKENS_COLLECTION_NAME).deleteMany({
+			token: accessToken,
+		});
+
 		const validationToken = crypto.randomBytes(32).toString("hex");
-		await db
-			.collection(TOKENS_COLLECTION_NAME)
-			.insertOne({
-				token: accessToken,
-				validationToken,
-				userId,
-				createdAt: new Date(),
-			});
+		await db.collection(TOKENS_COLLECTION_NAME).insertOne({
+			token: accessToken,
+			validationToken,
+			userId,
+			createdAt: new Date(),
+		});
 
 		return validationToken;
 	} catch (e) {
