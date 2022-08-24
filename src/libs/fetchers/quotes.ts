@@ -6,3 +6,7 @@ export const QUOTES = "/quotes";
 export async function createQuote(data: QuoteModel) {
 	return await httpInstance.post<NextJson<undefined>>(QUOTES, data);
 }
+
+export async function deleteAllQuote() {
+	return await httpInstance.delete<NextJson<undefined>>(QUOTES);
+}

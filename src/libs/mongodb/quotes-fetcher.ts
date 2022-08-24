@@ -72,3 +72,43 @@ export const createQuotes = async (
 		);
 	}
 };
+/**
+ * Delete all quote document
+ */
+export const deleteQuotes = async (
+	req: NextApiRequest,
+	res: NextApiResponse
+) => {
+	const authorizationHeader = (req?.headers?.authorization || "") as string;
+	const validationToken = getValidationTokenCookie(req, res);
+	const [data, error] = await getTokenData({
+		authorizationHeader,
+		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+		validationToken,
+	});
+
+	if (error) return res.status(401).json(error);
+
+	if (data) {
+		const userId = new ObjectId((data?.data?.[0] as UserModel)?.id);
+
+		try {
+			let { db } = await connectToDatabase();
+			await db.collection(QUOTES_COLLECTION_NAME).deleteMany({ userId });
+
+			return res.json(
+				new NextJson({
+					message: "All quotes deleted!",
+					success: true,
+				})
+			);
+		} catch (error: any) {
+			return res.status(500).json(
+				new NextJson({
+					message: new Error(error).message,
+					success: false,
+				})
+			);
+		}
+	}
+};
