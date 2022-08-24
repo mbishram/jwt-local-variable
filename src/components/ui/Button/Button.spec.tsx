@@ -53,6 +53,16 @@ describe("Button", () => {
 		expect(screen.getByText("Test Full")).toHaveClass("btnFull");
 	});
 
+	it("should icon style if icon prop is set", () => {
+		render(<Button icon>Test Icon</Button>);
+		expect(screen.getByText("Test Icon")).toHaveClass("btnIconNormal");
+	});
+
+	it("should fab style if fab prop is set", () => {
+		render(<Button fab>Test Fab</Button>);
+		expect(screen.getByText("Test Fab")).toHaveClass("btnFAB");
+	});
+
 	it("should pass className prop", () => {
 		render(<Button className="bg-black">Test Full</Button>);
 		expect(screen.getByRole("button")).toHaveClass("bg-black");

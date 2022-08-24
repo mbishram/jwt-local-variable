@@ -7,6 +7,18 @@
 	}
 }
 
+.btnIconNormal {
+	@apply h-12 w-12 grid place-content-center text-xl;
+}
+
+.btnIconSmall {
+	@apply h-10 w-10 grid place-content-center;
+}
+
+.btnFAB {
+	@apply fixed bottom-4 right-4 sm:bottom-6 sm:right-6;
+}
+
 .btnTransparent {
 	@apply hover:bg-white hover:bg-opacity-10;
 }
