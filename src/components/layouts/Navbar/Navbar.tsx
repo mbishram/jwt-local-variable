@@ -7,6 +7,7 @@ import {
 	removeAccessToken,
 	removeRefreshToken,
 } from "@/libs/token/variable-handler";
+import { logout } from "@/libs/fetchers/auth";
 
 export function Navbar(props: HTMLProps<HTMLElement>) {
 	const { user, mutateUser } = useUser();
@@ -14,12 +15,16 @@ export function Navbar(props: HTMLProps<HTMLElement>) {
 
 	const handleLogoutClick = async (e: MouseEvent) => {
 		e.preventDefault();
+		try {
+			await logout();
+		} catch (e) {
+		} finally {
+			removeAccessToken();
+			removeRefreshToken();
 
-		removeAccessToken();
-		removeRefreshToken();
-
-		await mutateUser();
-		await router.replace("/login");
+			await mutateUser({ success: false });
+			await router.replace("/login");
+		}
 	};
 
 	return (

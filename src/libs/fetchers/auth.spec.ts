@@ -2,10 +2,11 @@
  * @jest-environment jsdom
  */
 
-import { getToken, login } from "./auth";
+import { getToken, login, logout } from "./auth";
 import {
 	getTokenMethodHandler,
 	loginMethodHandler,
+	logoutMethodHandler,
 } from "../../../specs/__mocks__/api/auth-fetcher";
 
 describe("Auth Fetcher", () => {
@@ -22,6 +23,14 @@ describe("Auth Fetcher", () => {
 		it("should pass /auth/get-token endpoint", async () => {
 			getTokenMethodHandler();
 			const res = await getToken();
+			expect(res?.data).toEqual("Success");
+		});
+	});
+
+	describe("on logout method", () => {
+		it("should pass /auth/logout endpoint ", async () => {
+			logoutMethodHandler();
+			const res = await logout();
 			expect(res?.data).toEqual("Success");
 		});
 	});

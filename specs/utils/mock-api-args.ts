@@ -1,11 +1,13 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+type mockAPIArgsOptions = Partial<NextApiRequest>;
+
 /**
  * Arguments for NextJS API
  * @constructor
  * @returns {req, res}
  */
-export const mockAPIArgs = (options: Partial<NextApiRequest>) => {
+export const mockAPIArgs = (options: mockAPIArgsOptions = {}) => {
 	const json = jest.fn((result) => result);
 	const req = {
 		...options,

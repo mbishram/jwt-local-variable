@@ -11,6 +11,16 @@ import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { cleanTokenPayload } from "@/libs/clean-token-payload";
 import { JwtPayload } from "jsonwebtoken";
+import {
+	processValidationToken,
+	VALIDATION_TOKEN_COOKIE_NAME,
+} from "@/libs/api/process-validation-token";
+import { ObjectId } from "bson";
+import { getValidationTokenCookie } from "@/libs/api/get-validation-token-cookie";
+import { deleteCookie } from "cookies-next";
+import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
+
+export const USERS_COLLECTION_NAME = "users";
 
 /**
  * User login
@@ -30,7 +40,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	try {
 		let { db } = await connectToDatabase();
 
-		const userRes = await db.collection("users").findOne({
+		const userRes = await db.collection(USERS_COLLECTION_NAME).findOne({
 			$or: [{ username: reqUsername }, { email: reqUsername }],
 		});
 		if (!userRes) {
@@ -59,6 +69,24 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 		const accessToken = await generateAccessToken(user);
 		const refreshToken = await generateRefreshToken();
 
+		if (!(accessToken && refreshToken)) {
+			return res.status(500).json(
+				new NextJson({
+					message: "Something went wrong! Failed to generate token.",
+					success: false,
+				})
+			);
+		}
+
+		const [validationTokenData, validationTokenError] =
+			await processValidationToken(accessToken, userRes._id, {
+				req,
+				res,
+			});
+		if (!validationTokenData && validationTokenError) {
+			return res.status(500).json(validationTokenError);
+		}
+
 		return res.json(
 			new NextJson<FetcherLoginResponseData>({
 				success: true,
@@ -78,10 +106,12 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const [data, error] = await getTokenData(
+	const validationToken = getValidationTokenCookie(req, res);
+	const [data, error] = await getTokenData({
 		authorizationHeader,
-		String(process.env.ACCESS_TOKEN_SECRET_KEY)
-	);
+		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+		validationToken,
+	});
 
 	if (error) {
 		return res.status(200).json(
@@ -110,14 +140,22 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
+	const validationToken = getValidationTokenCookie(req, res);
 	const [refreshTokenData, refreshTokenError] = await getTokenData(
-		authorizationHeader,
-		String(process.env.REFRESH_TOKEN_SECRET_KEY)
+		{
+			authorizationHeader,
+			secret: String(process.env.REFRESH_TOKEN_SECRET_KEY),
+			validationToken,
+		},
+		{ alwaysValid: true }
 	);
 	const accessTokenHeader = (req?.headers?.["token-access"] || "") as string;
 	const [accessTokenData, accessTokenError] = await getTokenData(
-		accessTokenHeader,
-		String(process.env.ACCESS_TOKEN_SECRET_KEY),
+		{
+			authorizationHeader: accessTokenHeader,
+			secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+			validationToken,
+		},
 		{ ignoreExpiration: true }
 	);
 
@@ -133,14 +171,67 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	if (refreshTokenData?.success) {
 		const payload = accessTokenData?.data?.[0] as JwtPayload;
 		const cleanedPayload = cleanTokenPayload(payload) as UserModel;
-		const accessToken = await generateAccessToken(cleanedPayload);
+		const accessToken = (await generateAccessToken(cleanedPayload)) || "";
 		const refreshToken = await generateRefreshToken();
+
+		const [validationTokenData, validationTokenError] =
+			await processValidationToken(
+				accessToken,
+				new ObjectId(cleanedPayload.id),
+				{
+					req,
+					res,
+				}
+			);
+		if (!validationTokenData && validationTokenError) {
+			return res.status(500).json(validationTokenError);
+		}
 
 		return res.status(200).json(
 			new NextJson({
 				success: true,
 				message: "Token generated!",
 				data: [{ accessToken, refreshToken }],
+			})
+		);
+	}
+};
+
+/**
+ * User logout.
+ * @param req {NextApiRequest}
+ * @param res {NextApiResponse}
+ */
+export const logout = async (req: NextApiRequest, res: NextApiResponse) => {
+	try {
+		let { db } = await connectToDatabase();
+		const tokenCollection = db.collection(TOKENS_COLLECTION_NAME);
+
+		const authorizationHeader = (req?.headers?.authorization ||
+			"") as string;
+		const validationToken = getValidationTokenCookie(req, res);
+		const [data] = await getTokenData(
+			{
+				authorizationHeader,
+				secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+				validationToken,
+			},
+			{ alwaysValid: true }
+		);
+		const userId = new ObjectId(
+			(data as NextJson<UserModel>)?.data?.[0]?.id
+		);
+		await tokenCollection.deleteMany({
+			$or: [{ userId }, { validationToken }],
+		});
+	} catch (e) {
+	} finally {
+		deleteCookie(VALIDATION_TOKEN_COOKIE_NAME, { req, res });
+
+		res.status(200).json(
+			new NextJson({
+				success: true,
+				message: "Logout success!",
 			})
 		);
 	}

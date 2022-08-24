@@ -18,15 +18,16 @@ import { useUser } from "@/hooks/use-user";
 export function useSaveToken() {
 	const { mutateUser } = useUser();
 
-	// If client side, run the script
+	// If client side, run the script.
 	if (typeof window !== "undefined")
+		// useLayoutEffect will run before browser paint any elements.
 		useLayoutEffect(() => {
 			// Restoring token
 			setAccessToken(returnAccessToken() || "");
 			setRefreshToken(returnRefreshToken() || "");
 			deleteAccessToken();
 			deleteRefreshToken();
-			// Refresh useUser
+			// Re-fetch user
 			void mutateUser();
 
 			// Handle saving token on close/reload

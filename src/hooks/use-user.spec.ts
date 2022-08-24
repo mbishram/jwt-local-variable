@@ -12,11 +12,6 @@ import * as useSWR from "swr";
 import { customRenderHook } from "@specs-utils/custom-render-hook";
 import { USER } from "@/libs/fetchers/auth";
 import Router from "next/router";
-import {
-	getTokenExceptionHandler,
-	getTokenHandler,
-} from "../../specs/__mocks__/api/get-token";
-import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
 
 describe("useUser Hook", () => {
 	const redirectTo = "/test";
@@ -30,45 +25,13 @@ describe("useUser Hook", () => {
 		jest.clearAllMocks();
 	});
 
-	describe("should try to fetch new token on user fetch failed", () => {
-		it("on fetch new token failed", async () => {
-			const userCall = userExceptionHandler();
-			const tokenCall = getTokenExceptionHandler();
-
-			const { waitFor } = customRenderHook(() => useUser());
-			await waitFor(() => {
-				expect(userCall.isDone()).toBeTruthy();
-				expect(tokenCall.isDone()).toBeTruthy();
-			});
-
-			expect(getAccessToken()).toBeFalsy();
-			expect(getRefreshToken()).toBeFalsy();
-		});
-
-		it("on fetch new token success", async () => {
-			const userCall = userExceptionHandler();
-			const tokenCall = getTokenHandler();
-
-			const { waitFor } = customRenderHook(() => useUser());
-			await waitFor(() => {
-				expect(userCall.isDone()).toBeTruthy();
-				expect(tokenCall.isDone()).toBeTruthy();
-			});
-
-			expect(getAccessToken()).toEqual("Access Token");
-			expect(getRefreshToken()).toEqual("Refresh Token");
-		});
-	});
-
 	describe("on no params set", () => {
 		it("should return mutateUser method and didn't redirect on failed fetch", async () => {
 			const userCall = userExceptionHandler();
-			const tokenCall = getTokenExceptionHandler();
 
 			const { result, waitFor } = customRenderHook(() => useUser());
 			await waitFor(() => {
 				expect(userCall.isDone()).toBeTruthy();
-				expect(tokenCall.isDone()).toBeTruthy();
 			});
 
 			const { user, mutateUser } = result.current;
@@ -95,14 +58,12 @@ describe("useUser Hook", () => {
 	describe("on redirectTo params is set", () => {
 		it("should return mutateUser and redirect the page to redirectTo params on failed fetch", async () => {
 			const userCall = userExceptionHandler();
-			const tokenCall = getTokenExceptionHandler();
 
 			const { result, waitFor } = customRenderHook(() =>
 				useUser(redirectTo)
 			);
 			await waitFor(() => {
 				expect(userCall.isDone()).toBeTruthy();
-				expect(tokenCall.isDone()).toBeTruthy();
 			});
 
 			const { user, mutateUser } = result.current;
@@ -132,14 +93,12 @@ describe("useUser Hook", () => {
 		describe("(redirectIfFound)", () => {
 			it("should return mutateUser and didn't redirect on failed fetch", async () => {
 				const userCall = userExceptionHandler();
-				const tokenCall = getTokenExceptionHandler();
 
 				const { result, waitFor } = customRenderHook(() =>
 					useUser(redirectTo, { redirectIfFound: true })
 				);
 				await waitFor(() => {
 					expect(userCall.isDone()).toBeTruthy();
-					expect(tokenCall.isDone()).toBeTruthy();
 				});
 
 				const { user, mutateUser } = result.current;
