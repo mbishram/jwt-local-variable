@@ -41,38 +41,34 @@ export const createQuotes = async (
 ) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
 	const validationToken = getValidationTokenCookie(req, res);
-	const [data, error] = await getTokenData({
+	const [data] = await getTokenData({
 		authorizationHeader,
 		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
 		validationToken,
 	});
 
-	if (error) return res.status(401).json(error);
+	const userId = data && new ObjectId((data?.data?.[0] as UserModel)?.id);
+	const username = data && (data?.data?.[0] as UserModel)?.name;
 
-	if (data) {
-		const userId = new ObjectId((data?.data?.[0] as UserModel)?.id) || "";
-		const username = (data?.data?.[0] as UserModel)?.name || "";
-
-		try {
-			let { db } = await connectToDatabase();
-			const body =
-				typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-			await db
-				.collection(QUOTES_COLLECTION_NAME)
-				.insertOne({ ...body, userId, username });
-			return res.json(
-				new NextJson({
-					message: "Quotes added!",
-					success: true,
-				})
-			);
-		} catch (error: any) {
-			return res.status(500).json(
-				new NextJson({
-					message: new Error(error).message,
-					success: false,
-				})
-			);
-		}
+	try {
+		let { db } = await connectToDatabase();
+		const body =
+			typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+		await db
+			.collection(QUOTES_COLLECTION_NAME)
+			.insertOne({ ...body, userId, username });
+		return res.json(
+			new NextJson({
+				message: "Quotes added!",
+				success: true,
+			})
+		);
+	} catch (error: any) {
+		return res.status(500).json(
+			new NextJson({
+				message: new Error(error).message,
+				success: false,
+			})
+		);
 	}
 };

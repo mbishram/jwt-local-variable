@@ -18,36 +18,36 @@ describe("Fetcher", () => {
 	});
 
 	describe("when method is valid", () => {
+		afterEach(async () => {
+			const { db } = await connectToDatabase();
+			await db.dropCollection(QUOTES_COLLECTION_NAME);
+		});
+
 		describe("on unauthorized user", () => {
-			it("should return 401", async () => {
+			it("should be able to create quotes", async () => {
 				const { req, res } = mockAPIArgs({
-					method: "POST",
-					headers: {
-						authorization: "Bearer " + process.env.JWT_INVALID,
+					body: {
+						test: "Test1",
 					},
 				});
+
 				await createQuotes(req, res);
-				expect(res.status).toBeCalledWith(401);
 				expect(res.json).toBeCalledWith(
 					new NextJson({
-						message: "Invalid token, please login again",
-						success: false,
+						message: "Quotes added!",
+						success: true,
 					})
 				);
+				expect(res.json).toBeCalledTimes(1);
 			});
 		});
 
 		describe("on authorized user", () => {
-			afterEach(async () => {
-				const { db } = await connectToDatabase();
-				await db.dropCollection(QUOTES_COLLECTION_NAME);
-			});
-
 			const headers = {
 				authorization: "Bearer " + process.env.JWT_VALID_ACCESS,
 			};
 
-			it("should be able to create quotes", async () => {
+			it("should be able to create quotes with user credential", async () => {
 				const { req, res } = mockAPIArgs({
 					body: {
 						test: "Test1",
