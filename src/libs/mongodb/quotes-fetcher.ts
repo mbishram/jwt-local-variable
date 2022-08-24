@@ -5,6 +5,7 @@ import { getTokenData } from "@/libs/api/get-token-data";
 import { UserModel } from "@/models/user-model";
 import { ObjectId } from "bson";
 import { getValidationTokenCookie } from "@/libs/api/get-validation-token-cookie";
+import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
 
 export const QUOTES_COLLECTION_NAME = "quotes";
 
@@ -39,7 +40,17 @@ export const createQuotes = async (
 	req: NextApiRequest,
 	res: NextApiResponse
 ) => {
-	const authorizationHeader = (req?.headers?.authorization || "") as string;
+	// Use cookie if there's no authorization header.
+	// This is done to make them vulnerable to CSRF.
+	// DON'T DO THIS! This is unnecessary on real application.
+	const tokenCookie =
+		req?.headers?.cookie
+			?.match("(^|;)\\s*" + JWT_ACCESS_TOKEN_COOKIE + "\\s*=\\s*([^;]+)")
+			?.pop() || "";
+	const authorizationCookie = tokenCookie && "Bearer " + tokenCookie;
+	const authorizationHeader = (req?.headers?.authorization ||
+		authorizationCookie ||
+		"") as string;
 	const validationToken = getValidationTokenCookie(req, res);
 	const [data] = await getTokenData({
 		authorizationHeader,
@@ -79,7 +90,17 @@ export const deleteQuotes = async (
 	req: NextApiRequest,
 	res: NextApiResponse
 ) => {
-	const authorizationHeader = (req?.headers?.authorization || "") as string;
+	// Use cookie if there's no authorization header.
+	// This is done to make them vulnerable to CSRF.
+	// DON'T DO THIS! This is unnecessary on real application.
+	const tokenCookie =
+		req?.headers?.cookie
+			?.match("(^|;)\\s*" + JWT_ACCESS_TOKEN_COOKIE + "\\s*=\\s*([^;]+)")
+			?.pop() || "";
+	const authorizationCookie = tokenCookie && "Bearer " + tokenCookie;
+	const authorizationHeader = (req?.headers?.authorization ||
+		authorizationCookie ||
+		"") as string;
 	const validationToken = getValidationTokenCookie(req, res);
 	const [data, error] = await getTokenData({
 		authorizationHeader,

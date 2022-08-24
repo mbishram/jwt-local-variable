@@ -1,4 +1,9 @@
 export const JWT_ACCESS_TOKEN_KEY = "JWT_ACCESS_TOKEN_KEY";
+export const JWT_ACCESS_TOKEN_COOKIE = "accessToken";
+
+// I didn't set cookie here, unlike jwt-on-localstorage branch because
+// this isn't the main way of storing jwt. It was primarily saved
+// on local variable.
 
 export function saveAccessToken(value: string) {
 	localStorage.setItem(JWT_ACCESS_TOKEN_KEY, value);
