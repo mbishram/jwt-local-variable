@@ -7,14 +7,67 @@ import { convertToClass } from "@/libs/convert-to-class";
 import { NextJson } from "@/models/next-json";
 import { Link } from "@/components/ui/Link/Link";
 import { getAllQuotes } from "@/libs/mongodb/quotes-fetcher";
+import { Button } from "@/components/ui/Button/Button";
+import { deleteAllQuote } from "@/libs/fetchers/quotes";
+import { useEffect, useState } from "react";
+import { Alert } from "@/components/ui/Alert/Alert";
+import { AlertDataType } from "@/types/components/alert-data-type";
+import { TrashFill } from "react-bootstrap-icons";
+import { useUser } from "@/hooks/use-user";
+import { useRouter } from "next/router";
 
 export default function Index({ quotes }: Props) {
 	const parsedQuotes: Array<QuoteModel> = quotes && JSON.parse(quotes);
+
+	const [alertData, setAlertData] = useState<AlertDataType>({
+		isOpen: false,
+	});
+	const [alertTimer, setAlertTimer] = useState(setTimeout(() => {}));
+	const { user } = useUser();
+	const router = useRouter();
+
+	const refreshData = () => {
+		void router.replace(router.asPath);
+	};
+
+	const handleDeleteAllClick = async () => {
+		try {
+			const res = await deleteAllQuote();
+			refreshData();
+			setAlertData({
+				isOpen: true,
+				type: "success",
+				message: res?.data?.message,
+			});
+		} catch (error: any) {
+			setAlertData({
+				isOpen: true,
+				type: "danger",
+				message:
+					error?.response?.data?.message || "Something went wrong!",
+			});
+		} finally {
+			// Close alert
+			setAlertTimer(
+				setTimeout(() => setAlertData({ isOpen: false }), 4000)
+			);
+		}
+	};
+
+	useEffect(() => {
+		return () => {
+			clearTimeout(alertTimer);
+		};
+	}, []);
+
 	return (
 		<MainLayout classMain="max-w-screen-sm mx-auto">
 			<Head>
 				<title>Home - {process.env.NEXT_PUBLIC_APPLICATION_NAME}</title>
 			</Head>
+			{alertData?.isOpen && (
+				<Alert type={alertData?.type}>{alertData?.message}</Alert>
+			)}
 			<Typography variant="header" className="mb-6">
 				Give a little color to your Quote!
 			</Typography>
@@ -30,6 +83,19 @@ export default function Index({ quotes }: Props) {
 					</p>
 				)}
 			</div>
+			{user?.success && (
+				<Button
+					color="primary"
+					onClick={async () => {
+						await handleDeleteAllClick();
+					}}
+					title="Delete all your quotes!"
+					icon
+					fab
+				>
+					<TrashFill />
+				</Button>
+			)}
 		</MainLayout>
 	);
 }

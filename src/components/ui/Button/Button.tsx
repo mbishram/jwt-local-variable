@@ -10,7 +10,9 @@ import { Size } from "@/types/components/size";
  * @param color Default to "transparent"
  * @param size Default to "normal"
  * @param rounded
+ * @param icon
  * @param fullWidth
+ * @param fab
  * @param className
  * @param props
  * @constructor
@@ -20,6 +22,8 @@ export function Button({
 	color = "transparent",
 	size = "normal",
 	rounded = false,
+	icon = false,
+	fab = false,
 	fullWidth = false,
 	className,
 	...props
@@ -35,12 +39,21 @@ export function Button({
 		}
 	};
 
-	const colorSize = (size: Size) => {
-		switch (size) {
-			case "small":
-				return styles.btnSmall;
-			default:
-				return styles.btnNormal;
+	const sizeStyle = (size: Size) => {
+		if (icon) {
+			switch (size) {
+				case "small":
+					return styles.btnIconSmall;
+				default:
+					return styles.btnIconNormal;
+			}
+		} else {
+			switch (size) {
+				case "small":
+					return styles.btnSmall;
+				default:
+					return styles.btnNormal;
+			}
 		}
 	};
 
@@ -50,9 +63,10 @@ export function Button({
 			className={clsx(
 				styles.btn,
 				colorStyle(color),
-				colorSize(size),
+				sizeStyle(size),
 				rounded ? "rounded-full" : "rounded",
 				fullWidth && styles.btnFull,
+				fab && styles.btnFAB,
 				className
 			)}
 		>
@@ -65,5 +79,7 @@ type Props = {
 	color?: Color;
 	size?: Size;
 	rounded?: boolean;
+	icon?: boolean;
+	fab?: boolean;
 	fullWidth?: boolean;
 };

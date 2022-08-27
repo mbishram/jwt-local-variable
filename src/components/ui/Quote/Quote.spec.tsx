@@ -18,7 +18,7 @@ describe("Quote", () => {
 
 		it("should show indicator that data is empty", () => {
 			expect(
-				screen.getByText("- Anonymous (Unknown)")
+				screen.getByText("- Unknown (Anonymous)")
 			).toBeInTheDocument();
 			expect(screen.getByText("Quote kosong!")).toBeInTheDocument();
 		});

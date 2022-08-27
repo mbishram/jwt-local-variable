@@ -2,9 +2,12 @@
  * @jest-environment jsdom
  */
 
-import { createQuote } from "@/libs/fetchers/quotes";
+import { createQuote, deleteAllQuote } from "@/libs/fetchers/quotes";
 import { QuoteModel } from "@/models/quote-model";
-import { createMethodHandler } from "../../../specs/__mocks__/api/quotes-fetcher";
+import {
+	createMethodHandler,
+	deleteMethodHandler,
+} from "../../../specs/__mocks__/api/quotes-fetcher";
 
 describe("Quotes Fetcher", () => {
 	const data = new QuoteModel({
@@ -19,6 +22,13 @@ describe("Quotes Fetcher", () => {
 		createMethodHandler(data);
 
 		const res = await createQuote(data);
+		expect(res.data).toEqual("Success");
+	});
+
+	it("should be able to delete all quote", async () => {
+		deleteMethodHandler();
+
+		const res = await deleteAllQuote();
 		expect(res.data).toEqual("Success");
 	});
 });

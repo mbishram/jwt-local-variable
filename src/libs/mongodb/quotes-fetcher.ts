@@ -4,6 +4,9 @@ import { NextJson } from "@/models/next-json";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { UserModel } from "@/models/user-model";
 import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
+import { ObjectId } from "bson";
+
+export const QUOTES_COLLECTION_NAME = "quotes";
 
 /**
  * Fetch all quotes
@@ -12,7 +15,7 @@ export const getAllQuotes = async () => {
 	try {
 		let { db } = await connectToDatabase();
 		let quotes = await db
-			.collection("quotes")
+			.collection(QUOTES_COLLECTION_NAME)
 			.find()
 			.sort({ _id: -1 })
 			.toArray();
@@ -47,6 +50,55 @@ export const createQuotes = async (
 	const authorizationHeader = (req?.headers?.authorization ||
 		authorizationCookie ||
 		"") as string;
+	const [data] = await getTokenData(
+		authorizationHeader,
+		String(process.env.ACCESS_TOKEN_SECRET_KEY)
+	);
+
+	const userId = data && new ObjectId((data?.data?.[0] as UserModel)?.id);
+	const username = data && (data?.data?.[0] as UserModel)?.name;
+
+	try {
+		let { db } = await connectToDatabase();
+		const body =
+			typeof req.body === "string" ? JSON.parse(req.body) : req.body;
+		await db
+			.collection(QUOTES_COLLECTION_NAME)
+			.insertOne({ ...body, userId, username });
+		return res.json(
+			new NextJson({
+				message: "Quotes added!",
+				success: true,
+			})
+		);
+	} catch (error: any) {
+		return res.status(500).json(
+			new NextJson({
+				message: new Error(error).message,
+				success: false,
+			})
+		);
+	}
+};
+
+/**
+ * Delete all quote document
+ */
+export const deleteQuotes = async (
+	req: NextApiRequest,
+	res: NextApiResponse
+) => {
+	// Use cookie if there's no authorization header.
+	// This is done to make them vulnerable to CSRF.
+	// DON'T DO THIS! This is unnecessary on real application.
+	const tokenCookie =
+		req?.headers?.cookie
+			?.match("(^|;)\\s*" + JWT_ACCESS_TOKEN_COOKIE + "\\s*=\\s*([^;]+)")
+			?.pop() || "";
+	const authorizationCookie = tokenCookie && "Bearer " + tokenCookie;
+	const authorizationHeader = (req?.headers?.authorization ||
+		authorizationCookie ||
+		"") as string;
 	const [data, error] = await getTokenData(
 		authorizationHeader,
 		String(process.env.ACCESS_TOKEN_SECRET_KEY)
@@ -55,19 +107,15 @@ export const createQuotes = async (
 	if (error) return res.status(401).json(error);
 
 	if (data) {
-		const userId = (data?.data?.[0] as UserModel)?.id || "";
-		const username = (data?.data?.[0] as UserModel)?.name || "";
+		const userId = new ObjectId((data?.data?.[0] as UserModel)?.id);
 
 		try {
 			let { db } = await connectToDatabase();
-			const body =
-				typeof req.body === "string" ? JSON.parse(req.body) : req.body;
-			await db
-				.collection("quotes")
-				.insertOne({ ...body, userId, username });
+			await db.collection(QUOTES_COLLECTION_NAME).deleteMany({ userId });
+
 			return res.json(
 				new NextJson({
-					message: "Quotes added!",
+					message: "All quotes deleted!",
 					success: true,
 				})
 			);
