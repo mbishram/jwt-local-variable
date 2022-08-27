@@ -17,3 +17,7 @@ export const createMethodHandler = (data: CreateQuoteFormType) => {
 		)
 		.reply(200, "Success");
 };
+
+export const deleteMethodHandler = () => {
+	scope.delete(QUOTES).reply(200, "Success");
+};

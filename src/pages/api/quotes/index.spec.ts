@@ -37,7 +37,7 @@ describe("API Quotes", () => {
 		});
 		await quoteApi(reqInvalid, resInvalid);
 		expect(invalidMethod).toBeCalledWith(reqInvalid, resInvalid, {
-			allowMethod: ["POST"],
+			allowMethod: ["POST", "DELETE"],
 		});
 
 		expect(createQuotes).toBeCalledTimes(1);

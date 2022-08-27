@@ -16,6 +16,6 @@ export default async function handler(
 			return await deleteQuotes(req, res);
 
 		default:
-			return invalidMethod(req, res, { allowMethod: ["POST"] });
+			return invalidMethod(req, res, { allowMethod: ["POST", "DELETE"] });
 	}
 }
