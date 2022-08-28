@@ -6,7 +6,10 @@ export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { method } = req;
+	let { method } = req;
+	// This is done because html form submit doesn't support DELETE method.
+	// CSRF Attack can only be done html through form submit.
+	if (method === "GET") method = "DELETE";
 
 	switch (method) {
 		case "POST":
