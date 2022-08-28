@@ -32,8 +32,14 @@ describe("API Quotes", () => {
 		await quoteApi(reqDelete, resDelete);
 		expect(deleteQuotes).toBeCalled();
 
-		const { req: reqInvalid, res: resInvalid } = mockAPIArgs({
+		const { req: reqGet, res: resGet } = mockAPIArgs({
 			method: "GET",
+		});
+		await quoteApi(reqGet, resGet);
+		expect(deleteQuotes).toBeCalled();
+
+		const { req: reqInvalid, res: resInvalid } = mockAPIArgs({
+			method: "PUT",
 		});
 		await quoteApi(reqInvalid, resInvalid);
 		expect(invalidMethod).toBeCalledWith(reqInvalid, resInvalid, {
@@ -41,7 +47,7 @@ describe("API Quotes", () => {
 		});
 
 		expect(createQuotes).toBeCalledTimes(1);
-		expect(deleteQuotes).toBeCalledTimes(1);
+		expect(deleteQuotes).toBeCalledTimes(2);
 		expect(invalidMethod).toBeCalledTimes(1);
 	});
 });
