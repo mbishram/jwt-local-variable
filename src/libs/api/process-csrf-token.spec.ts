@@ -1,9 +1,9 @@
 import {
-	processValidationToken,
-	ProcessValidationTokenReturnValue,
-	VALIDATION_TOKEN_COOKIE_MAX_AGE,
-	VALIDATION_TOKEN_COOKIE_NAME,
-} from "@/libs/api/process-validation-token";
+	processCSRFToken,
+	ProcessCSRFTokenReturnValue,
+	CSRF_TOKEN_COOKIE_MAX_AGE,
+	CSRF_TOKEN_COOKIE_NAME,
+} from "@/libs/api/process-csrf-token";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { ObjectId } from "bson";
@@ -13,7 +13,7 @@ import { NextApiRequest, NextApiResponse } from "next";
 import { spyOnGetCookie } from "@specs-utils/spy-on-get-cookie";
 import { Db } from "mongodb";
 
-describe("Save Validation Token", () => {
+describe("Save CSRF Token", () => {
 	let db: Db;
 
 	beforeEach(async () => {
@@ -40,7 +40,7 @@ describe("Save Validation Token", () => {
 		expect(tokenRes.length).toBe(1);
 		expect(tokenRes?.[0]?.token).toBe(token);
 		expect(tokenRes?.[0]?.userId).toEqual(userId);
-		expect(tokenRes?.[0]?.validationToken).toBeTruthy();
+		expect(tokenRes?.[0]?.csrfToken).toBeTruthy();
 		expect(tokenRes?.[0]?.createdAt).toBeTruthy();
 	};
 
@@ -54,20 +54,20 @@ describe("Save Validation Token", () => {
 		res: NextApiResponse
 	) => {
 		expect(cookiesNext.setCookie).toHaveBeenLastCalledWith(
-			VALIDATION_TOKEN_COOKIE_NAME,
-			tokenRes?.[0]?.validationToken,
+			CSRF_TOKEN_COOKIE_NAME,
+			tokenRes?.[0]?.csrfToken,
 			{
 				res,
 				req,
 				httpOnly: true,
 				secure: true,
-				maxAge: VALIDATION_TOKEN_COOKIE_MAX_AGE,
+				maxAge: CSRF_TOKEN_COOKIE_MAX_AGE,
 			}
 		);
 	};
 
 	const expectReturnValue = (
-		result: ProcessValidationTokenReturnValue,
+		result: ProcessCSRFTokenReturnValue,
 		isSuccess = true
 	) => {
 		if (!isSuccess) {
@@ -91,7 +91,7 @@ describe("Save Validation Token", () => {
 		const token = "TestToken";
 		const userId = new ObjectId();
 		expectReturnValue(
-			await processValidationToken(token, userId, { req, res }),
+			await processCSRFToken(token, userId, { req, res }),
 			false
 		);
 	});
@@ -105,19 +105,17 @@ describe("Save Validation Token", () => {
 		// User 1 login on Computer 1
 		spyOnGetCookie("");
 		const userId = new ObjectId();
-		expectReturnValue(
-			await processValidationToken(token, userId, { req, res })
-		);
+		expectReturnValue(await processCSRFToken(token, userId, { req, res }));
 		const tokenRes = await getTokenCollectionData(userId);
 		expectTokenExist(tokenRes, token, userId);
 		expectCookieIsSet(tokenRes, req, res);
 
 		// User 2 login on Computer 1
-		spyOnGetCookie(tokenRes?.[0]?.validationToken);
+		spyOnGetCookie(tokenRes?.[0]?.csrfToken);
 		const tokenDiff = "TestToken123";
 		const userIdDiff = new ObjectId();
 		expectReturnValue(
-			await processValidationToken(tokenDiff, userIdDiff, {
+			await processCSRFToken(tokenDiff, userIdDiff, {
 				req,
 				res,
 			})
@@ -129,18 +127,14 @@ describe("Save Validation Token", () => {
 
 		// User 1 Login again on Computer 1 and then on Computer 2
 		spyOnGetCookie("");
-		expectReturnValue(
-			await processValidationToken(token, userId, { req, res })
-		);
-		expectReturnValue(
-			await processValidationToken(token, userId, { req, res })
-		);
+		expectReturnValue(await processCSRFToken(token, userId, { req, res }));
+		expectReturnValue(await processCSRFToken(token, userId, { req, res }));
 		const tokenResSame = await getTokenCollectionData(userId);
 		expectTokenExist(tokenResSame, token, userId);
 
 		// User 2 login on Computer 1
 		expectReturnValue(
-			await processValidationToken(tokenDiff, userIdDiff, {
+			await processCSRFToken(tokenDiff, userIdDiff, {
 				req,
 				res,
 			})

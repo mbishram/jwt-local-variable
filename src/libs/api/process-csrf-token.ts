@@ -6,30 +6,30 @@ import { getCookie, setCookie } from "cookies-next";
 import { NextApiRequest, NextApiResponse } from "next";
 import { NextJson } from "@/models/next-json";
 
-export type ProcessValidationTokenOptions = {
+export type ProcessCSRFTokenOptions = {
 	req: NextApiRequest;
 	res: NextApiResponse;
 };
-export type ProcessValidationTokenReturnValue = [
+export type ProcessCSRFTokenReturnValue = [
 	boolean | null,
 	NextJson<any> | null
 ];
 
-export const VALIDATION_TOKEN_COOKIE_NAME = "validationToken";
-export const VALIDATION_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // A week
+export const CSRF_TOKEN_COOKIE_NAME = "csrfToken";
+export const CSRF_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // A week
 
 /**
- * Save token and validationToken to db.
+ * Save token and csrfToken to db.
  * @param accessToken {string}
  * @param userId {string}
- * @param options {ProcessValidationTokenOptions}
+ * @param options {ProcessCSRFTokenOptions}
  * @return {string | undefined}
  */
-export async function processValidationToken(
+export async function processCSRFToken(
 	accessToken: string,
 	userId: ObjectId,
-	options: ProcessValidationTokenOptions
-): Promise<ProcessValidationTokenReturnValue> {
+	options: ProcessCSRFTokenOptions
+): Promise<ProcessCSRFTokenReturnValue> {
 	const { req, res } = options;
 
 	try {
@@ -37,21 +37,21 @@ export async function processValidationToken(
 		const tokenCollection = db.collection(TOKENS_COLLECTION_NAME);
 
 		// Remove all user's previous sessions and current computer's sessions
-		const currentValidationToken = getCookie(VALIDATION_TOKEN_COOKIE_NAME, {
+		const currentCSRFToken = getCookie(CSRF_TOKEN_COOKIE_NAME, {
 			req,
 			res,
 		});
 		await tokenCollection.deleteMany({
-			$or: [{ userId }, { validationToken: currentValidationToken }],
+			$or: [{ userId }, { csrfToken: currentCSRFToken }],
 		});
 
-		const validationToken = crypto.randomBytes(32).toString("hex");
-		if (!validationToken) {
+		const csrfToken = crypto.randomBytes(32).toString("hex");
+		if (!csrfToken) {
 			return [
 				null,
 				new NextJson({
 					message:
-						"Something went wrong! Failed to generate validation token.",
+						"Something went wrong! Failed to generate CSRF token.",
 					success: false,
 				}),
 			];
@@ -59,18 +59,18 @@ export async function processValidationToken(
 
 		await db.collection(TOKENS_COLLECTION_NAME).insertOne({
 			token: accessToken,
-			validationToken,
+			csrfToken,
 			userId,
 			createdAt: new Date(),
 		});
 
 		// Set httpOnly cookie
-		setCookie(VALIDATION_TOKEN_COOKIE_NAME, validationToken, {
+		setCookie(CSRF_TOKEN_COOKIE_NAME, csrfToken, {
 			req,
 			res,
 			httpOnly: true,
 			secure: true,
-			maxAge: VALIDATION_TOKEN_COOKIE_MAX_AGE,
+			maxAge: CSRF_TOKEN_COOKIE_MAX_AGE,
 		});
 
 		return [true, null];

@@ -6,12 +6,12 @@ export const TOKENS_COLLECTION_NAME = "tokens";
 /**
  * Checking if token exist on database and is valid
  * @param token {string}
- * @param validationToken {CookieValueTypes}
+ * @param csrfToken {CookieValueTypes}
  * @return {boolean}
  */
 export async function isTokenValid(
 	token?: string,
-	validationToken?: CookieValueTypes
+	csrfToken?: CookieValueTypes
 ) {
 	let { db } = await connectToDatabase();
 
@@ -24,7 +24,7 @@ export async function isTokenValid(
 
 		if (!tokenRes) return false;
 
-		return tokenRes.validationToken === validationToken;
+		return tokenRes.csrfToken === csrfToken;
 	} catch (e) {
 		return false;
 	}

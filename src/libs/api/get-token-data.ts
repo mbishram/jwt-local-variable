@@ -8,7 +8,7 @@ import { isTokenValid } from "@/libs/api/is-token-valid";
 export type GetTokenDataParams = {
 	authorizationHeader: string;
 	secret: string;
-	validationToken: CookieValueTypes;
+	csrfToken: CookieValueTypes;
 };
 export type GetTokenDataOptions = VerifyOptions & { alwaysValid?: boolean };
 
@@ -22,7 +22,7 @@ export const getTokenData = async (
 	params: GetTokenDataParams,
 	{ alwaysValid, ...options }: GetTokenDataOptions = { alwaysValid: false }
 ) => {
-	const { authorizationHeader, secret, validationToken } = params;
+	const { authorizationHeader, secret, csrfToken } = params;
 	let token = extractToken(authorizationHeader);
 
 	if (!token) {
@@ -33,7 +33,7 @@ export const getTokenData = async (
 		return [null, error];
 	}
 
-	const isValid = await isTokenValid(token, validationToken);
+	const isValid = await isTokenValid(token, csrfToken);
 	if (!alwaysValid && !isValid) {
 		const error = new NextJson({
 			message: "Access denied, token is not valid!",

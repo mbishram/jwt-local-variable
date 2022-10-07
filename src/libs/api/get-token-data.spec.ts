@@ -16,7 +16,7 @@ describe("Get Token Data", () => {
 				const [data, error] = await getTokenData({
 					authorizationHeader: authorization,
 					secret: "",
-					validationToken: "",
+					csrfToken: "",
 				});
 
 				expect(data).toEqual(null);
@@ -38,7 +38,7 @@ describe("Get Token Data", () => {
 				const [success, error] = await getTokenData({
 					authorizationHeader: authorization,
 					secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
-					validationToken: "",
+					csrfToken: "",
 				});
 
 				expect(error).toEqual(null);
@@ -60,7 +60,7 @@ describe("Get Token Data", () => {
 				const [success, error] = await getTokenData({
 					authorizationHeader: authorization,
 					secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
-					validationToken: "",
+					csrfToken: "",
 				});
 
 				expect(success).toEqual(null);
@@ -81,7 +81,7 @@ describe("Get Token Data", () => {
 				const [success, error] = await getTokenData({
 					authorizationHeader: authorization,
 					secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
-					validationToken: "",
+					csrfToken: "",
 				});
 
 				expect(success).toEqual(null);
@@ -102,7 +102,7 @@ describe("Get Token Data", () => {
 				const [success, error] = await getTokenData({
 					authorizationHeader: authorization,
 					secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
-					validationToken: "",
+					csrfToken: "",
 				});
 
 				expect(error).toEqual(
@@ -125,7 +125,7 @@ describe("Get Token Data", () => {
 					{
 						authorizationHeader: authorization,
 						secret: process.env.ACCESS_TOKEN_SECRET_KEY as string,
-						validationToken: "",
+						csrfToken: "",
 					},
 					{ alwaysValid: true }
 				);

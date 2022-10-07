@@ -4,7 +4,7 @@ import { NextJson } from "@/models/next-json";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { UserModel } from "@/models/user-model";
 import { ObjectId } from "bson";
-import { getValidationTokenCookie } from "@/libs/api/get-validation-token-cookie";
+import { getCSRFTokenCookie } from "@/libs/api/get-csrf-token-cookie";
 import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
 
 export const QUOTES_COLLECTION_NAME = "quotes";
@@ -51,11 +51,11 @@ export const createQuotes = async (
 	const authorizationHeader = (req?.headers?.authorization ||
 		authorizationCookie ||
 		"") as string;
-	const validationToken = getValidationTokenCookie(req, res);
+	const csrfToken = getCSRFTokenCookie(req, res);
 	const [data] = await getTokenData({
 		authorizationHeader,
 		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
-		validationToken,
+		csrfToken: csrfToken,
 	});
 
 	const userId = data && new ObjectId((data?.data?.[0] as UserModel)?.id);
@@ -101,11 +101,11 @@ export const deleteQuotes = async (
 	const authorizationHeader = (req?.headers?.authorization ||
 		authorizationCookie ||
 		"") as string;
-	const validationToken = getValidationTokenCookie(req, res);
+	const csrfToken = getCSRFTokenCookie(req, res);
 	const [data, error] = await getTokenData({
 		authorizationHeader,
 		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
-		validationToken,
+		csrfToken,
 	});
 
 	if (error) return res.status(401).json(error);

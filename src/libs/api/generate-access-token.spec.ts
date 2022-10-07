@@ -33,7 +33,7 @@ describe("Generate Access Token", () => {
 		const [success, error] = await getTokenData({
 			authorizationHeader: authorization,
 			secret: process?.env?.ACCESS_TOKEN_SECRET_KEY as string,
-			validationToken: "",
+			csrfToken: "",
 		});
 		expect(success).toBeTruthy();
 		expect(error).toBeFalsy();

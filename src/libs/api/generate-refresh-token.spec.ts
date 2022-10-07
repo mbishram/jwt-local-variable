@@ -24,7 +24,7 @@ describe("Generate Refresh Token", () => {
 		const [success, error] = await getTokenData({
 			authorizationHeader: authorization,
 			secret: process?.env?.REFRESH_TOKEN_SECRET_KEY as string,
-			validationToken: "",
+			csrfToken: "",
 		});
 		expect(success).toBeTruthy();
 		expect(error).toBeFalsy();

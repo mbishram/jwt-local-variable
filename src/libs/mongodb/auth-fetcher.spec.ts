@@ -16,11 +16,11 @@ import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { ObjectId } from "bson";
 import {
-	spyOnProcessValidationToken,
-	spyOnProcessValidationTokenFailedResponse,
-} from "@specs-utils/spy-on-process-validation-token";
+	spyOnProcessCSRFToken,
+	spyOnProcessCSRFTokenFailedResponse,
+} from "@specs-utils/spy-on-process-csrf-token";
 import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
-import { VALIDATION_TOKEN_COOKIE_NAME } from "@/libs/api/process-validation-token";
+import { CSRF_TOKEN_COOKIE_NAME } from "@/libs/api/process-csrf-token";
 import * as cookiesNext from "cookies-next";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
 import { deleteCookie } from "cookies-next";
@@ -96,8 +96,8 @@ describe("Fetcher", () => {
 			);
 		});
 
-		it("should be rejected on validation token failed to generate", async () => {
-			spyOnProcessValidationToken(false);
+		it("should be rejected on csrf token failed to generate", async () => {
+			spyOnProcessCSRFToken(false);
 			const { req, res } = mockAPIArgs({
 				body: {
 					username,
@@ -108,14 +108,14 @@ describe("Fetcher", () => {
 
 			expect(res.status).toBeCalledWith(500);
 			expect(res.json).toBeCalledWith(
-				spyOnProcessValidationTokenFailedResponse
+				spyOnProcessCSRFTokenFailedResponse
 			);
 
 			jest.restoreAllMocks();
 		});
 
-		it("should be able to login and generate validationToken on correct credential", async () => {
-			spyOnProcessValidationToken();
+		it("should be able to login and generate csrfToken on correct credential", async () => {
+			spyOnProcessCSRFToken();
 
 			const { req, res } = mockAPIArgs({
 				body: {
@@ -213,8 +213,8 @@ describe("Fetcher", () => {
 		});
 
 		describe("on valid refresh token", () => {
-			it("should be rejected when validation token failed to generate", async () => {
-				spyOnProcessValidationToken(false);
+			it("should be rejected when csrf token failed to generate", async () => {
+				spyOnProcessCSRFToken(false);
 
 				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
 				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
@@ -230,14 +230,14 @@ describe("Fetcher", () => {
 
 				expect(res.status).toBeCalledWith(500);
 				expect(res.json).toBeCalledWith(
-					spyOnProcessValidationTokenFailedResponse
+					spyOnProcessCSRFTokenFailedResponse
 				);
 
 				jest.restoreAllMocks();
 			});
 
 			it("should return the new access token", async () => {
-				spyOnProcessValidationToken();
+				spyOnProcessCSRFToken();
 
 				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
 				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
@@ -289,7 +289,7 @@ describe("Fetcher", () => {
 			const authorization = "Bearer " + token;
 
 			const { req, res } = mockAPIArgs({
-				cookies: { [VALIDATION_TOKEN_COOKIE_NAME]: cookieValue },
+				cookies: { [CSRF_TOKEN_COOKIE_NAME]: cookieValue },
 				headers: { authorization },
 			});
 
@@ -297,13 +297,13 @@ describe("Fetcher", () => {
 			await tokenCollection.insertMany([
 				{
 					token,
-					validationToken: cookieValue,
+					csrfToken: cookieValue,
 					userId,
 					createdAt: new Date(),
 				},
 				{
 					token: "Other token",
-					validationToken: "Loremipsum",
+					csrfToken: "Loremipsum",
 					userId: new ObjectId(),
 					createdAt: new Date(),
 				},
@@ -315,7 +315,7 @@ describe("Fetcher", () => {
 
 			await logout(req, res);
 
-			expect(deleteCookie).toBeCalledWith(VALIDATION_TOKEN_COOKIE_NAME, {
+			expect(deleteCookie).toBeCalledWith(CSRF_TOKEN_COOKIE_NAME, {
 				req,
 				res,
 			});
