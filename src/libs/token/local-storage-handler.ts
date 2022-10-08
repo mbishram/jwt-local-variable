@@ -30,3 +30,17 @@ export function returnRefreshToken() {
 export function deleteRefreshToken() {
 	localStorage.removeItem(JWT_REFRESH_TOKEN_KEY);
 }
+
+export const CSRF_TOKEN_KEY = "CSRF_TOKEN_KEY";
+
+export function saveCSRFToken(value: string) {
+	localStorage.setItem(CSRF_TOKEN_KEY, value);
+}
+
+export function returnCSRFToken() {
+	return localStorage.getItem(CSRF_TOKEN_KEY);
+}
+
+export function deleteCSRFToken() {
+	localStorage.removeItem(CSRF_TOKEN_KEY);
+}

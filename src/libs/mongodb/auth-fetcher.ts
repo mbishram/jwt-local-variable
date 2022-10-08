@@ -11,14 +11,11 @@ import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { cleanTokenPayload } from "@/libs/clean-token-payload";
 import { JwtPayload } from "jsonwebtoken";
-import {
-	processCSRFToken,
-	CSRF_TOKEN_COOKIE_NAME,
-} from "@/libs/api/process-csrf-token";
+import { processCSRFToken } from "@/libs/api/process-csrf-token";
 import { ObjectId } from "bson";
-import { getCSRFTokenCookie } from "@/libs/api/get-csrf-token-cookie";
-import { deleteCookie } from "cookies-next";
+import { extractCSRFToken } from "@/libs/api/extract-csrf-token";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
+import { removeCSRFToken } from "@/libs/token/variable-handler";
 
 export const USERS_COLLECTION_NAME = "users";
 
@@ -80,13 +77,9 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		const [csrfTokenData, csrfTokenError] = await processCSRFToken(
 			accessToken,
-			userRes._id,
-			{
-				req,
-				res,
-			}
+			userRes._id
 		);
-		if (!csrfTokenData && csrfTokenError) {
+		if (!csrfTokenData || csrfTokenError) {
 			return res.status(500).json(csrfTokenError);
 		}
 
@@ -109,7 +102,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const csrfToken = getCSRFTokenCookie(req, res);
+	const csrfToken = extractCSRFToken(req);
 	const [data, error] = await getTokenData({
 		authorizationHeader,
 		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
@@ -143,7 +136,7 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const csrfToken = getCSRFTokenCookie(req, res);
+	const csrfToken = extractCSRFToken(req);
 	const [refreshTokenData, refreshTokenError] = await getTokenData(
 		{
 			authorizationHeader,
@@ -179,13 +172,9 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		const [csrfTokenData, csrfTokenError] = await processCSRFToken(
 			accessToken,
-			new ObjectId(cleanedPayload.id),
-			{
-				req,
-				res,
-			}
+			new ObjectId(cleanedPayload.id)
 		);
-		if (!csrfTokenData && csrfTokenError) {
+		if (!csrfTokenData || csrfTokenError) {
 			return res.status(500).json(csrfTokenError);
 		}
 
@@ -211,7 +200,7 @@ export const logout = async (req: NextApiRequest, res: NextApiResponse) => {
 
 		const authorizationHeader = (req?.headers?.authorization ||
 			"") as string;
-		const csrfToken = getCSRFTokenCookie(req, res);
+		const csrfToken = extractCSRFToken(req);
 		const [data] = await getTokenData(
 			{
 				authorizationHeader,
@@ -228,7 +217,7 @@ export const logout = async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 	} catch (e) {
 	} finally {
-		deleteCookie(CSRF_TOKEN_COOKIE_NAME, { req, res });
+		removeCSRFToken();
 
 		res.status(200).json(
 			new NextJson({

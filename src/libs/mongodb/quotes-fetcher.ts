@@ -4,7 +4,7 @@ import { NextJson } from "@/models/next-json";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { UserModel } from "@/models/user-model";
 import { ObjectId } from "bson";
-import { getCSRFTokenCookie } from "@/libs/api/get-csrf-token-cookie";
+import { extractCSRFToken } from "@/libs/api/extract-csrf-token";
 import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
 
 export const QUOTES_COLLECTION_NAME = "quotes";
@@ -51,7 +51,7 @@ export const createQuotes = async (
 	const authorizationHeader = (req?.headers?.authorization ||
 		authorizationCookie ||
 		"") as string;
-	const csrfToken = getCSRFTokenCookie(req, res);
+	const csrfToken = extractCSRFToken(req);
 	const [data] = await getTokenData({
 		authorizationHeader,
 		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
@@ -101,7 +101,7 @@ export const deleteQuotes = async (
 	const authorizationHeader = (req?.headers?.authorization ||
 		authorizationCookie ||
 		"") as string;
-	const csrfToken = getCSRFTokenCookie(req, res);
+	const csrfToken = extractCSRFToken(req);
 	const [data, error] = await getTokenData({
 		authorizationHeader,
 		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),

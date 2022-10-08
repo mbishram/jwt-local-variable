@@ -2,13 +2,12 @@ import { extractToken } from "@/libs/api/extract-token";
 import { NextJson } from "@/models/next-json";
 import jwt, { JsonWebTokenError, VerifyOptions } from "jsonwebtoken";
 import { JWT_ERROR_TYPES } from "@/constants/jwt-error-types";
-import { CookieValueTypes } from "cookies-next";
 import { isTokenValid } from "@/libs/api/is-token-valid";
 
 export type GetTokenDataParams = {
 	authorizationHeader: string;
 	secret: string;
-	csrfToken: CookieValueTypes;
+	csrfToken: string;
 };
 export type GetTokenDataOptions = VerifyOptions & { alwaysValid?: boolean };
 

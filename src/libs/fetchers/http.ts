@@ -1,5 +1,9 @@
 import axios from "axios";
-import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
+import {
+	getAccessToken,
+	getCSRFToken,
+	getRefreshToken,
+} from "@/libs/token/variable-handler";
 
 export const baseURL = process?.env?.NEXT_PUBLIC_API_BASE_URL || "";
 
@@ -11,8 +15,10 @@ const httpInstance = axios.create({
 });
 httpInstance.interceptors.request.use((request) => {
 	const accessTokenString = "Bearer " + (!isServer ? getAccessToken() : "");
+	const csrfTokenString = "Bearer " + (!isServer ? getCSRFToken() : "");
 	if (request?.headers) {
 		request.headers.authorization = accessTokenString;
+		request.headers["token-csrf"] = csrfTokenString;
 	}
 	return request;
 });
@@ -24,9 +30,11 @@ const httpRefreshInstance = axios.create({
 httpRefreshInstance.interceptors.request.use((request) => {
 	const refreshTokenString = "Bearer " + (!isServer ? getRefreshToken() : "");
 	const accessTokenString = "Bearer " + (!isServer ? getAccessToken() : "");
+	const csrfTokenString = "Bearer " + (!isServer ? getCSRFToken() : "");
 	if (request?.headers) {
 		request.headers.authorization = refreshTokenString;
 		request.headers["token-access"] = accessTokenString;
+		request.headers["token-csrf"] = csrfTokenString;
 	}
 	return request;
 });

@@ -1,17 +1,15 @@
 import {
 	processCSRFToken,
 	ProcessCSRFTokenReturnValue,
-	CSRF_TOKEN_COOKIE_MAX_AGE,
-	CSRF_TOKEN_COOKIE_NAME,
 } from "@/libs/api/process-csrf-token";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { ObjectId } from "bson";
-import * as cookiesNext from "cookies-next";
-import { mockAPIArgs } from "@specs-utils/mock-api-args";
-import { NextApiRequest, NextApiResponse } from "next";
-import { spyOnGetCookie } from "@specs-utils/spy-on-get-cookie";
 import { Db } from "mongodb";
+import { setCSRFToken } from "@/libs/token/variable-handler";
+import { spyOnGetCSRFToken } from "@specs-utils/spy-on-get-csrf-token";
+import { spyOnSetCSRFToken } from "@specs-utils/spy-on-set-csrf-token";
+import { spyOnMongoDBCollection } from "@specs-utils/spy-on-mongodb-collection";
 
 describe("Save CSRF Token", () => {
 	let db: Db;
@@ -48,22 +46,8 @@ describe("Save CSRF Token", () => {
 		expect(tokenRes.length).toBe(0);
 	};
 
-	const expectCookieIsSet = (
-		tokenRes: any[],
-		req: NextApiRequest,
-		res: NextApiResponse
-	) => {
-		expect(cookiesNext.setCookie).toHaveBeenLastCalledWith(
-			CSRF_TOKEN_COOKIE_NAME,
-			tokenRes?.[0]?.csrfToken,
-			{
-				res,
-				req,
-				httpOnly: true,
-				secure: true,
-				maxAge: CSRF_TOKEN_COOKIE_MAX_AGE,
-			}
-		);
+	const expectTokenIsSet = (tokenRes: any[]) => {
+		expect(setCSRFToken).toHaveBeenLastCalledWith(tokenRes?.[0]?.csrfToken);
 	};
 
 	const expectReturnValue = (
@@ -82,63 +66,44 @@ describe("Save CSRF Token", () => {
 	};
 
 	it("should return exception when error is found", async () => {
-		jest.spyOn(
-			db.collection(TOKENS_COLLECTION_NAME),
-			"insertOne"
-		).mockImplementation(jest.fn(async () => Promise.reject(new Error())));
-		const { req, res } = mockAPIArgs({});
+		spyOnMongoDBCollection(db, ["insertOne"]);
 
 		const token = "TestToken";
 		const userId = new ObjectId();
-		expectReturnValue(
-			await processCSRFToken(token, userId, { req, res }),
-			false
-		);
+		expectReturnValue(await processCSRFToken(token, userId), false);
 	});
 
-	it("should create new document on tokens collection and set httpOnly and secure cookie when accessToken is passed and no error", async () => {
-		jest.spyOn(cookiesNext, "setCookie").mockImplementation(jest.fn());
-		const { req, res } = mockAPIArgs({});
+	it("should create new document on tokens collection and set CSRF token when accessToken is passed and no error", async () => {
+		spyOnSetCSRFToken();
 
 		const token = "TestToken1";
 
 		// User 1 login on Computer 1
-		spyOnGetCookie("");
+		spyOnGetCSRFToken("");
 		const userId = new ObjectId();
-		expectReturnValue(await processCSRFToken(token, userId, { req, res }));
+		expectReturnValue(await processCSRFToken(token, userId));
 		const tokenRes = await getTokenCollectionData(userId);
 		expectTokenExist(tokenRes, token, userId);
-		expectCookieIsSet(tokenRes, req, res);
+		expectTokenIsSet(tokenRes);
 
 		// User 2 login on Computer 1
-		spyOnGetCookie(tokenRes?.[0]?.csrfToken);
+		spyOnGetCSRFToken(tokenRes?.[0]?.csrfToken);
 		const tokenDiff = "TestToken123";
 		const userIdDiff = new ObjectId();
-		expectReturnValue(
-			await processCSRFToken(tokenDiff, userIdDiff, {
-				req,
-				res,
-			})
-		);
+		expectReturnValue(await processCSRFToken(tokenDiff, userIdDiff));
 		const tokenResDiff = await getTokenCollectionData(userIdDiff);
 		expectTokenExist(tokenResDiff, tokenDiff, userIdDiff);
 		const tokenResAfterUser2 = await getTokenCollectionData(userId);
 		expectTokenNotExist(tokenResAfterUser2);
 
 		// User 1 Login again on Computer 1 and then on Computer 2
-		spyOnGetCookie("");
-		expectReturnValue(await processCSRFToken(token, userId, { req, res }));
-		expectReturnValue(await processCSRFToken(token, userId, { req, res }));
+		expectReturnValue(await processCSRFToken(token, userId));
+		expectReturnValue(await processCSRFToken(token, userId));
 		const tokenResSame = await getTokenCollectionData(userId);
 		expectTokenExist(tokenResSame, token, userId);
 
 		// User 2 login on Computer 1
-		expectReturnValue(
-			await processCSRFToken(tokenDiff, userIdDiff, {
-				req,
-				res,
-			})
-		);
+		expectReturnValue(await processCSRFToken(tokenDiff, userIdDiff));
 		const tokenResDiffAgain = await getTokenCollectionData(userIdDiff);
 		expectTokenExist(tokenResDiffAgain, tokenDiff, userIdDiff);
 		const tokenResSameAgain = await getTokenCollectionData(userId);

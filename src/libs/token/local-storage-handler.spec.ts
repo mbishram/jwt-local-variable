@@ -11,6 +11,10 @@ import {
 	deleteRefreshToken,
 	saveAccessToken,
 	saveRefreshToken,
+	CSRF_TOKEN_KEY,
+	saveCSRFToken,
+	returnCSRFToken,
+	deleteCSRFToken,
 } from "@/libs/token/local-storage-handler";
 
 describe("Local Storage Handler", () => {
@@ -60,6 +64,31 @@ describe("Local Storage Handler", () => {
 			expect(returnRefreshToken()).toEqual("testrefreshtoken");
 			deleteRefreshToken();
 			const token = localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
+			expect(token).toBeFalsy();
+		});
+	});
+
+	describe("on CSRF Token", () => {
+		beforeEach(() => {
+			localStorage.setItem(CSRF_TOKEN_KEY, "testCSRFToken");
+		});
+
+		it("should able to set it", () => {
+			localStorage.removeItem(CSRF_TOKEN_KEY);
+
+			saveCSRFToken("csrfToken");
+			const token = localStorage.getItem(CSRF_TOKEN_KEY);
+			expect(token).toEqual("csrfToken");
+		});
+
+		it("should able to get it", () => {
+			expect(returnCSRFToken()).toEqual("testCSRFToken");
+		});
+
+		it("should able to remove it", () => {
+			expect(returnCSRFToken()).toEqual("testCSRFToken");
+			deleteCSRFToken();
+			const token = localStorage.getItem(CSRF_TOKEN_KEY);
 			expect(token).toBeFalsy();
 		});
 	});

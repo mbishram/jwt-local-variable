@@ -20,10 +20,9 @@ import {
 	spyOnProcessCSRFTokenFailedResponse,
 } from "@specs-utils/spy-on-process-csrf-token";
 import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
-import { CSRF_TOKEN_COOKIE_NAME } from "@/libs/api/process-csrf-token";
-import * as cookiesNext from "cookies-next";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
-import { deleteCookie } from "cookies-next";
+import { spyOnRemoveCSRFToken } from "@specs-utils/spy-on-remove-csrf-token";
+import { removeCSRFToken } from "@/libs/token/variable-handler";
 
 describe("Fetcher", () => {
 	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
@@ -277,20 +276,18 @@ describe("Fetcher", () => {
 			name,
 		});
 
-		it("should remove token data from db and cookie", async () => {
-			jest.spyOn(cookiesNext, "deleteCookie").mockImplementation(
-				jest.fn()
-			);
+		it("should remove token data from db and local variable", async () => {
+			spyOnRemoveCSRFToken();
 			let { db } = await connectToDatabase();
 			const tokenCollection = db.collection(TOKENS_COLLECTION_NAME);
 
 			const cookieValue = "CookieValue";
+			const bearerCookieValue = "CookieValue";
 			const token = await generateAccessToken(user);
 			const authorization = "Bearer " + token;
 
 			const { req, res } = mockAPIArgs({
-				cookies: { [CSRF_TOKEN_COOKIE_NAME]: cookieValue },
-				headers: { authorization },
+				headers: { authorization, "token-csrf": bearerCookieValue },
 			});
 
 			const userId = user.id;
@@ -315,10 +312,7 @@ describe("Fetcher", () => {
 
 			await logout(req, res);
 
-			expect(deleteCookie).toBeCalledWith(CSRF_TOKEN_COOKIE_NAME, {
-				req,
-				res,
-			});
+			expect(removeCSRFToken).toBeCalledTimes(1);
 			expect(
 				(await db.collection(TOKENS_COLLECTION_NAME).find().toArray())
 					.length

@@ -7,10 +7,12 @@ axios.defaults.adapter = require("axios/lib/adapters/http");
 import mockRouter from "next-router-mock";
 import {
 	deleteAccessToken,
+	deleteCSRFToken,
 	deleteRefreshToken,
 } from "@/libs/token/local-storage-handler";
 import {
 	removeAccessToken,
+	removeCSRFToken,
 	removeRefreshToken,
 } from "@/libs/token/variable-handler";
 jest.mock("next/router", () => require("next-router-mock"));
@@ -23,7 +25,9 @@ beforeEach(() => {
 	if (typeof window !== "undefined") {
 		deleteAccessToken();
 		deleteRefreshToken();
+		deleteCSRFToken();
 		removeAccessToken();
 		removeRefreshToken();
+		removeCSRFToken();
 	}
 });

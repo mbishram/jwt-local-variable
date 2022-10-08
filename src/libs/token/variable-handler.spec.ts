@@ -9,6 +9,9 @@ import {
 	setRefreshToken,
 	getRefreshToken,
 	removeRefreshToken,
+	getCSRFToken,
+	setCSRFToken,
+	removeCSRFToken,
 } from "@/libs/token/variable-handler";
 
 describe("Variable Handler", () => {
@@ -35,6 +38,19 @@ describe("Variable Handler", () => {
 
 			removeRefreshToken();
 			expect(getRefreshToken()).toEqual(null);
+		});
+	});
+
+	describe("on CSRF Token", () => {
+		const csrfToken = "csrftokenlorem";
+		it("should able to set, get, and, remove it it", () => {
+			expect(getCSRFToken()).toEqual(null);
+
+			setCSRFToken(csrfToken);
+			expect(getCSRFToken()).toEqual(csrfToken);
+
+			removeCSRFToken();
+			expect(getCSRFToken()).toEqual(null);
 		});
 	});
 });

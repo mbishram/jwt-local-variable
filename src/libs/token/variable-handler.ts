@@ -25,3 +25,17 @@ export function getRefreshToken() {
 export function removeRefreshToken() {
 	refreshToken = null;
 }
+
+let csrfToken: string | null;
+
+export function setCSRFToken(value: string) {
+	csrfToken = value;
+}
+
+export function getCSRFToken() {
+	return csrfToken;
+}
+
+export function removeCSRFToken() {
+	csrfToken = null;
+}
