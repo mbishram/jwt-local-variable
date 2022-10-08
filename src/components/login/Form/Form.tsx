@@ -5,7 +5,11 @@ import { HTMLProps, useEffect, useState } from "react";
 import { login } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 import { aesEncrypt } from "@/libs/aes";
-import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
+import {
+	setAccessToken,
+	setCSRFToken,
+	setRefreshToken,
+} from "@/libs/token/variable-handler";
 import { KeyedMutator } from "swr";
 
 /**
@@ -39,9 +43,14 @@ export function LoginForm({
 
 			if (data?.success) {
 				const token = data.data?.[0];
-				if (token?.accessToken && token?.refreshToken) {
+				if (
+					token?.accessToken &&
+					token?.refreshToken &&
+					token?.csrfToken
+				) {
 					setAccessToken(token.accessToken);
 					setRefreshToken(token.refreshToken);
+					setCSRFToken(token.csrfToken);
 				}
 				await mutateUser({ success: true });
 				await router.replace("/");

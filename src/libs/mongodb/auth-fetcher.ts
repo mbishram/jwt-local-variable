@@ -75,11 +75,11 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			);
 		}
 
-		const [csrfTokenData, csrfTokenError] = await processCSRFToken(
+		const [csrfToken, csrfTokenError] = await processCSRFToken(
 			accessToken,
 			userRes._id
 		);
-		if (!csrfTokenData || csrfTokenError) {
+		if (!csrfToken || csrfTokenError) {
 			return res.status(500).json(csrfTokenError);
 		}
 
@@ -87,7 +87,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			new NextJson<FetcherLoginResponseData>({
 				success: true,
 				message: "Login success!",
-				data: [{ accessToken, refreshToken }],
+				data: [{ accessToken, refreshToken, csrfToken }],
 			})
 		);
 	} catch (error: any) {
@@ -170,11 +170,11 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 		const accessToken = (await generateAccessToken(cleanedPayload)) || "";
 		const refreshToken = await generateRefreshToken();
 
-		const [csrfTokenData, csrfTokenError] = await processCSRFToken(
+		const [csrfToken, csrfTokenError] = await processCSRFToken(
 			accessToken,
 			new ObjectId(cleanedPayload.id)
 		);
-		if (!csrfTokenData || csrfTokenError) {
+		if (!csrfToken || csrfTokenError) {
 			return res.status(500).json(csrfTokenError);
 		}
 
@@ -182,7 +182,7 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 			new NextJson({
 				success: true,
 				message: "Token generated!",
-				data: [{ accessToken, refreshToken }],
+				data: [{ accessToken, refreshToken, csrfToken }],
 			})
 		);
 	}

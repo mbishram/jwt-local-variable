@@ -3,12 +3,9 @@ import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
 import crypto from "crypto";
 import { ObjectId } from "bson";
 import { NextJson } from "@/models/next-json";
-import { getCSRFToken, setCSRFToken } from "@/libs/token/variable-handler";
+import { getCSRFToken } from "@/libs/token/variable-handler";
 
-export type ProcessCSRFTokenReturnValue = [
-	boolean | null,
-	NextJson<any> | null
-];
+export type ProcessCSRFTokenReturnValue = [string | null, NextJson<any> | null];
 
 /**
  * Save token and csrfToken to db.
@@ -26,9 +23,11 @@ export async function processCSRFToken(
 
 		// Remove all user's previous sessions and current computer's sessions
 		const currentCSRFToken = getCSRFToken();
-		await tokenCollection.deleteMany({
-			$or: [{ userId }, { csrfToken: currentCSRFToken }],
-		});
+		if (userId && currentCSRFToken) {
+			await tokenCollection.deleteMany({
+				$or: [{ userId }, { csrfToken: currentCSRFToken }],
+			});
+		}
 
 		const csrfToken = crypto.randomBytes(32).toString("hex");
 		if (!csrfToken) {
@@ -49,10 +48,7 @@ export async function processCSRFToken(
 			createdAt: new Date(),
 		});
 
-		// Set CSRF token
-		setCSRFToken(csrfToken);
-
-		return [true, null];
+		return [csrfToken, null];
 	} catch (e) {
 		return [
 			null,

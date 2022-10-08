@@ -6,7 +6,6 @@ import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
 import { connectToDatabase } from "@/libs/mongodb/setup";
 import { ObjectId } from "bson";
 import { Db } from "mongodb";
-import { setCSRFToken } from "@/libs/token/variable-handler";
 import { spyOnGetCSRFToken } from "@specs-utils/spy-on-get-csrf-token";
 import { spyOnSetCSRFToken } from "@specs-utils/spy-on-set-csrf-token";
 import { spyOnMongoDBCollection } from "@specs-utils/spy-on-mongodb-collection";
@@ -46,10 +45,6 @@ describe("Save CSRF Token", () => {
 		expect(tokenRes.length).toBe(0);
 	};
 
-	const expectTokenIsSet = (tokenRes: any[]) => {
-		expect(setCSRFToken).toHaveBeenLastCalledWith(tokenRes?.[0]?.csrfToken);
-	};
-
 	const expectReturnValue = (
 		result: ProcessCSRFTokenReturnValue,
 		isSuccess = true
@@ -62,11 +57,16 @@ describe("Save CSRF Token", () => {
 		}
 
 		expect(result[0]).toBeTruthy();
+		expect(typeof result[0]).toEqual("string");
 		expect(result[1]).toBeFalsy();
 	};
 
 	it("should return exception when error is found", async () => {
-		spyOnMongoDBCollection(db, ["insertOne"]);
+		spyOnMongoDBCollection(
+			db,
+			["insertOne"],
+			jest.fn(async () => Promise.reject(new Error()))
+		);
 
 		const token = "TestToken";
 		const userId = new ObjectId();
@@ -84,7 +84,6 @@ describe("Save CSRF Token", () => {
 		expectReturnValue(await processCSRFToken(token, userId));
 		const tokenRes = await getTokenCollectionData(userId);
 		expectTokenExist(tokenRes, token, userId);
-		expectTokenIsSet(tokenRes);
 
 		// User 2 login on Computer 1
 		spyOnGetCSRFToken(tokenRes?.[0]?.csrfToken);

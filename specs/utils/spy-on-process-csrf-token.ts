@@ -10,7 +10,7 @@ export function spyOnProcessCSRFToken(isSuccess = true) {
 	jest.spyOn(processCSRFToken, "processCSRFToken").mockImplementation(
 		async () =>
 			isSuccess
-				? [true, null]
+				? ["TestCSRFToken", null]
 				: [null, spyOnProcessCSRFTokenFailedResponse]
 	);
 }

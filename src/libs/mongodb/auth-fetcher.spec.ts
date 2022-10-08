@@ -137,7 +137,13 @@ describe("Fetcher", () => {
 				new NextJson<FetcherLoginResponseData>({
 					success: true,
 					message: "Login success!",
-					data: [{ accessToken, refreshToken }],
+					data: [
+						{
+							accessToken,
+							refreshToken,
+							csrfToken: "TestCSRFToken",
+						},
+					],
 				})
 			);
 
@@ -259,7 +265,13 @@ describe("Fetcher", () => {
 					new NextJson({
 						success: true,
 						message: "Token generated!",
-						data: [{ accessToken, refreshToken }],
+						data: [
+							{
+								accessToken,
+								refreshToken,
+								csrfToken: "TestCSRFToken",
+							},
+						],
 					})
 				);
 
