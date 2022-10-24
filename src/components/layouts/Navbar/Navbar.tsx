@@ -5,7 +5,7 @@ import { useUser } from "@/hooks/use-user";
 import { useRouter } from "next/router";
 import {
 	removeAccessToken,
-	removeRefreshToken,
+	removeCSRFToken,
 } from "@/libs/token/variable-handler";
 import { logout } from "@/libs/fetchers/auth";
 
@@ -19,8 +19,8 @@ export function Navbar(props: HTMLProps<HTMLElement>) {
 			await logout();
 		} catch (e) {
 		} finally {
+			removeCSRFToken();
 			removeAccessToken();
-			removeRefreshToken();
 
 			await mutateUser({ success: false });
 			await router.replace("/login");

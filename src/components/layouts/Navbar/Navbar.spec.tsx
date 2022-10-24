@@ -12,9 +12,9 @@ import userEvent from "@testing-library/user-event";
 import { spyOnUseUser } from "@specs-utils/spy-on-useuser";
 import {
 	getAccessToken,
-	getRefreshToken,
+	getCSRFToken,
 	setAccessToken,
-	setRefreshToken,
+	setCSRFToken,
 } from "@/libs/token/variable-handler";
 import { logoutMethodHandler } from "../../../../specs/__mocks__/api/auth-fetcher";
 
@@ -79,12 +79,12 @@ describe("Navbar", () => {
 		it("should be able to logout, redirect, and mutateUser", async () => {
 			const call = logoutMethodHandler();
 			const accessTokenString = "AccessToken";
-			const refreshTokenString = "RefreshToken";
+			const csrfTokenString = "CSRFTOken";
 			setAccessToken(accessTokenString);
-			setRefreshToken(refreshTokenString);
+			setCSRFToken(csrfTokenString);
 
 			expect(getAccessToken()).toEqual(accessTokenString);
-			expect(getRefreshToken()).toEqual(refreshTokenString);
+			expect(getCSRFToken()).toEqual(csrfTokenString);
 			expect(Router).toMatchObject({ asPath: "/initial" });
 
 			const logoutButton = screen.getByText("Logout");
@@ -93,7 +93,7 @@ describe("Navbar", () => {
 			await waitFor(() => {
 				expect(call.isDone()).toBeTruthy();
 				expect(getAccessToken()).toBeFalsy();
-				expect(getRefreshToken()).toBeFalsy();
+				expect(getCSRFToken()).toBeFalsy();
 				expect(useUser().mutateUser).toBeCalledTimes(1);
 				expect(useUser().mutateUser).toBeCalledWith({ success: false });
 				expect(Router).toMatchObject({ asPath: "/login" });

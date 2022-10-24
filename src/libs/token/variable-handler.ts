@@ -12,20 +12,6 @@ export function removeAccessToken() {
 	accessToken = null;
 }
 
-let refreshToken: string | null;
-
-export function setRefreshToken(value: string) {
-	refreshToken = value;
-}
-
-export function getRefreshToken() {
-	return refreshToken;
-}
-
-export function removeRefreshToken() {
-	refreshToken = null;
-}
-
 let csrfToken: string | null;
 
 export function setCSRFToken(value: string) {

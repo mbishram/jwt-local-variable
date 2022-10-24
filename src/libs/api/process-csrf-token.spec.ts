@@ -69,19 +69,25 @@ describe("Save CSRF Token", () => {
 		);
 
 		const token = "TestToken";
+		const refreshToken = "RefreshToken";
 		const userId = new ObjectId();
-		expectReturnValue(await processCSRFToken(token, userId), false);
+		expectReturnValue(
+			await processCSRFToken(token, refreshToken, userId),
+			false
+		);
 	});
 
 	it("should create new document on tokens collection and set CSRF token when accessToken is passed and no error", async () => {
 		spyOnSetCSRFToken();
+
+		const refreshToken = "RefreshToken";
 
 		const token = "TestToken1";
 
 		// User 1 login on Computer 1
 		spyOnGetCSRFToken("");
 		const userId = new ObjectId();
-		expectReturnValue(await processCSRFToken(token, userId));
+		expectReturnValue(await processCSRFToken(token, refreshToken, userId));
 		const tokenRes = await getTokenCollectionData(userId);
 		expectTokenExist(tokenRes, token, userId);
 
@@ -89,20 +95,24 @@ describe("Save CSRF Token", () => {
 		spyOnGetCSRFToken(tokenRes?.[0]?.csrfToken);
 		const tokenDiff = "TestToken123";
 		const userIdDiff = new ObjectId();
-		expectReturnValue(await processCSRFToken(tokenDiff, userIdDiff));
+		expectReturnValue(
+			await processCSRFToken(tokenDiff, refreshToken, userIdDiff)
+		);
 		const tokenResDiff = await getTokenCollectionData(userIdDiff);
 		expectTokenExist(tokenResDiff, tokenDiff, userIdDiff);
 		const tokenResAfterUser2 = await getTokenCollectionData(userId);
 		expectTokenNotExist(tokenResAfterUser2);
 
 		// User 1 Login again on Computer 1 and then on Computer 2
-		expectReturnValue(await processCSRFToken(token, userId));
-		expectReturnValue(await processCSRFToken(token, userId));
+		expectReturnValue(await processCSRFToken(token, refreshToken, userId));
+		expectReturnValue(await processCSRFToken(token, refreshToken, userId));
 		const tokenResSame = await getTokenCollectionData(userId);
 		expectTokenExist(tokenResSame, token, userId);
 
 		// User 2 login on Computer 1
-		expectReturnValue(await processCSRFToken(tokenDiff, userIdDiff));
+		expectReturnValue(
+			await processCSRFToken(tokenDiff, refreshToken, userIdDiff)
+		);
 		const tokenResDiffAgain = await getTokenCollectionData(userIdDiff);
 		expectTokenExist(tokenResDiffAgain, tokenDiff, userIdDiff);
 		const tokenResSameAgain = await getTokenCollectionData(userId);

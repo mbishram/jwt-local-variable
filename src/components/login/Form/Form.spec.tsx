@@ -13,11 +13,7 @@ import {
 	loginHandler,
 } from "../../../../specs/__mocks__/api/login";
 import Router from "next/router";
-import {
-	getAccessToken,
-	getCSRFToken,
-	getRefreshToken,
-} from "@/libs/token/variable-handler";
+import { getAccessToken, getCSRFToken } from "@/libs/token/variable-handler";
 
 describe("Login Form", () => {
 	let submitButton: Element;
@@ -64,7 +60,6 @@ describe("Login Form", () => {
 		it("should login, redirect, and mutateUser when correct credential submitted", async () => {
 			loginHandler({
 				accessToken: "accessToken",
-				refreshToken: "refreshToken",
 				csrfToken: "csrfToken",
 			});
 
@@ -72,7 +67,6 @@ describe("Login Form", () => {
 
 			await waitFor(() => {
 				expect(getAccessToken()).toBeTruthy();
-				expect(getRefreshToken()).toBeTruthy();
 				expect(getCSRFToken()).toBeTruthy();
 				expect(mutateUser).toBeCalledTimes(1);
 				expect(mutateUser).toBeCalledWith({ success: true });

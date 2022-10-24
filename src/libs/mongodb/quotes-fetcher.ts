@@ -5,7 +5,7 @@ import { getTokenData } from "@/libs/api/get-token-data";
 import { UserModel } from "@/models/user-model";
 import { ObjectId } from "bson";
 import { extractCSRFToken } from "@/libs/api/extract-csrf-token";
-import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/local-storage-handler";
+import { JWT_ACCESS_TOKEN_COOKIE } from "@/libs/token/storage-handler";
 
 export const QUOTES_COLLECTION_NAME = "quotes";
 

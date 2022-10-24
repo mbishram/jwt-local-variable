@@ -1,3 +1,8 @@
+import { NextApiRequest, NextApiResponse } from "next";
+import { deleteCookie, getCookie, setCookie } from "cookies-next";
+
+export type refreshTokenOptions = { req: NextApiRequest; res: NextApiResponse };
+
 export const JWT_ACCESS_TOKEN_KEY = "JWT_ACCESS_TOKEN_KEY";
 export const JWT_ACCESS_TOKEN_COOKIE = "accessToken";
 
@@ -17,18 +22,28 @@ export function deleteAccessToken() {
 	localStorage.removeItem(JWT_ACCESS_TOKEN_KEY);
 }
 
-export const JWT_REFRESH_TOKEN_KEY = "JWT_REFRESH_TOKEN_KEY";
+export const JWT_REFRESH_TOKEN_COOKIE = "refreshToken";
+export const REFRESH_TOKEN_COOKIE_MAX_AGE = 60 * 60 * 24 * 7; // A week
 
-export function saveRefreshToken(value: string) {
-	localStorage.setItem(JWT_REFRESH_TOKEN_KEY, value);
+export function saveRefreshToken(
+	value: string,
+	{ req, res }: refreshTokenOptions
+) {
+	setCookie(JWT_REFRESH_TOKEN_COOKIE, value, {
+		req,
+		res,
+		httpOnly: true,
+		secure: true,
+		maxAge: REFRESH_TOKEN_COOKIE_MAX_AGE,
+	});
 }
 
-export function returnRefreshToken() {
-	return localStorage.getItem(JWT_REFRESH_TOKEN_KEY);
+export function returnRefreshToken({ req, res }: refreshTokenOptions) {
+	return getCookie(JWT_REFRESH_TOKEN_COOKIE, { req, res });
 }
 
-export function deleteRefreshToken() {
-	localStorage.removeItem(JWT_REFRESH_TOKEN_KEY);
+export function deleteRefreshToken({ req, res }: refreshTokenOptions) {
+	deleteCookie(JWT_REFRESH_TOKEN_COOKIE, { req, res });
 }
 
 export const CSRF_TOKEN_KEY = "CSRF_TOKEN_KEY";

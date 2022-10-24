@@ -10,11 +10,13 @@ export type ProcessCSRFTokenReturnValue = [string | null, NextJson<any> | null];
 /**
  * Save token and csrfToken to db.
  * @param accessToken {string}
+ * @param refreshToken {string}
  * @param userId {string}
  * @return {string | undefined}
  */
 export async function processCSRFToken(
 	accessToken: string,
+	refreshToken: string,
 	userId: ObjectId
 ): Promise<ProcessCSRFTokenReturnValue> {
 	try {
@@ -23,7 +25,7 @@ export async function processCSRFToken(
 
 		// Remove all user's previous sessions and current computer's sessions
 		const currentCSRFToken = getCSRFToken();
-		if (userId && currentCSRFToken) {
+		if (userId || currentCSRFToken) {
 			await tokenCollection.deleteMany({
 				$or: [{ userId }, { csrfToken: currentCSRFToken }],
 			});
@@ -44,6 +46,7 @@ export async function processCSRFToken(
 		await db.collection(TOKENS_COLLECTION_NAME).insertOne({
 			token: accessToken,
 			csrfToken,
+			refreshToken,
 			userId,
 			createdAt: new Date(),
 		});

@@ -8,12 +8,10 @@ import mockRouter from "next-router-mock";
 import {
 	deleteAccessToken,
 	deleteCSRFToken,
-	deleteRefreshToken,
-} from "@/libs/token/local-storage-handler";
+} from "@/libs/token/storage-handler";
 import {
 	removeAccessToken,
 	removeCSRFToken,
-	removeRefreshToken,
 } from "@/libs/token/variable-handler";
 jest.mock("next/router", () => require("next-router-mock"));
 
@@ -24,10 +22,8 @@ beforeEach(() => {
 	// If environment is jsdom
 	if (typeof window !== "undefined") {
 		deleteAccessToken();
-		deleteRefreshToken();
 		deleteCSRFToken();
 		removeAccessToken();
-		removeRefreshToken();
 		removeCSRFToken();
 	}
 });

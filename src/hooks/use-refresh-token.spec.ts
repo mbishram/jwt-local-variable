@@ -8,7 +8,7 @@ import {
 	getTokenHandler,
 } from "../../specs/__mocks__/api/get-token";
 import { customRenderHook } from "@specs-utils/custom-render-hook";
-import { getAccessToken, getRefreshToken } from "@/libs/token/variable-handler";
+import { getAccessToken, getCSRFToken } from "@/libs/token/variable-handler";
 import { useRefreshToken } from "@/hooks/use-refresh-token";
 
 describe("useRefreshToken Hook", () => {
@@ -24,7 +24,7 @@ describe("useRefreshToken Hook", () => {
 			});
 
 			expect(getAccessToken()).toBeFalsy();
-			expect(getRefreshToken()).toBeFalsy();
+			expect(getCSRFToken()).toBeFalsy();
 		});
 
 		it("on fetch new token success", async () => {
@@ -38,7 +38,7 @@ describe("useRefreshToken Hook", () => {
 			});
 
 			expect(getAccessToken()).toEqual("Access Token");
-			expect(getRefreshToken()).toEqual("Refresh Token");
+			expect(getCSRFToken()).toEqual("CSRF Token");
 		});
 	});
 });

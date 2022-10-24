@@ -7,7 +7,10 @@ import { aesDecrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
 import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
-import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
+import {
+	DBTokenResponse,
+	FetcherLoginResponseData,
+} from "@/types/libs/mongodb/auth-fetcher";
 import { getTokenData } from "@/libs/api/get-token-data";
 import { cleanTokenPayload } from "@/libs/clean-token-payload";
 import { JwtPayload } from "jsonwebtoken";
@@ -15,7 +18,11 @@ import { processCSRFToken } from "@/libs/api/process-csrf-token";
 import { ObjectId } from "bson";
 import { extractCSRFToken } from "@/libs/api/extract-csrf-token";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
-import { removeCSRFToken } from "@/libs/token/variable-handler";
+import {
+	deleteRefreshToken,
+	returnRefreshToken,
+	saveRefreshToken,
+} from "@/libs/token/storage-handler";
 
 export const USERS_COLLECTION_NAME = "users";
 
@@ -25,6 +32,8 @@ export const USERS_COLLECTION_NAME = "users";
  * @param res {NextApiResponse}
  */
 export const login = async (req: NextApiRequest, res: NextApiResponse) => {
+	let { db } = await connectToDatabase();
+
 	const reqUser: LoginRequest = req.body;
 	const reqUsername = reqUser.username;
 	const reqPassword = aesDecrypt(reqUser.password);
@@ -35,8 +44,6 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 	});
 
 	try {
-		let { db } = await connectToDatabase();
-
 		const userRes = await db.collection(USERS_COLLECTION_NAME).findOne({
 			$or: [{ username: reqUsername }, { email: reqUsername }],
 		});
@@ -75,8 +82,11 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			);
 		}
 
+		saveRefreshToken(refreshToken, { req, res });
+
 		const [csrfToken, csrfTokenError] = await processCSRFToken(
 			accessToken,
+			refreshToken,
 			userRes._id
 		);
 		if (!csrfToken || csrfTokenError) {
@@ -87,7 +97,7 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 			new NextJson<FetcherLoginResponseData>({
 				success: true,
 				message: "Login success!",
-				data: [{ accessToken, refreshToken, csrfToken }],
+				data: [{ accessToken, csrfToken }],
 			})
 		);
 	} catch (error: any) {
@@ -135,27 +145,65 @@ export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
  * @param res {NextApiResponse}
  */
 export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
-	const authorizationHeader = (req?.headers?.authorization || "") as string;
-	const csrfToken = extractCSRFToken(req);
+	let { db } = await connectToDatabase();
+
+	const refreshTokenString = returnRefreshToken({ req, res });
+	const refreshTokenHeader = "Bearer " + refreshTokenString;
 	const [refreshTokenData, refreshTokenError] = await getTokenData(
 		{
-			authorizationHeader,
+			authorizationHeader: refreshTokenHeader,
 			secret: String(process.env.REFRESH_TOKEN_SECRET_KEY),
-			csrfToken,
 		},
 		{ alwaysValid: true }
 	);
-	const accessTokenHeader = (req?.headers?.["token-access"] || "") as string;
-	const [accessTokenData, accessTokenError] = await getTokenData(
-		{
-			authorizationHeader: accessTokenHeader,
-			secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
-			csrfToken: csrfToken,
-		},
-		{ ignoreExpiration: true }
-	);
 
-	if (refreshTokenError || accessTokenError) {
+	let authorizationHeader = "";
+	// Get access token and csrf token from DB
+	if (!refreshTokenError) {
+		const tokenRes = await db
+			.collection(TOKENS_COLLECTION_NAME)
+			.findOne<DBTokenResponse>({
+				refreshToken: refreshTokenString,
+			});
+		if (tokenRes?.token && tokenRes?.csrfToken) {
+			authorizationHeader = "Bearer " + tokenRes.token;
+
+			const [accessTokenData, accessTokenError] = await getTokenData(
+				{
+					authorizationHeader,
+					secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+				},
+				{ alwaysValid: true }
+			);
+
+			// If access token is still valid, return that instead
+			if (accessTokenData && !accessTokenError) {
+				return res.status(200).json(
+					new NextJson({
+						success: true,
+						message: "Token generated!",
+						data: [
+							{
+								accessToken: tokenRes?.token,
+								csrfToken: tokenRes?.csrfToken,
+							},
+						],
+					})
+				);
+			}
+		}
+	}
+
+	const [accessTokenIgnoreExprData, accessTokenIgnoreExprError] =
+		await getTokenData(
+			{
+				authorizationHeader,
+				secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+			},
+			{ ignoreExpiration: true, alwaysValid: true }
+		);
+
+	if (refreshTokenError || accessTokenIgnoreExprError) {
 		return res.status(401).json(
 			new NextJson({
 				success: false,
@@ -165,24 +213,36 @@ export const getToken = async (req: NextApiRequest, res: NextApiResponse) => {
 	}
 
 	if (refreshTokenData?.success) {
-		const payload = accessTokenData?.data?.[0] as JwtPayload;
+		const payload = accessTokenIgnoreExprData?.data?.[0] as JwtPayload;
 		const cleanedPayload = cleanTokenPayload(payload) as UserModel;
 		const accessToken = (await generateAccessToken(cleanedPayload)) || "";
 		const refreshToken = await generateRefreshToken();
 
+		if (!(accessToken && refreshToken)) {
+			return res.status(500).json(
+				new NextJson({
+					message: "Something went wrong! Failed to generate token.",
+					success: false,
+				})
+			);
+		}
+
 		const [csrfToken, csrfTokenError] = await processCSRFToken(
 			accessToken,
+			refreshToken,
 			new ObjectId(cleanedPayload.id)
 		);
 		if (!csrfToken || csrfTokenError) {
 			return res.status(500).json(csrfTokenError);
 		}
 
+		saveRefreshToken(refreshToken, { req, res });
+
 		return res.status(200).json(
 			new NextJson({
 				success: true,
 				message: "Token generated!",
-				data: [{ accessToken, refreshToken, csrfToken }],
+				data: [{ accessToken, csrfToken }],
 			})
 		);
 	}
@@ -217,7 +277,7 @@ export const logout = async (req: NextApiRequest, res: NextApiResponse) => {
 		});
 	} catch (e) {
 	} finally {
-		removeCSRFToken();
+		deleteRefreshToken({ req, res });
 
 		res.status(200).json(
 			new NextJson({

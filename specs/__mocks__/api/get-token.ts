@@ -7,7 +7,7 @@ const scope = nock(baseURL);
 export const getTokenHandler = () => {
 	return scope.get(GET_TOKEN).reply(200, {
 		success: true,
-		data: [{ accessToken: "Access Token", refreshToken: "Refresh Token" }],
+		data: [{ accessToken: "Access Token", csrfToken: "CSRF Token" }],
 	});
 };
 

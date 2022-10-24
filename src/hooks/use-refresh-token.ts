@@ -1,7 +1,7 @@
 import { useUser } from "@/hooks/use-user";
 import { useEffect } from "react";
 import { getToken } from "@/libs/fetchers/auth";
-import { setAccessToken, setRefreshToken } from "@/libs/token/variable-handler";
+import { setAccessToken, setCSRFToken } from "@/libs/token/variable-handler";
 
 export function useRefreshToken() {
 	const { user } = useUser();
@@ -17,9 +17,9 @@ export function useRefreshToken() {
 					const { data } = await getToken();
 					if (data?.success) {
 						const token = data.data?.[0];
-						if (token?.accessToken && token?.refreshToken) {
+						if (token?.accessToken && token?.csrfToken) {
 							setAccessToken(token.accessToken);
-							setRefreshToken(token.refreshToken);
+							setCSRFToken(token.csrfToken);
 						}
 					}
 				}

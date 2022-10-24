@@ -7,7 +7,7 @@ import { isTokenValid } from "@/libs/api/is-token-valid";
 export type GetTokenDataParams = {
 	authorizationHeader: string;
 	secret: string;
-	csrfToken: string;
+	csrfToken?: string;
 };
 export type GetTokenDataOptions = VerifyOptions & { alwaysValid?: boolean };
 

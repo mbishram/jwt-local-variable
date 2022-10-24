@@ -1,4 +1,4 @@
-import { httpInstance, httpRefreshInstance } from "@/libs/fetchers/http";
+import { httpInstance } from "@/libs/fetchers/http";
 import { LoginFormType } from "@/forms/login";
 import { NextJson } from "@/models/next-json";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
@@ -16,7 +16,7 @@ export async function login(data: LoginFormType) {
 }
 
 export async function getToken() {
-	return await httpRefreshInstance.get<NextJson<FetcherLoginResponseData>>(
+	return await httpInstance.get<NextJson<FetcherLoginResponseData>>(
 		GET_TOKEN
 	);
 }

@@ -12,7 +12,6 @@ import {
 import { aesEncrypt } from "@/libs/aes";
 import { UserModel } from "@/models/user-model";
 import { generateAccessToken } from "@/libs/api/generate-access-token";
-import { generateRefreshToken } from "@/libs/api/generate-refresh-token";
 import { FetcherLoginResponseData } from "@/types/libs/mongodb/auth-fetcher";
 import { ObjectId } from "bson";
 import {
@@ -21,8 +20,12 @@ import {
 } from "@specs-utils/spy-on-process-csrf-token";
 import { spyOnIsTokenValid } from "@specs-utils/spy-on-is-token-valid";
 import { TOKENS_COLLECTION_NAME } from "@/libs/api/is-token-valid";
-import { spyOnRemoveCSRFToken } from "@specs-utils/spy-on-remove-csrf-token";
-import { removeCSRFToken } from "@/libs/token/variable-handler";
+import {
+	spyOnDeleteCookie,
+	spyOnGetCookie,
+	spyOnSetCookie,
+} from "@specs-utils/spy-on-cookies-next";
+import { deleteCookie, setCookie } from "cookies-next";
 
 describe("Fetcher", () => {
 	const tokenPayload = { test: "Test Data" } as unknown as UserModel;
@@ -97,6 +100,7 @@ describe("Fetcher", () => {
 
 		it("should be rejected on csrf token failed to generate", async () => {
 			spyOnProcessCSRFToken(false);
+			spyOnSetCookie();
 			const { req, res } = mockAPIArgs({
 				body: {
 					username,
@@ -115,6 +119,7 @@ describe("Fetcher", () => {
 
 		it("should be able to login and generate csrfToken on correct credential", async () => {
 			spyOnProcessCSRFToken();
+			spyOnSetCookie();
 
 			const { req, res } = mockAPIArgs({
 				body: {
@@ -131,7 +136,8 @@ describe("Fetcher", () => {
 				name,
 			});
 			const accessToken = await generateAccessToken(user);
-			const refreshToken = await generateRefreshToken();
+
+			expect(setCookie).toBeCalledTimes(1);
 
 			expect(res.json).toBeCalledWith(
 				new NextJson<FetcherLoginResponseData>({
@@ -140,7 +146,6 @@ describe("Fetcher", () => {
 					data: [
 						{
 							accessToken,
-							refreshToken,
 							csrfToken: "TestCSRFToken",
 						},
 					],
@@ -218,20 +223,38 @@ describe("Fetcher", () => {
 		});
 
 		describe("on valid refresh token", () => {
+			beforeEach(async () => {
+				const { db } = await connectToDatabase();
+
+				await db.collection(TOKENS_COLLECTION_NAME).insertOne({
+					token: process.env.JWT_EXPIRED,
+					refreshToken: process.env.JWT_VALID_REFRESH,
+					csrfToken: "CSRF Token",
+				});
+			});
+
+			afterEach(async () => {
+				const { db } = await connectToDatabase();
+
+				await db.dropCollection(TOKENS_COLLECTION_NAME);
+			});
+
 			it("should be rejected when csrf token failed to generate", async () => {
 				spyOnProcessCSRFToken(false);
+				spyOnGetCookie(process.env.JWT_VALID_REFRESH);
+				spyOnSetCookie();
 
-				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
-				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
+				const authorization = "Bearer " + process.env.JWT_EXPIRED;
 
 				const { req, res } = mockAPIArgs({
 					headers: {
 						authorization,
-						"token-access": headerAccessToken,
 					},
 				});
 
 				await getToken(req, res);
+
+				expect(setCookie).toBeCalledTimes(0);
 
 				expect(res.status).toBeCalledWith(500);
 				expect(res.json).toBeCalledWith(
@@ -243,20 +266,21 @@ describe("Fetcher", () => {
 
 			it("should return the new access token", async () => {
 				spyOnProcessCSRFToken();
+				spyOnGetCookie(process.env.JWT_VALID_REFRESH);
+				spyOnSetCookie();
 
-				const authorization = "Bearer " + process.env.JWT_VALID_REFRESH;
-				const headerAccessToken = "Bearer " + process.env.JWT_EXPIRED;
+				const authorization = "Bearer " + process.env.JWT_EXPIRED;
 				const accessToken = await generateAccessToken(tokenPayload);
-				const refreshToken = await generateRefreshToken();
 
 				const { req, res } = mockAPIArgs({
 					headers: {
 						authorization,
-						"token-access": headerAccessToken,
 					},
 				});
 
 				await getToken(req, res);
+
+				expect(setCookie).toBeCalledTimes(1);
 
 				expect(res.status).toBeCalledTimes(1);
 				expect(res.status).toBeCalledWith(200);
@@ -268,7 +292,6 @@ describe("Fetcher", () => {
 						data: [
 							{
 								accessToken,
-								refreshToken,
 								csrfToken: "TestCSRFToken",
 							},
 						],
@@ -288,8 +311,8 @@ describe("Fetcher", () => {
 			name,
 		});
 
-		it("should remove token data from db and local variable", async () => {
-			spyOnRemoveCSRFToken();
+		it("should remove token data from db, local variable, and cookie", async () => {
+			spyOnDeleteCookie();
 			let { db } = await connectToDatabase();
 			const tokenCollection = db.collection(TOKENS_COLLECTION_NAME);
 
@@ -324,12 +347,12 @@ describe("Fetcher", () => {
 
 			await logout(req, res);
 
-			expect(removeCSRFToken).toBeCalledTimes(1);
 			expect(
 				(await db.collection(TOKENS_COLLECTION_NAME).find().toArray())
 					.length
 			).toBe(1);
 
+			expect(deleteCookie).toBeCalledTimes(1);
 			expect(res.status).toBeCalledWith(200);
 			expect(res.json).toBeCalledWith(
 				new NextJson({
