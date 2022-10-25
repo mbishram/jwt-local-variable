@@ -32,13 +32,15 @@ export const getTokenData = async (
 		return [null, error];
 	}
 
-	const isValid = await isTokenValid(token, csrfToken);
-	if (!alwaysValid && !isValid) {
-		const error = new NextJson({
-			message: "Access denied, token is not valid!",
-			success: false,
-		});
-		return [null, error];
+	if (!alwaysValid) {
+		const isValid = await isTokenValid(token, csrfToken);
+		if (!isValid) {
+			const error = new NextJson({
+				message: "Access denied, token is not valid!",
+				success: false,
+			});
+			return [null, error];
+		}
 	}
 
 	try {
