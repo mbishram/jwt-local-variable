@@ -113,11 +113,14 @@ export const login = async (req: NextApiRequest, res: NextApiResponse) => {
 export const getUser = async (req: NextApiRequest, res: NextApiResponse) => {
 	const authorizationHeader = (req?.headers?.authorization || "") as string;
 	const csrfToken = extractCSRFToken(req);
-	const [data, error] = await getTokenData({
-		authorizationHeader,
-		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
-		csrfToken,
-	});
+	const [data, error] = await getTokenData(
+		{
+			authorizationHeader,
+			secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+			csrfToken,
+		},
+		{ alwaysValid: true }
+	);
 
 	if (error) {
 		return res.status(200).json(

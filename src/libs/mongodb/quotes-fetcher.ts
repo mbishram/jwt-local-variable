@@ -102,11 +102,14 @@ export const deleteQuotes = async (
 		authorizationCookie ||
 		"") as string;
 	const csrfToken = extractCSRFToken(req);
-	const [data, error] = await getTokenData({
-		authorizationHeader,
-		secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
-		csrfToken,
-	});
+	const [data, error] = await getTokenData(
+		{
+			authorizationHeader,
+			secret: String(process.env.ACCESS_TOKEN_SECRET_KEY),
+			csrfToken,
+		},
+		{ alwaysValid: true }
+	);
 
 	if (error) return res.status(401).json(error);
 
