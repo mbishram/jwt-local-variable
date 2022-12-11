@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { USER } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
 
-const TIMER_LABEL = "Local Variable";
+const TIMER_LABEL = "Local Variable (CSRF)";
 
 export function useUser(
 	redirectTo: string = "",
