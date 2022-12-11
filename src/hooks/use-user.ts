@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { UseUserOptions } from "@/types/hooks/use-user-options";
 import useSWR from "swr";
 import { getToken, USER } from "@/libs/fetchers/auth";
@@ -7,6 +7,8 @@ import {
 	setAccessToken,
 	setRefreshToken,
 } from "@/libs/token/local-storage-handler";
+
+const TIMER_LABEL = "Local Storage + Cookie";
 
 export function useUser(
 	redirectTo: string = "",
@@ -40,6 +42,9 @@ export function useUser(
 				}
 			} catch (e) {
 			} finally {
+				// Stop timer
+				console.timeEnd(TIMER_LABEL);
+
 				if (
 					// If isFinallySkipped is true, skip finally block
 					!isFinallySkipped &&
@@ -57,6 +62,12 @@ export function useUser(
 			}
 		})();
 	}, [user, redirectTo]);
+
+	if (typeof window !== "undefined")
+		useLayoutEffect(() => {
+			// Start timer
+			console.time(TIMER_LABEL);
+		}, []);
 
 	return { user, mutateUser };
 }
