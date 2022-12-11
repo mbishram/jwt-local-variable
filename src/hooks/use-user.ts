@@ -26,6 +26,9 @@ export function useUser(
 			// Is loading, do nothing
 			if (!user) return;
 
+			// If user fetch success, stop timer
+			console.timeEnd(TIMER_LABEL);
+
 			try {
 				// If error, try to refresh token
 				if (!user.success) {
@@ -42,9 +45,6 @@ export function useUser(
 				}
 			} catch (e) {
 			} finally {
-				// Stop timer
-				console.timeEnd(TIMER_LABEL);
-
 				if (
 					// If isFinallySkipped is true, skip finally block
 					!isFinallySkipped &&
