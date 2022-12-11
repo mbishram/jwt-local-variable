@@ -1,8 +1,10 @@
-import { useEffect } from "react";
+import { useEffect, useLayoutEffect } from "react";
 import { UseUserOptions } from "@/types/hooks/use-user-options";
 import useSWR from "swr";
 import { USER } from "@/libs/fetchers/auth";
 import { useRouter } from "next/router";
+
+const TIMER_LABEL = "Local Variable (Without CSRF)";
 
 export function useUser(
 	redirectTo: string = "",
@@ -14,6 +16,9 @@ export function useUser(
 	const history = useRouter();
 
 	useEffect(() => {
+		// If user fetch success, stop timer
+		if (user?.success) console.timeEnd(TIMER_LABEL);
+
 		// Is loading and no redirectTo, do nothing
 		if (!redirectTo || !user) return;
 
@@ -26,6 +31,12 @@ export function useUser(
 			void history.replace(redirectTo);
 		}
 	}, [user, redirectTo]);
+
+	if (typeof window !== "undefined")
+		useLayoutEffect(() => {
+			// Start timer
+			console.time(TIMER_LABEL);
+		}, []);
 
 	return { user, mutateUser };
 }
