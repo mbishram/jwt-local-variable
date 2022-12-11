@@ -23,11 +23,11 @@ export function useUser(
 		(async () => {
 			let isFinallySkipped = false;
 
+			// If user fetch success, stop timer
+			if (user?.success) console.timeEnd(TIMER_LABEL);
+
 			// Is loading, do nothing
 			if (!user) return;
-
-			// If user fetch success, stop timer
-			console.timeEnd(TIMER_LABEL);
 
 			try {
 				// If error, try to refresh token
