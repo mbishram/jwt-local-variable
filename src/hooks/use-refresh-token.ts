@@ -4,7 +4,7 @@ import { getToken } from "@/libs/fetchers/auth";
 import { setAccessToken, setCSRFToken } from "@/libs/token/variable-handler";
 
 export function useRefreshToken() {
-	const { user } = useUser();
+	const { user, mutateUser } = useUser();
 
 	useEffect(() => {
 		(async () => {
@@ -20,6 +20,7 @@ export function useRefreshToken() {
 						if (token?.accessToken && token?.csrfToken) {
 							setAccessToken(token.accessToken);
 							setCSRFToken(token.csrfToken);
+							await mutateUser();
 						}
 					}
 				}
