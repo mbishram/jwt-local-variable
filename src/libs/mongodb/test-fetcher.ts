@@ -28,6 +28,7 @@ export const resetTestData = async (
 				name: "User",
 				quote: "Your custom quote here!",
 				bgColor: "bg-blue-800",
+				userId: new ObjectID("61f9147cba2fd619cdcddce1"),
 				username: "Muh Bishram",
 			},
 		]);
