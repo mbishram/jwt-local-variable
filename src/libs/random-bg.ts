@@ -5,6 +5,7 @@ const randomColor = require("@videsk/tailwind-random-color");
  */
 export const randomBg = () => {
 	return new randomColor({
+		colors: ["gray", "red", "yellow", "purple", "pink"],
 		range: [6, 8],
 		prefix: "bg",
 	}).pick();
