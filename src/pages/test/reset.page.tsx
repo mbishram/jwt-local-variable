@@ -4,9 +4,15 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { useEffect } from "react";
 import { resetTest } from "@/libs/fetchers/test";
 import { useRouter } from "next/router";
+import { useUser } from "@/hooks/use-user";
+import {
+	removeAccessToken,
+	removeRefreshToken,
+} from "@/libs/token/local-storage-handler";
 
 export default function ResetTest() {
 	const router = useRouter();
+	const { mutateUser } = useUser();
 
 	useEffect(() => {
 		(async () => {
@@ -16,6 +22,11 @@ export default function ResetTest() {
 			} catch (e) {
 				alert("Test failed to reset!");
 			} finally {
+				// Logout user
+				removeAccessToken();
+				removeRefreshToken();
+				await mutateUser();
+
 				void router.replace("/");
 			}
 		})();
