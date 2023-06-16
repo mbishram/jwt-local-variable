@@ -4,18 +4,33 @@ import { Typography } from "@/components/ui/Typography/Typography";
 import { useEffect } from "react";
 import { resetTest } from "@/libs/fetchers/test";
 import { useRouter } from "next/router";
+import { logout } from "@/libs/fetchers/auth";
+import {
+	removeAccessToken,
+	removeCSRFToken,
+} from "@/libs/token/variable-handler";
+import { useUser } from "@/hooks/use-user";
 
 export default function ResetTest() {
 	const router = useRouter();
+	const { mutateUser } = useUser();
 
 	useEffect(() => {
 		(async () => {
 			try {
 				await resetTest();
 				alert("Test successfully reset!");
+
+				// Logout user
+				await logout();
 			} catch (e) {
 				alert("Test failed to reset!");
 			} finally {
+				// Logout user
+				removeCSRFToken();
+				removeAccessToken();
+				await mutateUser({ success: false });
+
 				void router.replace("/");
 			}
 		})();
